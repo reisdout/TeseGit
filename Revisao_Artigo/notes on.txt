@@ -1,0 +1,173 @@
+Sumário:
+
+	Desafios em protocolos baseados em aprendizagem (Complexidade da Vida real)
+	Tarefa pode ser facilirada por simuladores de rede
+	Descrição geral do RayNet = OMNet + RayLib
+	
+	
+1. Introduction
+
+	-Há, no momento, muitas propostas de CC, utilizando RL
+	-Vantagem sobre os algortmos sob medida (bespoke) - Adaptabilidade
+	-Apesar disso, ainda em estágio inicial e requer
+	   -Decisão sobre qual modelo
+	   -Treinamento (Quais estados? Qual a recompensa? Como limitar os parâmetros?)
+	   -Aderencia ao mundo-real
+	-Vantagens na utilização de simuladores de rede (domínio da situação, custo dos experimentos na vida real, repodutibilidade)
+	-Daí RayNet seria um training playground
+	-RayNet - Primeiro a integrar o RayLib com o OMNeT.
+	-A comunicação direta, proposta pelo RayNet, o coloca entre os mais eficientes
+	
+2. BackGround
+	
+	2.1 Reinforcement Learning
+		-Maximizar a recompensa, mapeando Estados em ações
+		-Mapear Estados em ações a fim de que uma funçãio objetivo seja maximizada numa trjetória S0A0R1S1A1R2....StAtRt+1....
+		-Obtenção de trajetórias pode ser um problema
+		-
+	2.2 Controle de Congestionamento
+		
+		-OK
+		
+	2.3 OMNet++ Simulator
+		
+		- ns3 like
+		
+	2.4 Ray an RayLib
+		
+		-Destaca a atribuição de políticas específicas para cada agente
+		-Possibilidade de vetorização para múltiplos agentes
+		-
+	3. Design Principles
+	
+		-Separação entre o ambiente de simulação e o aprendizado
+			-Permite que um agente seja trienado em múltiplos setups
+			-Permite estabelecer granularidades distintas, o que permite a diversificação da natureza do trienamento.
+		-Múltiplos Agentes
+			-
+		-Reprodutibilidade
+		-Eficiência e Escalabilidade
+
+	4.RayNet Architeture
+		
+		4.1 Overview
+			-Trainer e worker - Ray Process
+			-Dentro do environment fica a simulação (OMNet)
+			-A vetorização é se houver mais de um worker...
+			-O "trainer" delega políticas de avaliação (o q deve ser maximizado??) aos workers...
+			-O worker interage com o environment (OMNeT++) via API, por meio dos métodos  initialise(), step(), reset()
+			-Initialise() - Inicia o simulador OMNeT
+			-Reset - Leva o OMNeT a um estado inicial aleatório, início de um episódio
+			-step(action) - The worker passa a ação como parâmetro (action) e o environment retorna o novo estado, o valor da recompensa, e
+							um booleano indicando se é ou não o passo final
+		
+		4.2 Event looping and Envioronment Step
+			-Um step pode ser composto por um ou mais eventos de simulação
+			-
+			
+		4.3 RayNet Environment
+			-environment = RL agents + sptepper and Broker
+			-Stepper - se encarrega de ajustar o estado inicial dos agentes.
+			-Broker repassa as ações para os agentes e colhe as observações e recompesnas para o worker.
+			-A comunicação entre os módulos menscionados é via signal/subscribe
+			-Resumindo, o worker chama o initialise, que faz toda a integração sgnal/slot entre o Stepper, o borker
+			e os agentes. Após o initialise, o worker chama o reset para estabelecer o estado inicial, que é alcançado
+			pela execução de um ou mais eventos OMNeT.
+			
+	5. LEARNING CONGESTION CONTROL WITH RAYNET
+		-Descrição dos pressupostos para treinamento do protocolo
+		-Recompensa baseada em throughput, delay e perdas, conforme equação
+		-
+		
+	6. Experimenting With RAYNET
+		-O objetivo é demonstrar a capacidade de segregação entre simulador e componentes de aprendizado e, com isso,
+		a riqueza de experimentos possíveis
+		-Varying environment parameters
+			-Demostrou que funciona pela apresentação dos gráficos
+			-A possibilidade de variação de parametros é o foco. A análise dos resultados é secundária.	
+	
+	
+		-Verifing learning parameters and hyper-parameters
+			-tratando da questão do tuning dos parametros na arquitetura, que é facilitada pela compartimentatização
+			-Demonstra, pelos gráficos, que é possível varriar a política de aprendizado pelos gráficos.
+		
+		-Efficience and Scalability
+			-Demonstrar que a plataforma e eficiente, comparando-a com o Open AI Gym
+			-Ficaram praticamente empatados em recompensa média por tempo de treinamento, CPU e Memória.
+			
+			
+		
+	
+		
+	
+
+
+
+O cerne é uma plataforma de otimização
+
+Algoritmos de aprendizados em protocolos ainda em estágio inicial na área de protocolos
+
+Em especial, no aprendizado por reforço, há desafios no desenvolvimento de um protocolo baseado em aprendizado por reforço
+e no projeto de algortmos de Reinforcement Learning (RL)  -  Design decisions (Decisões de projetos)
+
+Problema da Resposta ser exigida de forma mais rápida do que o cálculo
+
+RL -> Mapear Estados em ações, visando maximizar uma recompensa....
+   Agente <-----> Ambiente
+   A cada time-step o agente recebe um Estado S(t)  e Seleciona uma ação A(t), no próximo intante de tempo.
+   
+   
+OMNeT é um simulador discreto, que, como ns3, distribui os eventos em uma fila de execução
+
+Agente <---OpenAI Gym--> Ambiente
+
+2.3 
+
+    Listing 1  não é encontrada. Não seria   Algorithm 1?
+	Mesmo assim, acho desnecessária...Talvez trocar por uma figura....
+	
+   
+ 
+2.4
+   Agente-> É quem treina.  O ambiente é quem acessa os estados
+     1. O Agente recebe do agente um estado, uma observação, do ambiente;
+	 2. O Ambiente recebe do Agente a ação;
+	 3. O Agente recebe a recompensa e a próxima observação (estado) 
+	 
+	 
+3 DESIGN PRINCIPLES
+
+
+4 RAYNET Architerure
+
+  Figura 2 na seção 4, não seria melhor?
+  Onde está o pybind na figura 2?
+  Listing 2  não é encontrada. Não seria   Algorithm 2?
+  Há uma sobrecarga de step...
+  Mudar o nome do procedure para aldo do tipo StepHandler
+  Mudar o nome do eventType para EOS(End of Step)
+  Não ficou claro. Me parece que há uma mistura dos conceitos de step e 
+  
+4.3 RayNet Environment
+   (namely RL agents, the Stepper and Broker as depicted in Figure 3)
+   Destacar esses componentes na figura 3
+   Fazer aparecer na figura 3 os componentes da figura2, que é detalhada pela 3
+   
+O princípio geral é que cada evento é um conjunto de steps e que depois os módulos treinadore
+recolhem as recompensas para se aperfeiçoarem.
+
+5 LEARNING CONGESTION CONTROL WITH RAYNET
+  Um step (passo) é constituído por vários eventos!
+  No modelo, não há atualização da cwnd dentro de um mesmo step
+  No início de cada step cwnd(t) = 2^a*cwnd(t-1)
+  Para reduzir o espaço das ações aE[-2,2]
+  
+  
+  
+  
+  
+
+
+
+
+
