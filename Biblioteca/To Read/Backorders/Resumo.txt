@@ -1,0 +1,35 @@
+Abstract
+	Algoritmo baseado em árvore de decisão
+
+
+1. Introdução
+   
+   Análise(Detecção de Ataques) Baseada em Fluxo: 
+	-Identificar fluxos maliciosos, por conexão
+	-Baseada em análises estatísticas
+	-A possibilidade de programação dos switches, no ãmbito do planos de dados,
+	 abre novas possibilidades para detecção de ataques
+	
+2. Random Forests
+	-Decision Tree(DT) abrangem Classification Trees (CT), que decidem sobre classes
+	-Entropia,; Fator de normalização e ganho
+	
+
+
+3. Backorders
+	-Como P4 não prevê recursão, utiliza-se uma tabela match+action
+	-Mapeia-se os nós nas ações Ex.: |0|compare_pck_count() "Nó zero deve comparaar o campo packet count"
+	-Os Switches são programados em P4, no estilo match+action. 
+	-OK, mas no nosso caso:
+		-não há controle de congestionamento nos roteadores
+		-Seria ECN? (Não é muito do feitio, pois torna os terminais dependentes de um tipo de roteador)
+		-Será que a ideia seria fazer uma árvore de decisão com os parâmetros cwnd, ack_ewma, send_ewma, rtt_ratio etc e comparar com o que 
+		 se observa na prática nos roteadores
+		 Para exemplificar, suponha que se cwnd > 70% do máximo e ack_ewma < 0,02 e send_ewma>0.8 e rtt_ratio > 0.9 ---Congestionamento....
+		 Essa abordagem simplificaria...e seria interesante, pois os algoritmos de controle de congestionamento são, na verdade, árvores de decisão.
+		
+4.Implementação e Experimentos
+	
+		
+	
+	

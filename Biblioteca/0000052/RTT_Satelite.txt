@@ -1,0 +1,21 @@
+IEEE
+
+
+Performance of Satellite Gateway over Geostationary Satellite Links
+
+
+
+A significant amount of today's Internet traffic, including World Wide Web (WWW), 
+file transfer, e-mail and remote access traffic, is carried by the Transmission C
+ontrol Protocol (TCP) transport protocol. Geostationary satellite links have a 
+number of features that may degrade the performance of the TCP over them. 
+The satellite links have an average round-trip time (RTT) of around 500 ms. 
+The TCP uses a slow-start phase to probe the network at the start of a connection. 
+The time spent in the slow-start phase is directly proportional to the RTT. 
+For a satellite link, it means that the TCP stays in the slow-start phase for a l
+onger time than in the case of a small RTT link. This drastically decreases the 
+throughput of the short-duration TCP connection. Furthermore, when packets are lost, t
+he TCP enters the congestion-avoidance phase. Due to the higher RTT, the TCP remains 
+in the congestion-avoidance phase for a longer time, which reduces the throughput of 
+both short and long-duration TCP connections. Satellite gateways are proven to improve
+ the TCP throughput by 300 -- 800% across high-delay and lossy satellite links.

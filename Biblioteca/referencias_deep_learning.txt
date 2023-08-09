@@ -1,0 +1,9 @@
+Caso você queira mais detalhes sobre as redes neurais, abaixo você tem algumas sugestões de materiais complementares
+
+Curso Redes Neurais Artificiais em Python: neste curso eu mostro a implementação passo a passo de uma rede neural com somente uma camada e também uma rede neural multicamada, ambas utilizando a linguagem Python "pura", ou seja, sem bibliotecas
+
+Livro Make your Own Neural Network: A gentle journey through the mathematics of neural networks, and making you own using the Python computer language de Tariq Rashid: este livro mostra a matemática envolvida nas redes neurais e também mostra a implementação em Python
+
+Livro Fundamental of Neural Networks: Architectures, Algorithms and Applications de Laurene Fausett: este livro apresenta fundamentos teóricos com várias aplicações práticas
+
+Livro Machine Learning with Neural Networks: An In-depth Visual Introduction with Python: Make Your Own Neural Network in Python: A Simple Guide on Machine Learning with Neural Networks de Michael Taylor: este é um dos livros mais didáticos sobre redes neurais
