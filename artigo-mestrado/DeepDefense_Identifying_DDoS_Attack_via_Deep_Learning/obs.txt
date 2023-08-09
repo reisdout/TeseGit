@@ -1,0 +1,97 @@
+*************************************************I. Introdução******************************************************
+-A ideia é propor uma rede meural profunda (DeepDefense) para identificar DDos
+-Destaque para o  Flash Crowd (surto de visitas inesperadas)
+-As identificações neurais são melhores do que as meramente estatísticas
+-Limitações principalmente devido ao enprego específico de uma rede, incapaz de reconhecer mudanças na forma de ataque 
+
+************************************************II. RELATED WORK******************************************************
+*********************A. DDoS Attacks and Countermeasures(Estatísitcos)*************************
+-explora as característica da internet como crescimento e distribuição de serviçõs independentes
+-Alvos principais banda e recursos dos servidores (e a consequente indisponibilidade de serviços)
+-Proteção baseada em prevenção, detecção e reação
+************D-WARD**************** 
+	- baseado em comparações estatísticas entre tráfegos legítimo e de DDos
+	-utilização de entropia.....distância da informação; Relação SYN(para iniciar conexao)/ACK ...
+	-Indicados apenas para situações específicas e requerem pré-processamento
+
+*********************B. DDoS Defense Based on Machine Learning*************************
+-Treinamento de uma rede neural, baseado, por exemplo:
+	-near source IP, preferido dos atacantes
+	-Probabilidade de uma sequencia particular de  IP origem nos pacotes, geralmente novos para a estação alvejada
+	-compartilhamento de informações entre redes próximas
+	-Algoritmos Genéticos (GA) e Suport Vector Machine (SVM)
+	-Redes Neurais: 
+************************************************III. DEEP LEARNING BASED A PPROACH******************************************************
+-Adequado para trpafegos malicioisos de baixo fluxo
+-Baseado em RNN, já com reconhecidas como eficientes em traduções
+-Projetado para detectar nuances entre tráfegos legítimos e maliciosos
+-RNN são independentes de do ?tamanho da janela de tempo, das redes neurais tradicionais?, permitindo utilizar sequencias longas de dados
+-O experimentos mostrararam que quanto maior o tamanho do histórico, mais eficiente
+
+*********************A. Feature Extraction and Transformation*************************
+-Inicialmente vinte campos, classificados em texto(trnasformado em Bag of world (BoW) ), boolean e numerico(transformado em binário)
+-Trabalha-se com a matriz (m-T)XTXn´
+
+***************B. Bidirectional Recurrent Neural Network Architecture*****************
+
+-Aprofundar nos detalhes técnicos....
+************************************************IV. EXPERIMENTS******************************************************
+
+-Com dados dos dois dias em que ocorreram ataque (14 e 15)
+-Dados de treinamento contendo memo número de pacotes maliciosos e não mailiciosos, escolhidos aleatpriamente.
+-LSTM ou 3LSTM(meolhor performance em maiores volumes de treinamento), mas são praticamente iguais < 1%
+-Batem o Random Forest, o mais comum e baseado a redes neurais de poucas camadas. (reduces error rate by 39.69% in Data14 and from 7.517% to 2.103% in Data15)
+
+
+Questões:
+-Detalhes técnicos da rede neural não são colocados, parecem pressupor conhecimento prévio?
+-Quais, como obtê-lo. è só usar o python?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
