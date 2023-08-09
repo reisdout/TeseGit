@@ -1,0 +1,15 @@
+Começando do zero para o artigo do SIGE 1 Fluxo
+
+
+#Lembre que não se pode pular números na sequencia de terminais;
+#se hover  porexemplo  5 terminais  devem ser designados 0 1 2 3 4e não 1 4 6... ou de qualquer outra forma que
+#pule números
+0 1 1Mb 100ms
+0 0 1000Mb 10ms
+1 1 1000Mb 100ms
+
+
+
+
+0 1 3 1
+
