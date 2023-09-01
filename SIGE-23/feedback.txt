@@ -1,0 +1,34 @@
+Parecer: Caso você concorde que o artigo deva ser aprovado com alterações, apresente ao(s) autor(es) informações que julgue relevantes para gerar a versão final do artigo a ser incluída nos anais. Se julgar que o artigo não deve ser selecionado, apresente os motivos para isso de forma que os autores tenham a oportunidade de melhorar o trabalho para futuras submissões.
+    Comentários gerais:
+    - O artigo apresenta uma solução baseada em aprendizado de máquina para otimizar o tráfego em redes TCP/IP.
+    - A temática é relevante e a ideia de solução é muito interessante.
+    - Uma revisão completa do artigo é necessária um futuro aceite no SIGE ou em outro evento acadêmico.
+    - No texto, são apresentadas siglas e termos em inglês sem significado e tradução.
+    - Falta apresentação clara do objetivo do artigo.
+    - A análise dos resultados é a seção mais importante do trabalho, uma vez que apresenta as principais contribuições do autor para a comunidade científica e acadêmica.
+
+    Formatação:
+    - A fonte usada a partir da Seção V é diferente do restante do documento.
+    - Figuras e tabelas ficaram "soltas" no final do artigo. Apresentar e explicar figuras e tabelas ao longo do artigo facilita a compreensão do texto e o acompanhamento do raciocínio do autor.
+
+    Organização e clareza do texto:
+    - O resumo diz que é "impossível a existência de um mecanismo...". Se é impossível, não há o que ser feito.
+    - Evitar siglas no resumo.
+    - A (I) Introdução está confusa, pois apresenta conceitos (I-A e I-B) que poderiam estar em uma seção diferente, como por exemplo, "Fundamentação Teórica".
+    - O final de I-B ficou confuso. Misturou IA com CC sem transição ou contexto.
+    - A (II) Motivação do trabalho poderia ser apresentada na Seção (I) Introdução.
+    - No início da Motivação, "Além dos desafios..." - quais desafios? Não ficou claro na seção I.
+    - A organização do trabalho, apresentada no último parágrafo da Seção II, ficaria melhor posicionada ao final da Seção I.
+    - O objetivo do trabalho não é apresentado de maneira clara no texto.
+    - Uma sugestão para uma boa (I) Introdução é: Contextualização, Motivação e Objetivo.
+    - TCP é modelo ou protocolo?
+    - (III) Trabalhos relacionados inicia com uma "chuva" de siglas e nomes que poderiam ser omitidos, uma vez que não foram abordados no trabalho.
+    - A Seção (VI) Experimentos está mal explicada e confusa de entender.
+    - A (VII) análise dos resultados não seria a Seção mais importante do trabalho? Onde está a análise?
+    - A (VIII) Conclusão apresenta dados novos, que deveriam ser explorados antes na seção de análise (VII)
+    - Há 8 seções para um artigo de 6 páginas. Essas seções poderiam ser melhor organizadas.
+
+    Uso correto do idioma:
+    - Há alguns erros de português no texto.
+    - seguimentos ou segmentos?
+    - tráfico ou tráfego?
