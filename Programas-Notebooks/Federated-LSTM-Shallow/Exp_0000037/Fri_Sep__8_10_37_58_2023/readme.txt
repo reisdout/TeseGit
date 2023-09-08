@@ -1,0 +1,80 @@
+Epocas: 300
+Units: 100
+Batch Size:32
+Janela Previsao: 30
+Ahead Steps:5
+Training File:./Exp_0000037/05fl-2h-95_60.csv
+5 Fluxos Permanentes,com médias mais estáveis.
+voltando às exponenciais com pesos 0.95(tempos) e 0.60(fila).
+{Epoch: 0} loss: 0.065716, mean_absolute_error: 0.225263
+{Epoch: 1} loss: 0.036941, mean_absolute_error: 0.146075
+{Epoch: 2} loss: 0.036749, mean_absolute_error: 0.147034
+{Epoch: 3} loss: 0.036519, mean_absolute_error: 0.146382
+{Epoch: 4} loss: 0.036705, mean_absolute_error: 0.148021
+{Epoch: 5} loss: 0.036158, mean_absolute_error: 0.145490
+{Epoch: 6} loss: 0.035673, mean_absolute_error: 0.143687
+{Epoch: 7} loss: 0.036311, mean_absolute_error: 0.144724
+{Epoch: 8} loss: 0.036277, mean_absolute_error: 0.146509
+{Epoch: 9} loss: 0.035734, mean_absolute_error: 0.144118
+{Epoch: 10} loss: 0.036117, mean_absolute_error: 0.144544
+{Epoch: 11} loss: 0.035715, mean_absolute_error: 0.145701
+{Epoch: 12} loss: 0.035765, mean_absolute_error: 0.143946
+{Epoch: 13} loss: 0.035370, mean_absolute_error: 0.143492
+{Epoch: 14} loss: 0.035642, mean_absolute_error: 0.144007
+{Epoch: 15} loss: 0.035541, mean_absolute_error: 0.144389
+{Epoch: 16} loss: 0.035673, mean_absolute_error: 0.143557
+{Epoch: 17} loss: 0.035298, mean_absolute_error: 0.142771
+{Epoch: 18} loss: 0.035978, mean_absolute_error: 0.144567
+{Epoch: 19} loss: 0.035897, mean_absolute_error: 0.143607
+{Epoch: 20} loss: 0.035380, mean_absolute_error: 0.142848
+{Epoch: 21} loss: 0.035285, mean_absolute_error: 0.142281
+{Epoch: 22} loss: 0.035400, mean_absolute_error: 0.143829
+{Epoch: 23} loss: 0.035860, mean_absolute_error: 0.146117
+{Epoch: 24} loss: 0.035867, mean_absolute_error: 0.143910
+{Epoch: 25} loss: 0.035712, mean_absolute_error: 0.144444
+{Epoch: 26} loss: 0.036149, mean_absolute_error: 0.142515
+{Epoch: 27} loss: 0.035831, mean_absolute_error: 0.145483
+{Epoch: 28} loss: 0.035472, mean_absolute_error: 0.142930
+{Epoch: 29} loss: 0.036068, mean_absolute_error: 0.145036
+{Epoch: 30} loss: 0.035453, mean_absolute_error: 0.142909
+{Epoch: 31} loss: 0.035595, mean_absolute_error: 0.143923
+{Epoch: 32} loss: 0.035371, mean_absolute_error: 0.143469
+{Epoch: 33} loss: 0.035869, mean_absolute_error: 0.143446
+{Epoch: 34} loss: 0.035589, mean_absolute_error: 0.143870
+{Epoch: 35} loss: 0.035339, mean_absolute_error: 0.141878
+{Epoch: 36} loss: 0.035080, mean_absolute_error: 0.141990
+{Epoch: 37} loss: 0.035226, mean_absolute_error: 0.142546
+{Epoch: 38} loss: 0.035291, mean_absolute_error: 0.141329
+{Epoch: 39} loss: 0.035798, mean_absolute_error: 0.144872
+{Epoch: 40} loss: 0.035491, mean_absolute_error: 0.143723
+{Epoch: 41} loss: 0.035265, mean_absolute_error: 0.143126
+{Epoch: 42} loss: 0.034977, mean_absolute_error: 0.141730
+{Epoch: 43} loss: 0.035699, mean_absolute_error: 0.144566
+{Epoch: 44} loss: 0.035862, mean_absolute_error: 0.143407
+{Epoch: 45} loss: 0.035705, mean_absolute_error: 0.143225
+{Epoch: 46} loss: 0.035452, mean_absolute_error: 0.142819
+{Epoch: 47} loss: 0.035266, mean_absolute_error: 0.142919
+{Epoch: 48} loss: 0.035996, mean_absolute_error: 0.143459
+{Epoch: 49} loss: 0.035194, mean_absolute_error: 0.141829
+{Epoch: 50} loss: 0.035954, mean_absolute_error: 0.143915
+{Epoch: 51} loss: 0.035698, mean_absolute_error: 0.144912
+{Epoch: 52} loss: 0.035445, mean_absolute_error: 0.142267
+{Epoch: 53} loss: 0.035095, mean_absolute_error: 0.141457
+{Epoch: 54} loss: 0.035201, mean_absolute_error: 0.143321
+{Epoch: 55} loss: 0.035743, mean_absolute_error: 0.142362
+{Epoch: 56} loss: 0.035722, mean_absolute_error: 0.144207
+{Epoch: 57} loss: 0.035294, mean_absolute_error: 0.142419
+{Epoch: 58} loss: 0.035163, mean_absolute_error: 0.142612
+{Epoch: 59} loss: 0.035677, mean_absolute_error: 0.142426
+{Epoch: 60} loss: 0.035596, mean_absolute_error: 0.143674
+{Epoch: 61} loss: 0.035556, mean_absolute_error: 0.144186
+{Epoch: 62} loss: 0.035015, mean_absolute_error: 0.140787
+{Epoch: 63} loss: 0.035603, mean_absolute_error: 0.143598
+{Epoch: 64} loss: 0.034999, mean_absolute_error: 0.143872
+{Epoch: 65} loss: 0.036167, mean_absolute_error: 0.142779
+{Epoch: 66} loss: 0.035465, mean_absolute_error: 0.143014
+{Epoch: 67} loss: 0.035489, mean_absolute_error: 0.142006
+{Epoch: 68} loss: 0.035435, mean_absolute_error: 0.141334
+{Epoch: 69} loss: 0.035574, mean_absolute_error: 0.144052
+{Epoch: 70} loss: 0.035437, mean_absolute_error: 0.142748
+{Epoch: 71} loss: 0.035155, mean_absolute_error: 0.141180

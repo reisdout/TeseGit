@@ -209,6 +209,7 @@ class Client():
        
        ack_ewma_normalizer=1.0
        send_ewma_normalizer=1.0
+       min_rtt = 1.0 
        rtt_ratio_normalizer=1.0
        cwnd_normalizer=1.0
      
@@ -217,50 +218,71 @@ class Client():
        
        ack_ewma_normalizer = float(Lines[0].split()[len(Lines[0].split())-1])# split retorna uma lista com as strings da linha que estão separadas por espaço
        send_ewma_normalizer = float(Lines[1].split()[len(Lines[1].split())-1])
-       rtt_ratio_normalizer=float(Lines[2].split()[len(Lines[2].split())-1])
-       cwnd_normalizer=float(Lines[3].split()[len(Lines[3].split())-1])
+       min_rtt = float(Lines[2].split()[len(Lines[2].split())-1])
+       rtt_ratio_normalizer=float(Lines[3].split()[len(Lines[3].split())-1])
+       cwnd_normalizer=float(Lines[4].split()[len(Lines[4].split())-1])
        
-       return ack_ewma_normalizer, send_ewma_normalizer, rtt_ratio_normalizer, cwnd_normalizer
+       return ack_ewma_normalizer, send_ewma_normalizer,min_rtt, rtt_ratio_normalizer, cwnd_normalizer
 
  
- 
+      #file1 = open(self.exp_dir+"/normalization_factors.txt", 'r')
       #self.centralServer.RegisterClient(self,self)
 
     def NormalizeFeatures(self, data, parLoadFromNotTrainedFile=False,parSequencialTraining=False):
-       
        ack_ewma_normalizer=1.0
        send_ewma_normalizer=1.0
+       min_rtt=1.0
        rtt_ratio_normalizer=1.0
        cwnd_normalizer=1.0
        
        #Obtendo o RTT Ratio
-       data['rtt_ratio'] = data['rtt_ratio'].div(data['rtt_ratio'].min())
-       
-       if(parLoadFromNotTrainedFile or parSequencialTraining): #Deve-se carregar parametros do arquivo
-           ack_ewma_normalizer, send_ewma_normalizer,rtt_ratio_normalizer,cwnd_normalizer= self.ReadNormalizationFactors()
-           
-       else:
+    
+       #data['rtt_ratio'] = data['rtt_ratio'].div(264)#264 é o rtt min do fluxo de treinamento.
+        
+       if(parLoadFromNotTrainedFile or parSequencialTraining):
+          ack_ewma_normalizer, send_ewma_normalizer,min_rtt,rtt_ratio_normalizer,cwnd_normalizer = self.ReadNormalizationFactors()
+  
+        
+       else: 
            ack_ewma_normalizer = data['ack_ewma(ms)'].max()
            send_ewma_normalizer=data['send_ewma(ms)'].max()
-           rtt_ratio_normalizer=data['rtt_ratio'].max()
+           min_rtt=data['rtt_ratio'].min()
            cwnd_normalizer=data['cwnd (Bytes)'].max()
+
+       data['rtt_ratio'] = data['rtt_ratio'].div(min_rtt)
+       rtt_ratio_normalizer = data['rtt_ratio'].max()
+       data['ack_ewma(ms)'] = data['ack_ewma(ms)'].div(ack_ewma_normalizer)
+       data['send_ewma(ms)'] = data['send_ewma(ms)'].div(send_ewma_normalizer)       
+       data['rtt_ratio'] = data['rtt_ratio'].div(rtt_ratio_normalizer)
+       data['cwnd (Bytes)'] = data['cwnd (Bytes)'].div(cwnd_normalizer)
+        
+       if(not (parLoadFromNotTrainedFile or parSequencialTraining)):
            file1 = open(self.exp_dir+"/normalization_factors.txt", 'w')
            file1.writelines("ack_ewma: "+str(ack_ewma_normalizer)+"\n")
            file1.writelines("send_ewma: "+str(send_ewma_normalizer)+"\n")
+           file1.writelines("rtt_min: "+str(min_rtt)+"\n")
            file1.writelines("rtt_ratio: "+str(rtt_ratio_normalizer)+"\n")
            file1.writelines("cwnd (Bytes): "+str(cwnd_normalizer)+"\n")
            file1.close()
-       
-       print("ack_ewma_normalizer: ", ack_ewma_normalizer)
-       print("send_ewma: ", send_ewma_normalizer)
-       print("rtt_ratio_normalizer: ", rtt_ratio_normalizer)
-       print("cwnd (Bytes): ", cwnd_normalizer)
+    
+       print(ack_ewma_normalizer) 
+       print(send_ewma_normalizer)
+       print(min_rtt)
+       print(rtt_ratio_normalizer)
+       print(cwnd_normalizer) 
+       print("Eis os normalizadores acima")
+       #a=input("Eis os normalizadores acima")
+       seguir = input("Deseja Prosseguir? (N/n-->Sair)")
+    
+       if(seguir == 'n' or seguir =='N'):
+         exit()
 
-       data['ack_ewma(ms)'] = data['ack_ewma(ms)'].div(ack_ewma_normalizer)
-       data['send_ewma(ms)'] = data['send_ewma(ms)'].div(send_ewma_normalizer)
-       data['rtt_ratio'] = data['rtt_ratio'].div(rtt_ratio_normalizer)
-       data['cwnd (Bytes)'] = data['cwnd (Bytes)'].div(cwnd_normalizer)
+
        return data
+   
+       #    if(parLoadFromNotTrainedFile or parSequencialTraining): #Deve-se carregar parametros do arquivo
+       #        ack_ewma_normalizer, send_ewma_normalizer,rtt_ratio_normalizer,cwnd_normalizer= self.ReadNormalizationFactors()
+
 
     def SplitBase(self, base):
       training_base = base.iloc[0:base.shape[0]-200,:]
@@ -633,7 +655,9 @@ class Client():
       if(parLoadFromNotTrainedFile): #Daí pega o testPath, que, a princípio, é um experimento diferente daquele para no qual os
                                #pesos salvos foram treinados
         print("From File")
+        print(self.testPath)
         base = pd.read_csv(self.testPath)
+        print(base.shape[0])
         base = base.dropna()
         '''
         parLoadFromNotTrainedFile tem a ver com a aderencia do modelo sobre arquivos que não participaram 
@@ -780,6 +804,7 @@ class Client():
 
       #parSave se refere aos pesos e modelo salvos a no round parSave. Por
       #isso só é usado se parLoadTestFromFile for True
+      
       test_vectors = self.LoadTestData(parLoadTestFromNotTrainedFile)# parLoadTestFromFile indica que é para pegar do test_client, 
                                                                      #que, a princípio, veio de outro experimento
 
@@ -1279,7 +1304,7 @@ def GeneralTraining(parExpDir, parPreviousTrainingExpDir,parTrainingPath, parTes
     #########################Atualizando o modelo por treinamento e Consolidação do Servidor#######################################
 
     '''
-    for i in range(2):
+    for i in range(4):
       print("##################Round ", i, " ##################################")
       #########################Atualizando o modelo por treinamento #######################################
       #Observe que isso pode ser feito por treinamento ou por consolidação
