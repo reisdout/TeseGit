@@ -204,11 +204,11 @@ class Client():
 
         print(previsores[30])
 
-        print("================================================")
+        print("================SEM NORMALIZAÇÃO================================")
 
         
 
-        previsores=normalize(previsores)
+        #previsores=normalize(previsores)
 
         print(previsores[10])
 
@@ -253,7 +253,7 @@ class Client():
         print("treinando...com 128 de bach-size e 3000 épocas")
         #classificador.fit(previsores_treinamento, classe_treinamento,batch_size = 512, epochs = 100,verbose=0,callbacks=[LoggingCallback(parExpDir=".")])
 
-        classificador.fit(previsores_treinamento, classe_treinamento, batch_size = 128, epochs = 30,
+        classificador.fit(previsores_treinamento, classe_treinamento, batch_size = 128, epochs = 3000,
                           verbose=0)
         self.weightsClientModel = classificador.get_weights()
       else:
@@ -517,7 +517,7 @@ def TreinarModelo(parExpDirPath, parBasePath):
 
 #TreinarModelo('./Exp_0000034','./Exp_0000034/1Mono-4NewReno-noventacincocentesimos-seisdecimos-40-70-3h30min.csv')
 
-TreinarModelo('./Exp_0000037','./Exp_0000037/05fl-10h-95_60-compatibilizado.csv')
+#TreinarModelo('./Exp_0000037','./Exp_0000037/05fl-10h-95_60-compatibilizado.csv')
 
 
 

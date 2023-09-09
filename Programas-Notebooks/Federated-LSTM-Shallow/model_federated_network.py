@@ -272,10 +272,12 @@ class Client():
        print(cwnd_normalizer) 
        print("Eis os normalizadores acima")
        #a=input("Eis os normalizadores acima")
+       '''
        seguir = input("Deseja Prosseguir? (N/n-->Sair)")
     
        if(seguir == 'n' or seguir =='N'):
          exit()
+       '''
 
 
        return data
@@ -1304,7 +1306,7 @@ def GeneralTraining(parExpDir, parPreviousTrainingExpDir,parTrainingPath, parTes
     #########################Atualizando o modelo por treinamento e Consolidação do Servidor#######################################
 
     '''
-    for i in range(4):
+    for i in range(2):
       print("##################Round ", i, " ##################################")
       #########################Atualizando o modelo por treinamento #######################################
       #Observe que isso pode ser feito por treinamento ou por consolidação
