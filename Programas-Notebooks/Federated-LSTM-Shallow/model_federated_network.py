@@ -160,7 +160,8 @@ class Client():
                  parExpTime,
                  parExpDir,
                  par_exp_dir_out_from_fit,
-                 par_exp_dir_out_from_file):
+                 par_exp_dir_out_from_file,
+                 parSave=0):
  
       self.id = parId
       self.id_in_server=-1 #-1 indica que não foi cadastrado no servidor
@@ -200,7 +201,7 @@ class Client():
       self.num_plot = 0;
       self.last_server_type_sender = "AMA" #AMA, INTERCHANGE
       self.total_model_received_form_server=0
-      self.model_saves = 0
+      self.model_saves = parSave
       self.exp_dir_out_from_fit = par_exp_dir_out_from_fit
       self.exp_dir_out_from_file =par_exp_dir_out_from_file
       
@@ -471,8 +472,8 @@ class Client():
       as saídas de cada unidade da LSTM e, portanto, a saída global é a dimenção do número de previsores, que, no nosso
       caso, é 4. Daí esses 4 estão sendo levados em um softmax de tres neurônios, pois há tres categorias no final"
       ''' 
-      #regressor.add(Dense(units = 1, activation = 'sigmoid', name="client_"+str(self.id))) #para uma previsão
-      regressor.add(Dense(units = self.n_steps_out, activation = 'sigmoid', name="client_"+str(self.id)))
+      regressor.add(Dense(units = 1, activation = 'sigmoid', name="client_"+str(self.id))) #para uma previsão
+      #regressor.add(Dense(units = self.n_steps_out, activation = 'sigmoid', name="client_"+str(self.id)))
       
       #regressor.compile(optimizer = 'adam', loss = 'mean_squared_error',metrics = ['mean_absolute_error'])
 
@@ -499,7 +500,9 @@ class Client():
 
       #regressor = Sequential()
       if(parSequencialTraining):
-          regressor=self.GetModelFromFile(1)
+          #regressor=self.GetModelFromFile(1)
+          regressor=self.GetModelFromFile(self.model_saves)
+
       else:
           regressor = self.GetModel();
       #indica que já foi feito um treinamento ou consolidação de modelos prévia
@@ -515,11 +518,11 @@ class Client():
       regressor.fit(previsores, real_congestion, epochs = self.exp_epoch, batch_size = self.exp_batch_size,verbose=0,
                 callbacks=[LoggingCallback(parExpDir=self.exp_dir)])
       #self.weightsClientModel = regressor.get_weights().copy()
+      self.model_saves=self.model_saves+1
       regressor_json = regressor.to_json()
       with open(self.exp_dir+"/model_"+str(self.model_saves)+".json",'w') as json_file:
         json_file.write(regressor_json)
       regressor.save_weights(self.exp_dir+"/model_weights_"+str(self.model_saves)+".h5")
-      self.model_saves=self.model_saves+1
       self.weightsClientModel.clear()
       for e in regressor.get_weights():
         self.weightsClientModel.append(e)
@@ -569,7 +572,9 @@ class Client():
       for i in range(0,self.total_model_received_form_server):
         print(f"====== Cliente: {self.id} analisando modelo {i} do servidor:")
         #É importante lembrar que o GetPrevision faz a previsão com os pesos que lá estiverem! 
-        previsoesCliente = self.GetPrevision()
+        #previsoesCliente = self.GetPrevision()
+        self.GetPrevision()
+        previsoesCliente = self.latest_prevision
         if(self.last_server_type_sender == "AMA"):#uma unica lista
           parServerModel.set_weights(self.weightsServerModel)
         elif (self.last_server_type_sender == "INTERCHANGE"):#várias listas
@@ -825,13 +830,15 @@ class Client():
 
       
 
-      previsoes = regressor.predict(test_vectors)
+      #previsoes = regressor.predict(test_vectors)
+      self.latest_prevision = regressor.predict(test_vectors)
       #print("Observe as previsoes:")
       #print(previsoes)
       #input("Observe as previsoes")
+      '''
       self.latest_prevision = np.empty((previsoes.shape[0],1))      
       for i in range(previsoes.shape[0]):
-        self.latest_prevision[i][0]=previsoes[i][self.n_steps_out-1]
+      '''
       
       '''
       A ideia do laço a seguir é tomar a última posição dos vetores previstos pela rede neural, que corresponde a 
@@ -874,7 +881,7 @@ class Client():
       #self.currentConfusionMatriz = confusion_matrix(classe_teste2,previsoes2) 
       
       #return self.currentConfusionMatriz # Com a configuração corrente, essa é a matriz....
-      return previsoes
+      #return previsoes
         
     def PlotResults(self,parLoadFromNotTrainedFileFile=False):
       fig, graph = plt.subplots()
@@ -883,7 +890,8 @@ class Client():
       
       lp=self.latest_prevision
       
-      graph.plot(self.real_congestion_test[self.real_congestion_test.shape[0]-300:self.real_congestion_test.shape[0],:], color = 'red', label = 'Cng Real')
+      #graph.plot(self.real_congestion_test[self.real_congestion_test.shape[0]-300:self.real_congestion_test.shape[0],:], color = 'red', label = 'Cng Real')
+      graph.plot(self.real_congestion_test[self.real_congestion_test.shape[0]-200:self.real_congestion_test.shape[0]], color = 'red', label = 'Cng Real')
       #graph.plot(self.real_congestion_test[0:300,:], color = 'red', label = 'Cng Real')
 
       ################################################
@@ -892,7 +900,9 @@ class Client():
       #else:
       ################################################
           
-      graph.plot(self.latest_prevision[self.latest_prevision.shape[0]-300:self.latest_prevision.shape[0],:], color = 'blue', label = 'Cng Previsto')
+      #graph.plot(self.latest_prevision[self.latest_prevision.shape[0]-300:self.latest_prevision.shape[0],:], color = 'blue', label = 'Cng Previsto')
+      graph.plot(self.latest_prevision[self.latest_prevision.shape[0]-200:self.latest_prevision.shape[0]], color = 'blue', label = 'Cng Previsto')
+
       graph.set_xlabel('ACK')
       graph.set_ylabel('Ocupacao Fila')
       graph.title.set_text('Previsão do Congestionamento {:0>3}'.format(self.id))
@@ -1116,7 +1126,13 @@ A cada round:
 '''
 
 
-def GeneralTraining(parExpDir, parPreviousTrainingExpDir,parTrainingPath, parTestPath, parExpDescription,parSequencialTraining=False):
+def GeneralTraining(parExpDir, 
+                    parPreviousTrainingExpDir,
+                    parTrainingPath, 
+                    parTestPath, 
+                    parExpDescription,
+                    parSequencialTraining=False,
+                    parAquivoPesos=0):
 
     #objServeAMA = Server_FederatedAMA()
     #objServerInterChange = Server_FederatedInterChange()
@@ -1182,6 +1198,7 @@ def GeneralTraining(parExpDir, parPreviousTrainingExpDir,parTrainingPath, parTes
 
     
     exp_epoch = 300
+    #exp_epoch = 10
     exp_units = 100
     exp_batch_size=32
     exp_T=30
@@ -1226,6 +1243,7 @@ def GeneralTraining(parExpDir, parPreviousTrainingExpDir,parTrainingPath, parTes
     client01_congestion_protocol = exp_congestion_protocol
     client01_web_nodes= exp_web_nodes
     client01_RTT_router = "50ms"
+    client01_save = parAquivoPesos
 
 
     #Registando dados relativos ao cliente 0, comum a todos os clientes, no readme_cliente_000.txt
@@ -1251,7 +1269,8 @@ def GeneralTraining(parExpDir, parPreviousTrainingExpDir,parTrainingPath, parTes
                         exp_time,
                         exp_dir,
                         exp_dir_out_from_fit,
-                        exp_dir_out_from_file)
+                        exp_dir_out_from_file,
+                        parSave=client01_save)
 
 
 
@@ -1469,6 +1488,20 @@ def EvalueteModelLevarage(parPreviousExpTime,
     objClient1.GetPrevision(lastRound,parLoadTestFromNotTrainedFile=True)
     objClient1.PlotResults(parLoadFromNotTrainedFileFile=True)
    
+
+'''
+
+description = "5 Fluxos Permanentes,com médias mais estáveis."+"\n"  
+description =description + "voltando às exponenciais com pesos 0.95(tempos) e 0.60(fila).\n"
+exp_dir=""
+for i in range (1):
+    exp_dir =  GeneralTraining(parExpDir="./Exp_0000037/",
+                parPreviousTrainingExpDir=exp_dir,
+                parTrainingPath="./Exp_0000037/05fl-2h-95_60.csv",
+                parTestPath="./Exp_0000037/05fl-2h-95_60.csv",
+                parExpDescription=description,
+                parSequencialTraining=bool(i))
+'''
 
 
 '''
