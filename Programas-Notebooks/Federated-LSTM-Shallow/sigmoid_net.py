@@ -66,7 +66,8 @@ def NormalizeFeatures(data, parFromFile,par_exp_dir):
            cwnd_normalizer=data['cwnd (Bytes)'].max()
 
        data['rtt_ratio'] = data['rtt_ratio'].div(min_rtt)
-       rtt_ratio_normalizer = data['rtt_ratio'].max()
+       if(not (parFromFile)):
+           rtt_ratio_normalizer = data['rtt_ratio'].max()
        data['ack_ewma(ms)'] = data['ack_ewma(ms)'].div(ack_ewma_normalizer)
        data['send_ewma(ms)'] = data['send_ewma(ms)'].div(send_ewma_normalizer)       
        data['rtt_ratio'] = data['rtt_ratio'].div(rtt_ratio_normalizer)

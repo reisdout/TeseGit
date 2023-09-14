@@ -251,7 +251,8 @@ class Client():
            cwnd_normalizer=data['cwnd (Bytes)'].max()
 
        data['rtt_ratio'] = data['rtt_ratio'].div(min_rtt)
-       rtt_ratio_normalizer = data['rtt_ratio'].max()
+       if(not (parLoadFromNotTrainedFile or parSequencialTraining)):
+           rtt_ratio_normalizer = data['rtt_ratio'].max()
        data['ack_ewma(ms)'] = data['ack_ewma(ms)'].div(ack_ewma_normalizer)
        data['send_ewma(ms)'] = data['send_ewma(ms)'].div(send_ewma_normalizer)       
        data['rtt_ratio'] = data['rtt_ratio'].div(rtt_ratio_normalizer)
@@ -307,7 +308,7 @@ class Client():
       base = base.dropna()
       base = self.NormalizeFeatures(base,parLoadFromNotTrainedFile=False,parSequencialTraining=parSequencialTraining)
       base_treinamento, self.base_teste = self.SplitBase(base)
-      base_treinamento = base.iloc[:, [1,2,3,4,5]].values
+      base_treinamento = base.iloc[:, [1,2,3,5]].values
       #base_treinamento = base.iloc[:, [1,2,3,5]].values
       #print("Veja a base de treinamento normalizada")
       #print(base_treinamento)
@@ -327,8 +328,8 @@ class Client():
         if end_ix > base_treinamento.shape[0]:
           break;
         #previsores.append(base_treinamento[i-self.T:i, 0:4])#o que é considerado é o limite superior do rante -1
-        previsores.append(base_treinamento[i-self.T:i, 0:4])#o que é considerado é o limite superior do rante -1 e sem a informação do percentual de ocupação do buffer
-        real_congestion.append(base_treinamento[(i-1)+self.n_steps_out,4])#
+        previsores.append(base_treinamento[i-self.T:i, 0:3])#o que é considerado é o limite superior do rante -1 e sem a informação do percentual de ocupação do buffer
+        real_congestion.append(base_treinamento[(i-1)+self.n_steps_out,3])#
     
         '''
         #Se quiser repetir os últimos valores
@@ -444,7 +445,7 @@ class Client():
       #regressor.add(LSTM(units = 20, return_sequences = True, input_shape = (self.input_shape, 4)))
       #regressor.add(LSTM(units = 10, return_sequences = True, input_shape = (self.input_shape, 4)))
       #regressor.add(LSTM(units = 6, return_sequences = True, input_shape = (self.input_shape, 4)))
-      regressor.add(LSTM(units = 2*self.exp_units, return_sequences = True, input_shape = (self.input_shape, 4)))
+      regressor.add(LSTM(units = 2*self.exp_units, return_sequences = True, input_shape = (self.input_shape, 3)))
       regressor.add(Dropout(0.3)) #zerar 30% das entradas para evitar o overfiting
       
       
@@ -642,7 +643,7 @@ class Client():
       #base_completa = base_completa.drop('ack_ewma(ms)', axis =1)
       #base_completa = base_completa.drop('send_ewma(ms)', axis =1)
       #base_completa = base_completa.drop('rtt_ratio', axis =1)
-      #base_completa = base_completa.drop('cwnd (Bytes)', axis =1)
+      base_completa = base_completa.drop('cwnd (Bytes)', axis =1)
       base_completa = base_completa.drop('Last Router Ocupation Ack Arriaval(Packets)', axis =1)#O que se quer prever
       base_completa = base_completa.drop('Last Router Ocupation Packet Sent(Packets)', axis =1)
       base_completa = base_completa.drop('Network Situation', axis =1)
@@ -674,10 +675,11 @@ class Client():
         os parametros de normalização.
         '''
         base = self.NormalizeFeatures(base,parLoadFromNotTrainedFile,parSequencialTraining=False)
-        base_treinamento, external_base_teste = self.SplitBase(base)
+        external_base_treinamento, external_base_teste = self.SplitBase(base)
         #self.real_congestion_test = external_base_teste.iloc[self.T+self.n_steps_out:, 5:6].values
-        self.real_congestion_test = base.iloc[self.T+self.n_steps_out-1:base.shape[0], 5:6].values
-        frames = [base_treinamento, external_base_teste]
+        self.real_congestion_test = external_base_teste.iloc[:, 5:6].values
+        #self.real_congestion_test = base.iloc[self.T+self.n_steps_out-1:base.shape[0], 4:5].values
+        frames = [external_base_treinamento, external_base_teste]
         base_completa = pd.concat(frames)
         self.len_base_teste = len(external_base_teste)        
         base_completa = self.DropCollums(base_completa)
@@ -685,12 +687,12 @@ class Client():
         
 
         
-        for i in range(self.T, entradas.shape[0]):
+        for i in range(entradas.shape[0]-(200+self.n_steps_out), entradas.shape[0]):
           end_ix = i+self.n_steps_out
           if end_ix > entradas.shape[0]:
             break;
           #previsores.append(base_treinamento[i-self.T:i, 0:4])#o que é considerado é o limite superior do rante -1
-          X_teste.append(entradas[i-self.T:i, 0:4])#o que é considerado é o limite superior do rante -1 e sem a informação do percentual de ocupação do buffer
+          X_teste.append(entradas[i-self.T:i, 0:3])#o que é considerado é o limite superior do rante -1 e sem a informação do percentual de ocupação do buffer
           #real_congestion.append(base[(i-1)+self.n_steps_out,4])#
         
       else: #caminho normal, durante o treinamento
@@ -744,7 +746,7 @@ class Client():
           #end_ix = i+self.n_steps_out
           if i >= entradas.shape[0]:
             break;
-          X_teste.append(entradas[i-(self.T+self.n_steps_out-1):i-(self.n_steps_out-1),0:4])
+          X_teste.append(entradas[i-(self.T+self.n_steps_out-1):i-(self.n_steps_out-1),0:3])
 
         #previsores.append(base_treinamento[i-self.T:i, 0:4])#o que é considerado é o limite superior do rante -1
         #real_congestion.append(base_treinamento[(i-1)+self.n_steps_out,4])#
@@ -901,7 +903,7 @@ class Client():
       ################################################
           
       #graph.plot(self.latest_prevision[self.latest_prevision.shape[0]-300:self.latest_prevision.shape[0],:], color = 'blue', label = 'Cng Previsto')
-      graph.plot(self.latest_prevision[self.latest_prevision.shape[0]-200:self.latest_prevision.shape[0]], color = 'blue', label = 'Cng Previsto')
+      graph.plot(self.latest_prevision[self.latest_prevision.shape[0]-200:self.latest_prevision.shape[0]], color = 'blue', label = 'Cng Previsto',linestyle='dashed')
 
       graph.set_xlabel('ACK')
       graph.set_ylabel('Ocupacao Fila')
@@ -1483,40 +1485,45 @@ def EvalueteModelLevarage(parPreviousExpTime,
                         exp_dir_out_from_fit,
                         exp_dir_out_from_file)
 
-    lastRound=1
+    lastRound=3
 
     objClient1.GetPrevision(lastRound,parLoadTestFromNotTrainedFile=True)
     objClient1.PlotResults(parLoadFromNotTrainedFileFile=True)
    
-
 '''
-
 description = "5 Fluxos Permanentes,com médias mais estáveis."+"\n"  
 description =description + "voltando às exponenciais com pesos 0.95(tempos) e 0.60(fila).\n"
-exp_dir=""
-for i in range (1):
-    exp_dir =  GeneralTraining(parExpDir="./Exp_0000037/",
-                parPreviousTrainingExpDir=exp_dir,
-                parTrainingPath="./Exp_0000037/05fl-2h-95_60.csv",
-                parTestPath="./Exp_0000037/05fl-2h-95_60.csv",
-                parExpDescription=description,
-                parSequencialTraining=bool(i))
+description =description + "Compatibilização totoal.\n"
+#description = description+ "Prevendo a média móvel.\n"
+#description = description+ "300 épocas a cada Round.\n"
+#description = description+ "Concatenação de 09 (nove) experimentos distintos.\n"
+#description = description+ "Ajuste no RTT_ratio.\n"
+#description = description+ "Treinamento Sequencial.\n"
+
+previous_exp_dir=""# Pois está começando de 2. Se for "treinamento do zero" tem que ser igual aos outros, ou seja vazio
+                                           # A partir de 1 já é previous...
+for i in range (2):
+    previous_exp_dir = GeneralTraining(parExpDir="./Exp_0000037/",
+                       parPreviousTrainingExpDir=previous_exp_dir,
+                       parTrainingPath="./Exp_0000037/05fl-10h-95_60-compatibilizado.csv",
+                       parTestPath="./Exp_0000037/05fl-10h-95_60-compatibilizado.csv",
+                       parExpDescription=description,
+                       parSequencialTraining=bool(i),
+                       parAquivoPesos=2*i-1)    
+    
 '''
-
-
 '''
-description = "testar com outros dados, mas gerados com uma topologia dumbell, igual a do treinamento."+"\n"  
-description =description + "Média móvel da quantidade de pacotes na fila.\n"
-description =description + "Modelo com 300 épocas em cada round\n"
-description = description+ "Verificando a aderencia sobre um dos modelos concatenados\n"
-description = description+ "Dados que não participaram do treinamento, mas gerados na mesma rede.\n"
-#description = description+ "Na topologia considerada, ajustou-se os RTT entre os roteadores de 0,005ms, pois com roteadores, o processamento da fila faz com que demore mais.\n"
-#description = description+ ".\n"
-
-EvalueteModelLevarage(parPreviousExpTime="Sat_May_20_16_52_50_2023",
-                      parPreviousTrainingExpDir="./Exp_0000013/Sat_May_20_16_52_50_2023/",
-                      parPreviousTrainingPath="./Exp_0000013/training_client01-09.csv",
-                      parPathTestFromAnotherTopology="./Exp_0000013/test_client01_11.csv",
+description = "aplicando modelo, treinado com simulçao de 10h, para prever dados de uma simulação de 2 horas."+"\n"  
+#description =description + "Topologia: Dumbell conforme .txt.\n"
+#description =description + "Tempo de Simulação:10h.\n"
+#description = description+ "Prevendo a média móvel.\n"
+#description = description+ "300 épocas a cada Round.\n"
+#description = description+ "Concatenação de 09 (nove) experimentos distintos.\n"
+#description = description+ "Ajuste no RTT_ratio.\n"
+#description = description+ "Treinamento Sequencial.\n"
+EvalueteModelLevarage(parPreviousExpTime="Tue_Sep_12_20_09_24_2023",
+                      parPreviousTrainingExpDir="./Exp_0000037/Tue_Sep_12_20_09_24_2023/",
+                      parPreviousTrainingPath="./Exp_0000037/05fl-2h-95_60-compatibilizado.csv",
+                      parPathTestFromAnotherTopology="./Exp_0000037/05fl-2h-95_60-compatibilizado.csv",
                       parExpDescription=description)
-
 '''

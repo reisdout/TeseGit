@@ -2412,3 +2412,70 @@ Compatibilização totoal.
 {Epoch: 275} loss: 0.001533, mean_absolute_error: 0.026698
 {Epoch: 276} loss: 0.002103, mean_absolute_error: 0.029566
 {Epoch: 277} loss: 0.001390, mean_absolute_error: 0.026024
+{Epoch: 278} loss: 0.003404, mean_absolute_error: 0.033248
+{Epoch: 279} loss: 0.001389, mean_absolute_error: 0.025644
+{Epoch: 280} loss: 0.001366, mean_absolute_error: 0.025697
+{Epoch: 281} loss: 0.001047, mean_absolute_error: 0.023605
+{Epoch: 282} loss: 0.001220, mean_absolute_error: 0.025049
+{Epoch: 283} loss: 0.002639, mean_absolute_error: 0.031393
+{Epoch: 284} loss: 0.002381, mean_absolute_error: 0.030115
+{Epoch: 285} loss: 0.002564, mean_absolute_error: 0.031555
+{Epoch: 286} loss: 0.001618, mean_absolute_error: 0.026954
+{Epoch: 287} loss: 0.001162, mean_absolute_error: 0.024452
+{Epoch: 288} loss: 0.001105, mean_absolute_error: 0.024073
+{Epoch: 289} loss: 0.001091, mean_absolute_error: 0.023971
+{Epoch: 290} loss: 0.000988, mean_absolute_error: 0.023336
+{Epoch: 291} loss: 0.001041, mean_absolute_error: 0.023522
+{Epoch: 292} loss: 0.001225, mean_absolute_error: 0.024764
+{Epoch: 293} loss: 0.001180, mean_absolute_error: 0.024382
+{Epoch: 294} loss: 0.001133, mean_absolute_error: 0.024435
+{Epoch: 295} loss: 0.001420, mean_absolute_error: 0.025434
+{Epoch: 296} loss: 0.001325, mean_absolute_error: 0.025518
+{Epoch: 297} loss: 0.001677, mean_absolute_error: 0.027427
+{Epoch: 298} loss: 0.002883, mean_absolute_error: 0.031384
+{Epoch: 299} loss: 0.003984, mean_absolute_error: 0.036846
+Epocas: 300
+Units: 100
+Batch Size:32
+Janela Previsao: 30
+Ahead Steps:5
+Training File:./Exp_0000037/05fl-10h-95_60-compatibilizado.csv
+5 Fluxos Permanentes,com médias mais estáveis.
+voltando às exponenciais com pesos 0.95(tempos) e 0.60(fila).
+Compatibilização totoal.
+{Epoch: 0} loss: 0.002008, mean_absolute_error: 0.029016
+{Epoch: 1} loss: 0.001308, mean_absolute_error: 0.025378
+{Epoch: 2} loss: 0.001200, mean_absolute_error: 0.024777
+{Epoch: 3} loss: 0.001534, mean_absolute_error: 0.025940
+{Epoch: 4} loss: 0.003866, mean_absolute_error: 0.035841
+{Epoch: 5} loss: 0.001825, mean_absolute_error: 0.027660
+{Epoch: 6} loss: 0.001239, mean_absolute_error: 0.024753
+{Epoch: 7} loss: 0.001269, mean_absolute_error: 0.025191
+{Epoch: 8} loss: 0.001119, mean_absolute_error: 0.024053
+{Epoch: 9} loss: 0.001332, mean_absolute_error: 0.024922
+{Epoch: 10} loss: 0.001091, mean_absolute_error: 0.023550
+{Epoch: 11} loss: 0.001068, mean_absolute_error: 0.023792
+{Epoch: 12} loss: 0.001260, mean_absolute_error: 0.024933
+{Epoch: 13} loss: 0.001651, mean_absolute_error: 0.026830
+{Epoch: 14} loss: 0.002912, mean_absolute_error: 0.033742
+{Epoch: 15} loss: 0.001603, mean_absolute_error: 0.026823
+{Epoch: 16} loss: 0.001301, mean_absolute_error: 0.025303
+{Epoch: 17} loss: 0.001299, mean_absolute_error: 0.025054
+{Epoch: 18} loss: 0.001195, mean_absolute_error: 0.024318
+{Epoch: 19} loss: 0.001010, mean_absolute_error: 0.023145
+{Epoch: 20} loss: 0.001165, mean_absolute_error: 0.024258
+{Epoch: 21} loss: 0.001246, mean_absolute_error: 0.024674
+{Epoch: 22} loss: 0.001125, mean_absolute_error: 0.024262
+{Epoch: 23} loss: 0.001171, mean_absolute_error: 0.024204
+{Epoch: 24} loss: 0.001692, mean_absolute_error: 0.026969
+{Epoch: 25} loss: 0.001714, mean_absolute_error: 0.027335
+Teste de Aderencia: 
+aplicando modelo, treinado com simulçao de 10h, para prever dados de uma simulação de 2 horas.
+Teste de Aderencia: 
+aplicando modelo, treinado com simulçao de 10h, para prever dados de uma simulação de 2 horas.
+Teste de Aderencia: 
+aplicando modelo, treinado com simulçao de 10h, para prever dados de uma simulação de 2 horas.
+Teste de Aderencia: 
+aplicando modelo, treinado com simulçao de 10h, para prever dados de uma simulação de 2 horas.
+Teste de Aderencia: 
+aplicando modelo, treinado com simulçao de 10h, para prever dados de uma simulação de 2 horas.
