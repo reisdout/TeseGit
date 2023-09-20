@@ -183,7 +183,7 @@ class Client():
         return classificador
 
 
-    def LoadTainingDataSet(self, parFromFile=False):
+    def LoadTrainingDataSet(self, parFromFile=False):
         
         base = pd.read_csv(self.basePath)
         
@@ -245,7 +245,7 @@ class Client():
       if(parFromTraining):#tem que construir a rede do zero e treinar os pesos
         
    
-        previsores_treinamento, previsores_teste, classe_treinamento, classe_teste = self.LoadTainingDataSet()
+        previsores_treinamento, previsores_teste, classe_treinamento, classe_teste = self.LoadTrainingDataSet()
         
         classificador = self.GetModel()
 
@@ -265,7 +265,7 @@ class Client():
 
     def GetMapedMatrix(self):
         
-        previsores_treinamento, previsores_teste, classe_treinamento, classe_teste = self.LoadTainingDataSet()
+        previsores_treinamento, previsores_teste, classe_treinamento, classe_teste = self.LoadTrainingDataSet()
 
         classificador = self.GetModel()
         
@@ -460,7 +460,7 @@ class Client():
     
     def AderenciaOutrosFluxos(self):
  
-        previsores_treinamento, previsores_teste, classe_treinamento, classe_teste = self.LoadTainingDataSet(parFromFile=True)
+        previsores_treinamento, previsores_teste, classe_treinamento, classe_teste = self.LoadTrainingDataSet(parFromFile=True)
 
         arquivo = open(self.experimentPath+"/model.json",'r')
         estrutura_classificador = arquivo.read()
@@ -485,8 +485,6 @@ class Client():
         to_heat_map =[[matriz[0,0],matriz[0,1]],[matriz[1,0],matriz[1,1]]]
         to_heat_map = pd.DataFrame(to_heat_map, index = ["Hit","Fail"],columns = ["Fail","Hit"])
         ax = sns.heatmap(to_heat_map,annot=True, fmt="d")
-
-
 
 
 def TreinarModelo(parExpDirPath, parBasePath):
@@ -521,10 +519,96 @@ def TreinarModelo(parExpDirPath, parBasePath):
 #TreinarModelo('./Exp_0000037','./Exp_0000037/05fl-10h-95_60-compatibilizado.csv')
 
 
+class ClientBufferArrival(Client):
+    
+    def __init__(self,parId,parExperimentPath,parBasePath, parPacketsArrivedRoutherPath):
+        
+        super().__init__(parId,parExperimentPath,parBasePath)
+        
+        self.packetsArrivedRoutherPath = parPacketsArrivedRoutherPath
+        
+    def LoadTrainingDataSet(self, parFromFile=False):
+        print ("Configurando dados tomados da chegada na fila....")
+        
+        base_ack_terminal = pd.read_csv(self.basePath)
+        
+        base_packet_router = pd.read_csv(self.packetsArrivedRoutherPath)
+        
+        base = pd.merge(base_ack_terminal,base_packet_router, on='#Ack',how='inner')
+        
+        base = base.drop_duplicates(subset=['ack_ewma(ms)', 'send_ewma(ms)','rtt_ratio'])
+        base = NormalizeFeatures(base,parFromFile,self.experimentPath)
+        previsores = base.iloc[:, [1,2,3]].values        
+        classe = base.iloc[:, 13].values
+        
+        labelencoder = LabelEncoder()
+        classe = labelencoder.fit_transform(classe)
+        classe_dummy = np_utils.to_categorical(classe)
+        # sem congestionamento    1 0 0
+        #congestionamento medio 0 1 0
+        # alto congestionamento 0 0 1
 
+        #print (classe_dummy[363:,:])
+        
+        a = input("acima, a Classe dummy. Deseja Prosseguir? ")
+        if (a == 'N' or a == 'n'):
+            exit()
+
+
+        previsores_treinamento, previsores_teste, classe_treinamento, classe_teste = train_test_split(previsores, classe_dummy, test_size=0.20)
+        
+        return previsores_treinamento, previsores_teste, classe_treinamento, classe_teste
+    
+        
+        
+        '''
+        
+ 
+ 
+        
+
+
+        '''
+        
+
+
+def TreinarModeloBufferArrival(parExpDirPath, parBasePath,parBaseArrival):
+    
+    client01 = ClientBufferArrival(0,parExpDirPath,parBasePath,parBaseArrival)    
+    client01.RefreshModel(True)
+    client01.GetMapedMatrix()
+    
+
+   
+
+
+    #previsores_treinamento = pd.read_csv('./SQ-false-positive-filering-ML/input/x_train.csv')
+    #classe_treinamento = pd.read_csv('./SQ-false-positive-filering-ML/input/y_train.csv')
+
+    client01.SaveModel()
+
+    '''
+    classificador_json = classificador.to_json()
+    with open(parExpDirPath+"/model.json",'w') as json_file:
+        json_file.write(classificador_json)
+    classificador.save_weights(parExpDirPath+"/model_weights.h5")
+    from keras2cpp import export_model
+    export_model(classificador, parExpDirPath+"/example.model")
+    
+    '''
 
 def EvalueteModelLevarage(parExpDirPath,
                           parBasePath):
     
     client01 = Client(0,parExpDirPath,parBasePath)
     client01.AderenciaOutrosFluxos()
+
+
+#TreinarModelo('./Exp_0000034','./Exp_0000034/1Mono-4NewReno-noventacincocentesimos-seisdecimos-40-70-3h30min.csv')
+
+#TreinarModelo('./Exp_0000037','./Exp_0000037/05fl-10h-95_60-compatibilizado.csv')
+
+TreinarModeloBufferArrival('./Exp_0000038','./Exp_0000038/10_0_0_2to10_1_0_2_L_Wed Sep 20 09_28_38 .csv', './Exp_0000038/10_0_0_2to10_1_0_2_Wed Sep 20 09_28_38 _training_buffer.csv')
+
+
+
