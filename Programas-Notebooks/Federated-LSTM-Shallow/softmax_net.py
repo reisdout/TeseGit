@@ -53,7 +53,7 @@ def NormalizeFeatures(data, parFromFile,par_exp_dir):
            ack_ewma_normalizer = data['ack_ewma(ms)'].max()
            send_ewma_normalizer=data['send_ewma(ms)'].max()
            min_rtt=data['rtt_ratio'].min()
-           cwnd_normalizer=data['cwnd (Bytes)'].max()
+           cwnd_normalizer=data['cwnd_(Bytes)'].max()
 
        data['rtt_ratio'] = data['rtt_ratio'].div(min_rtt)
        if(not (parFromFile)):
@@ -61,7 +61,7 @@ def NormalizeFeatures(data, parFromFile,par_exp_dir):
        data['ack_ewma(ms)'] = data['ack_ewma(ms)'].div(ack_ewma_normalizer)
        data['send_ewma(ms)'] = data['send_ewma(ms)'].div(send_ewma_normalizer)       
        data['rtt_ratio'] = data['rtt_ratio'].div(rtt_ratio_normalizer)
-       data['cwnd (Bytes)'] = data['cwnd (Bytes)'].div(cwnd_normalizer)
+       data['cwnd_(Bytes)'] = data['cwnd_(Bytes)'].div(cwnd_normalizer)
         
        if(not parFromFile):
            file1 = open(par_exp_dir+"/normalization_factors.txt", 'w')
@@ -69,7 +69,7 @@ def NormalizeFeatures(data, parFromFile,par_exp_dir):
            file1.writelines("send_ewma: "+str(send_ewma_normalizer)+"\n")
            file1.writelines("rtt_min: "+str(min_rtt)+"\n")
            file1.writelines("rtt_ratio: "+str(rtt_ratio_normalizer)+"\n")
-           file1.writelines("cwnd (Bytes): "+str(cwnd_normalizer)+"\n")
+           file1.writelines("cwnd_(Bytes): "+str(cwnd_normalizer)+"\n")
            file1.close()
     
        print(ack_ewma_normalizer) 
@@ -79,10 +79,10 @@ def NormalizeFeatures(data, parFromFile,par_exp_dir):
        print(cwnd_normalizer) 
        print("Eis os normalizadores acima")
        #a=input("Eis os normalizadores acima")
-       seguir = input("Deseja Prosseguir? (N/n-->Sair)")
+       #seguir = input("Deseja Prosseguir? (N/n-->Sair)")
     
-       if(seguir == 'n' or seguir =='N'):
-         exit()
+       #if(seguir == 'n' or seguir =='N'):
+         #exit()
 
 
        return data
@@ -106,19 +106,44 @@ def MilimizeFeatures(data,par_exp_dir):
        data['ack_ewma(ms)'] = data['ack_ewma(ms)'].div(ack_ewma_normalizer)
        data['send_ewma(ms)'] = data['send_ewma(ms)'].div(send_ewma_normalizer)       
        data['rtt_ratio'] = data['rtt_ratio'].div(rtt_ratio_normalizer)
-       data['cwnd (Bytes)'] = data['cwnd (Bytes)'].div(cwnd_normalizer)
+       data['cwnd_(Bytes)'] = data['cwnd_(Bytes)'].div(cwnd_normalizer)
         
 
-       print("Normalizado por 1000")
+       #print("Normalizado por 1000")
        #a=input("Eis os normalizadores acima")
-       seguir = input("Deseja Prosseguir? (N/n-->Sair)")
+       #seguir = input("Deseja Prosseguir? (N/n-->Sair)")
     
-       if(seguir == 'n' or seguir =='N'):
-         exit()
+       #if(seguir == 'n' or seguir =='N'):
+         #exit()
 
 
        return data
    
+
+def SubtractMean(data):
+    
+    data_mean = data.mean(axis=0)
+    
+    
+    
+    data['ack_ewma(ms)'] = data['ack_ewma(ms)'] - data_mean['ack_ewma(ms)']
+    data['send_ewma(ms)'] = data['send_ewma(ms)']- data_mean ['send_ewma(ms)'] 
+ 
+    #data['rtt_ratio'] = data['rtt_ratio']-data_mean['rtt_ratio']
+    #data['cwnd (Bytes)'] = data['cwnd (Bytes)']-data.mean['cwnd (Bytes)']
+    return data
+
+def SubtractMin(data):
+    
+    
+    
+    data['ack_ewma(ms)'] = data['ack_ewma(ms)'] -data['ack_ewma(ms)'].min()
+    data['send_ewma(ms)'] = data['send_ewma(ms)']- data['send_ewma(ms)'].min()
+    data['rtt_ratio'] = data['rtt_ratio']-(data['rtt_ratio'].min()-1)
+    #data['cwnd (Bytes)'] = data['cwnd (Bytes)']-data.mean['cwnd (Bytes)']
+    return data
+        
+    
 
 class Client():
 
@@ -172,9 +197,9 @@ class Client():
         
         
         
-        opt = keras.optimizers.Adam(learning_rate=0.0001)
+        opt = keras.optimizers.Adam(learning_rate=0.0005)
         
-        print("Taxa de Aprendizado 0.0001")
+        print("Taxa de Aprendizado 0.0005")
         
         classificador.compile(optimizer = opt, loss = 'categorical_crossentropy',
                               metrics = ['categorical_accuracy']) #para softmax. lembrar de ajustar no GetMappedMatrix
@@ -228,9 +253,9 @@ class Client():
 
         #print (classe_dummy[363:,:])
         
-        a = input("acima, a Classe dummy. Deseja Prosseguir? ")
-        if (a == 'N' or a == 'n'):
-            exit()
+        #a = input("acima, a Classe dummy. Deseja Prosseguir? ")
+        #if (a == 'N' or a == 'n'):
+            #exit()
 
 
         previsores_treinamento, previsores_teste, classe_treinamento, classe_teste = train_test_split(previsores, classe_dummy, test_size=0.20)
@@ -519,6 +544,66 @@ def TreinarModelo(parExpDirPath, parBasePath):
 #TreinarModelo('./Exp_0000037','./Exp_0000037/05fl-10h-95_60-compatibilizado.csv')
 
 
+
+def MergeAndConcatBases(bt00,
+                        bt01,
+                        bt02,
+                        bt03,
+                        br00,
+                        br01,
+                        br02,
+                        br03):
+
+    
+    base00 = pd.merge(bt00,br00, on='#Ack',how='inner')
+    base01 = pd.merge(bt01,br01, on='#Ack',how='inner')
+    base02 = pd.merge(bt02,br02, on='#Ack',how='inner')
+    base03 = pd.merge(bt03,br03, on='#Ack',how='inner')
+    
+    #base01 = base01.drop(base01[base01['Network_Situation_Router_Arrival'] ==1].index).reset_index() #reset_index para colocar os índices na sequencia
+    #base02 = base02.drop(base02[base02['Network_Situation_Router_Arrival'] ==1].index).reset_index() #reset_index para colocar os índices na sequencia
+    base03 = base03.drop(base03[base03['Network_Situation_Router_Arrival'] ==1].index).reset_index() #reset_index para colocar os índices na sequencia
+
+
+    
+    n1 = base02[base02.Network_Situation_Router_Arrival == 1].shape[0]
+    n2 = base02[base02.Network_Situation_Router_Arrival == 2].shape[0]
+    
+    #while (n2 < n1)
+    #balanced_df = pd.concat([base02,base00]).reset_index()
+    
+    #balanced_list = [base02,base00]
+    
+   # balanced_df = pd.concat(balanced_list)
+    balanced_df= pd.concat([base02,base03],ignore_index=True)
+    balanced_df=balanced_df.drop('index', axis =1) # devido ao fato de a concatenação estar duplicando o index
+    
+    
+    n1 = balanced_df[balanced_df.Network_Situation_Router_Arrival == 1].shape[0]
+    n2 = balanced_df[balanced_df.Network_Situation_Router_Arrival == 2].shape[0]
+    
+    i = 0
+    while (n1 > n2):
+        
+        print ("(",i,",",n1,",",n2,")")
+       
+        if(balanced_df.iloc[i]['Network_Situation_Router_Arrival'] == 1):
+            balanced_df = balanced_df.drop(balanced_df.index[i])
+            n1 = n1-1;
+            i=i+1
+        elif i < balanced_df.shape[0]-1:
+            i=i+1
+        else:
+            i=0
+    balanced_df.reset_index()
+    balanced_df = balanced_df.sample(frac = 1).reset_index(drop=True)
+    n1 = balanced_df[balanced_df.Network_Situation_Router_Arrival == 1].shape[0]
+    n2 = balanced_df[balanced_df.Network_Situation_Router_Arrival == 2].shape[0]
+    print("bases merged")
+    return balanced_df
+    
+    
+
 class ClientBufferArrival(Client):
     
     def __init__(self,parId,parExperimentPath,parBasePath, parPacketsArrivedRoutherPath):
@@ -527,16 +612,144 @@ class ClientBufferArrival(Client):
         
         self.packetsArrivedRoutherPath = parPacketsArrivedRoutherPath
         
+        
+    def NormalizeFeatures(self, data, parFromFile,par_exp_dir):
+       
+       print("Normalize do roteador!!!")
+       
+       ack_ewma_normalizer=1.0
+       send_ewma_normalizer=1.0
+       min_rtt=1.0
+       rtt_ratio_normalizer=1.0
+       cwnd_normalizer=1.0
+       
+       #Obtendo o RTT Ratio
+    
+       #data['rtt_ratio'] = data['rtt_ratio'].div(264)#264 é o rtt min do fluxo de treinamento.
+        
+       if(parFromFile):
+          ack_ewma_normalizer, send_ewma_normalizer,min_rtt,rtt_ratio_normalizer,cwnd_normalizer = ReadNormalizationFactors(par_exp_dir)
+  
+        
+       else: 
+           ack_ewma_normalizer = data['ack_ewma(ms)'].max()
+           send_ewma_normalizer=data['send_ewma(ms)'].max()
+           min_rtt=data['rtt_ratio'].min()
+           cwnd_normalizer=data['cwnd_(Bytes)'].max()
+
+       data['rtt_ratio'] = data['rtt_ratio'].div(min_rtt)
+       if(not (parFromFile)):
+           rtt_ratio_normalizer = data['rtt_ratio'].max()
+       #data['ack_ewma(ms)'] = data['ack_ewma(ms)'].div(ack_ewma_normalizer)
+       #data['send_ewma(ms)'] = data['send_ewma(ms)'].div(send_ewma_normalizer)       
+       data['rtt_ratio'] = data['rtt_ratio'].div(rtt_ratio_normalizer)
+       #data['cwnd (Bytes)'] = data['cwnd (Bytes)'].div(cwnd_normalizer)
+        
+       if(not parFromFile):
+           file1 = open(par_exp_dir+"/normalization_factors.txt", 'w')
+           file1.writelines("ack_ewma: "+str(ack_ewma_normalizer)+"\n")
+           file1.writelines("send_ewma: "+str(send_ewma_normalizer)+"\n")
+           file1.writelines("rtt_min: "+str(min_rtt)+"\n")
+           file1.writelines("rtt_ratio: "+str(rtt_ratio_normalizer)+"\n")
+           file1.writelines("cwnd_(Bytes): "+str(cwnd_normalizer)+"\n")
+           file1.close()
+    
+       print(ack_ewma_normalizer) 
+       print(send_ewma_normalizer)
+       print(min_rtt)
+       print(rtt_ratio_normalizer)
+       print(cwnd_normalizer) 
+       print("Eis os normalizadores acima")
+       #a=input("Eis os normalizadores acima")
+       #seguir = input("Deseja Prosseguir? (N/n-->Sair)")
+    
+       #if(seguir == 'n' or seguir =='N'):
+         #exit()
+
+
+       return data
+   
+    def DeleteInconsistences(self,data):
+        
+        last_consistent = 0
+        
+        clean_data = data
+        
+        rows_to_be_dropped=[]
+        
+        #print(data.shape[0])
+        
+        for i in range(data.shape[0]):
+            if((data.iloc[last_consistent]['ack_ewma(ms)'] >  data.iloc[i]['ack_ewma(ms)'] or               
+                data.iloc[last_consistent]['send_ewma(ms)'] > data.iloc[i]['send_ewma(ms)'] or
+                data.iloc[last_consistent]['rtt_ratio'] >     data.iloc[i]['rtt_ratio']) and
+                data.iloc[last_consistent]['Last_Router_Ocupation_Router_Arrival_ewma(Packets)']< 
+                data.iloc[i]['Last_Router_Ocupation_Router_Arrival_ewma(Packets)']):
+                
+                rows_to_be_dropped.append(i)
+                
+            elif((data.iloc[last_consistent]['ack_ewma(ms)'] < data.iloc[i]['ack_ewma(ms)'] or               
+                data.iloc[last_consistent]['send_ewma(ms)'] <  data.iloc[i]['send_ewma(ms)'] or
+                data.iloc[last_consistent]['rtt_ratio'] <      data.iloc[i]['rtt_ratio']) and
+                data.iloc[last_consistent]['Last_Router_Ocupation_Router_Arrival_ewma(Packets)']> 
+                data.iloc[i]['Last_Router_Ocupation_Router_Arrival_ewma(Packets)']):
+                    
+                rows_to_be_dropped.append(i)
+                    
+            else:
+                last_consistent = i
+                
+        clean_data = clean_data.drop(labels=rows_to_be_dropped,axis=0)
+        print("base limpa")
+        return clean_data
+        
     def LoadTrainingDataSet(self, parFromFile=False):
         print ("Configurando dados tomados da chegada na fila....")
         
-        base_ack_terminal = pd.read_csv(self.basePath)
         
-        base_packet_router = pd.read_csv(self.packetsArrivedRoutherPath)
         
-        base = pd.merge(base_ack_terminal,base_packet_router, on='#Ack',how='inner')
+       
         
-        base = base.drop_duplicates(subset=['ack_ewma(ms)', 'send_ewma(ms)','rtt_ratio'])
+        base_ack_terminal00 = pd.read_csv(self.basePath)
+        
+        base_ack_terminal01 = pd.read_csv( './Exp_0000038/terminal01.csv')
+        
+        base_ack_terminal02 = pd.read_csv( './Exp_0000038/terminal02.csv')
+        
+        base_ack_terminal03 = pd.read_csv( './Exp_0000038/terminal03.csv')
+        
+        base_packet_router00 = pd.read_csv(self.packetsArrivedRoutherPath)        
+        base_packet_router01 = pd.read_csv( './Exp_0000038/router01.csv')
+        base_packet_router02 = pd.read_csv( './Exp_0000038/router02.csv')
+        base_packet_router03 = pd.read_csv( './Exp_0000038/router03.csv')
+        
+        
+        base_ack_terminal00.columns =  base_ack_terminal00.columns.str.replace(' ','_')
+        base_ack_terminal01.columns =  base_ack_terminal01.columns.str.replace(' ','_')       
+        base_ack_terminal02.columns =  base_ack_terminal02.columns.str.replace(' ','_')
+        base_ack_terminal03.columns =  base_ack_terminal03.columns.str.replace(' ','_')     
+        base_packet_router00.columns = base_packet_router00.columns.str.replace(' ','_')      
+        base_packet_router01.columns = base_packet_router01.columns.str.replace(' ','_')
+        base_packet_router02.columns = base_packet_router02.columns.str.replace(' ','_')
+        base_packet_router03.columns = base_packet_router03.columns.str.replace(' ','_')
+        
+        
+        
+        base = MergeAndConcatBases(base_ack_terminal00,
+                                   base_ack_terminal01,
+                                   base_ack_terminal02,
+                                   base_ack_terminal03,
+                                   base_packet_router00,
+                                   base_packet_router01,
+                                   base_packet_router02,
+                                   base_packet_router03)
+        
+        
+        #base = pd.merge(base_ack_terminal,base_packet_router, on='#Ack',how='inner')
+        
+        base = base.drop_duplicates(subset=['ack_ewma(ms)', 'send_ewma(ms)','rtt_ratio'],keep="last",ignore_index=True)
+        base = self.DeleteInconsistences(base)
+        base = SubtractMin(base)
         base = NormalizeFeatures(base,parFromFile,self.experimentPath)
         previsores = base.iloc[:, [1,2,3]].values        
         classe = base.iloc[:, 13].values
@@ -550,9 +763,9 @@ class ClientBufferArrival(Client):
 
         #print (classe_dummy[363:,:])
         
-        a = input("acima, a Classe dummy. Deseja Prosseguir? ")
-        if (a == 'N' or a == 'n'):
-            exit()
+        #a = input("acima, a Classe dummy. Deseja Prosseguir? ")
+        #if (a == 'N' or a == 'n'):
+            #exit()
 
 
         previsores_treinamento, previsores_teste, classe_treinamento, classe_teste = train_test_split(previsores, classe_dummy, test_size=0.20)
@@ -608,7 +821,7 @@ def EvalueteModelLevarage(parExpDirPath,
 
 #TreinarModelo('./Exp_0000037','./Exp_0000037/05fl-10h-95_60-compatibilizado.csv')
 
-TreinarModeloBufferArrival('./Exp_0000038','./Exp_0000038/10_0_0_2to10_1_0_2_L_Wed Sep 20 09_28_38 .csv', './Exp_0000038/10_0_0_2to10_1_0_2_Wed Sep 20 09_28_38 _training_buffer.csv')
+TreinarModeloBufferArrival('./Exp_0000038','./Exp_0000038/terminal00.csv', './Exp_0000038/router00.csv')
 
 
 
