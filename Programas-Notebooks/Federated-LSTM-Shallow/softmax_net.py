@@ -20,15 +20,17 @@ def ReadNormalizationFactors(par_exp_dir):
        min_rtt = 1.0 
        rtt_ratio_normalizer=1.0
        cwnd_normalizer=1.0
+       
+       line_ref = 3 #criado para sair dos subtratores do SubtractMin()
      
        file1 = open(par_exp_dir+"/normalization_factors.txt", 'r')
        Lines = file1.readlines()
        
-       ack_ewma_normalizer = float(Lines[0].split()[len(Lines[0].split())-1])# split retorna uma lista com as strings da linha que estão separadas por espaço
-       send_ewma_normalizer = float(Lines[1].split()[len(Lines[1].split())-1])
-       min_rtt = float(Lines[2].split()[len(Lines[2].split())-1])
-       rtt_ratio_normalizer=float(Lines[3].split()[len(Lines[3].split())-1])
-       cwnd_normalizer=float(Lines[4].split()[len(Lines[4].split())-1])
+       ack_ewma_normalizer = float(Lines[0+line_ref].split()[len(Lines[0+line_ref].split())-1])# split retorna uma lista com as strings da linha que estão separadas por espaço
+       send_ewma_normalizer = float(Lines[1+line_ref].split()[len(Lines[1+line_ref].split())-1])
+       min_rtt = float(Lines[2+line_ref].split()[len(Lines[2+line_ref].split())-1])
+       rtt_ratio_normalizer=float(Lines[3+line_ref].split()[len(Lines[3+line_ref].split())-1])
+       cwnd_normalizer=float(Lines[4+line_ref].split()[len(Lines[4+line_ref].split())-1])
        
        return ack_ewma_normalizer, send_ewma_normalizer,min_rtt, rtt_ratio_normalizer, cwnd_normalizer
 
@@ -124,7 +126,7 @@ def SubtractMean(data):
     
     data_mean = data.mean(axis=0)
     
-    
+
     
     data['ack_ewma(ms)'] = data['ack_ewma(ms)'] - data_mean['ack_ewma(ms)']
     data['send_ewma(ms)'] = data['send_ewma(ms)']- data_mean ['send_ewma(ms)'] 
@@ -133,14 +135,30 @@ def SubtractMean(data):
     #data['cwnd (Bytes)'] = data['cwnd (Bytes)']-data.mean['cwnd (Bytes)']
     return data
 
-def SubtractMin(data):
+def SubtractMin(data, parFromFile,par_exp_dir):
     
     
+    print(data['ack_ewma(ms)'].min())
+    print(data['send_ewma(ms)'].min())
+    input("Eis os subtratores")
     
-    data['ack_ewma(ms)'] = data['ack_ewma(ms)'] -data['ack_ewma(ms)'].min()
+    data['ack_ewma(ms)'] = data['ack_ewma(ms)'] - data['ack_ewma(ms)'].min()
     data['send_ewma(ms)'] = data['send_ewma(ms)']- data['send_ewma(ms)'].min()
+    '''
+        O -1 abaixo é devido ao fato de o RTT ratio ser dividiod pelo menor.
+        se não tiver o -1, alguns vão zerar e haverá,assim, uma divisão por 
+        zero na hora de se obter o RTT Ratio
+    '''
     data['rtt_ratio'] = data['rtt_ratio']-(data['rtt_ratio'].min()-1)
     #data['cwnd (Bytes)'] = data['cwnd (Bytes)']-data.mean['cwnd (Bytes)']
+    
+    if(not parFromFile):
+        file1 = open(par_exp_dir+"/normalization_factors.txt", 'w')
+        file1.writelines("min_ack_ewma: "+str(data['ack_ewma(ms)'].min())+"\n")
+        file1.writelines("min_send_ewma: "+str(data['send_ewma(ms)'].min())+"\n")
+        file1.writelines("rtt_min: "+str(data['rtt_ratio'].min()-1)+"\n")
+        file1.close()
+    
     return data
         
     
@@ -562,7 +580,7 @@ def MergeAndConcatBases(bt00,
     
     #base01 = base01.drop(base01[base01['Network_Situation_Router_Arrival'] ==1].index).reset_index() #reset_index para colocar os índices na sequencia
     #base02 = base02.drop(base02[base02['Network_Situation_Router_Arrival'] ==1].index).reset_index() #reset_index para colocar os índices na sequencia
-    base03 = base03.drop(base03[base03['Network_Situation_Router_Arrival'] ==1].index).reset_index() #reset_index para colocar os índices na sequencia
+    base03_droped = base03.drop(base03[base03['Network_Situation_Router_Arrival'] ==1].index).reset_index() #reset_index para colocar os índices na sequencia
 
 
     
@@ -575,7 +593,7 @@ def MergeAndConcatBases(bt00,
     #balanced_list = [base02,base00]
     
    # balanced_df = pd.concat(balanced_list)
-    balanced_df= pd.concat([base02,base03],ignore_index=True)
+    balanced_df= pd.concat([base02,base03_droped],ignore_index=True)
     balanced_df=balanced_df.drop('index', axis =1) # devido ao fato de a concatenação estar duplicando o index
     
     
@@ -588,7 +606,7 @@ def MergeAndConcatBases(bt00,
         print ("(",i,",",n1,",",n2,")")
        
         if(balanced_df.iloc[i]['Network_Situation_Router_Arrival'] == 1):
-            balanced_df = balanced_df.drop(balanced_df.index[i])
+            balanced_df.drop(balanced_df.index[i],inplace=True)
             n1 = n1-1;
             i=i+1
         elif i < balanced_df.shape[0]-1:
@@ -596,11 +614,11 @@ def MergeAndConcatBases(bt00,
         else:
             i=0
     balanced_df.reset_index()
-    balanced_df = balanced_df.sample(frac = 1).reset_index(drop=True)
+    balanced_df_sampled = balanced_df.sample(frac = 1).reset_index(drop=True)
     n1 = balanced_df[balanced_df.Network_Situation_Router_Arrival == 1].shape[0]
     n2 = balanced_df[balanced_df.Network_Situation_Router_Arrival == 2].shape[0]
     print("bases merged")
-    return balanced_df
+    return balanced_df_sampled
     
     
 
@@ -699,7 +717,7 @@ class ClientBufferArrival(Client):
             else:
                 last_consistent = i
                 
-        clean_data = clean_data.drop(labels=rows_to_be_dropped,axis=0)
+        clean_data.drop(labels=rows_to_be_dropped,axis=0,inplace=True)
         print("base limpa")
         return clean_data
         
@@ -735,7 +753,7 @@ class ClientBufferArrival(Client):
         
         
         
-        base = MergeAndConcatBases(base_ack_terminal00,
+        base_merged = MergeAndConcatBases(base_ack_terminal00,
                                    base_ack_terminal01,
                                    base_ack_terminal02,
                                    base_ack_terminal03,
@@ -747,10 +765,10 @@ class ClientBufferArrival(Client):
         
         #base = pd.merge(base_ack_terminal,base_packet_router, on='#Ack',how='inner')
         
-        base = base.drop_duplicates(subset=['ack_ewma(ms)', 'send_ewma(ms)','rtt_ratio'],keep="last",ignore_index=True)
-        base = self.DeleteInconsistences(base)
-        base = SubtractMin(base)
-        base = NormalizeFeatures(base,parFromFile,self.experimentPath)
+        base_merged.drop_duplicates(subset=['ack_ewma(ms)', 'send_ewma(ms)','rtt_ratio'],keep="last",ignore_index=True)
+        base_consistent = self.DeleteInconsistences(base_merged)
+        #base = SubtractMin(base,parFromFile,self.experimentPath)
+        base = NormalizeFeatures(base_consistent,parFromFile,self.experimentPath)
         previsores = base.iloc[:, [1,2,3]].values        
         classe = base.iloc[:, 13].values
         
@@ -821,7 +839,7 @@ def EvalueteModelLevarage(parExpDirPath,
 
 #TreinarModelo('./Exp_0000037','./Exp_0000037/05fl-10h-95_60-compatibilizado.csv')
 
-TreinarModeloBufferArrival('./Exp_0000038','./Exp_0000038/terminal00.csv', './Exp_0000038/router00.csv')
+#TreinarModeloBufferArrival('./Exp_0000038','./Exp_0000038/terminal00.csv', './Exp_0000038/router00.csv')
 
 
 
