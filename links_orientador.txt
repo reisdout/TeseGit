@@ -2,3 +2,6 @@ https://github.com/EricssonResearch/scream
 novo trabalho da ericcson
 
 
+https://www.promptingguide.ai/
+
+https://diablobench.github.io/
