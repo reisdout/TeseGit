@@ -3,6 +3,11 @@ Testando com 80% para os newSample
 
 float expWeightExpon = 80.0/100.0;//95.0/100.0;//sampleRTT = (1-weightExpon)sampleRTT+weightExpon*RTT
 
+melhorou bem....
+
+[530  6
+ 23  350]
+
 
 #############################DATAMINING##########################################################################################
 
