@@ -31,7 +31,7 @@ class ClientBufferArrival(Client):
         if(len (parLstBasesTerminalsPaths) != len(parLstBasesRoutersPaths)):
             print("Listas com quantidades incompatíveis")
             exit(0);
-        
+        self.minRTT=1;
         self.lstBaseTerminalsPath = parLstBasesTerminalsPaths
         self.lstBaseRoutersPath = parLstBasesRoutersPaths
         #self.previsores_treinamento=[]
@@ -51,27 +51,30 @@ class ClientBufferArrival(Client):
         lstBaseTerminals=[]
         lstBaseRouters=[]
         
+        print(self.lstBaseTerminalsPath)
+        
+        #df = pd.read_csv(self.lstBaseTerminalsPath[0])
+        
         for i in range(len(self.lstBaseRoutersPath)):        
             lstBaseTerminals.append(pd.read_csv(self.lstBaseTerminalsPath[i],dtype={
-                '#Ack': 'int64',
-                'ack_ewma(ms)': 'float64',
-                'send_ewma(ms)': 'float64',
-                'rtt_ratio': 'float64',
-                'cwnd (Bytes)':'int32',
-                'Last Router Ocupation Ack Arriaval(Packets)':'float64',
-                'Last Router Ocupation Packet Sent(Packets)':'float64',
+                '#Ack': 'int',
+                'ack_ewma(ms)': 'float',
+                'send_ewma(ms)': 'float',
+                'rtt_ratio': 'float',
+                'cwnd (Bytes)':'int',
+                'Last Router Ocupation Ack Arriaval(Packets)':'float',
+                'Last Router Ocupation Packet Sent(Packets)':'float',
                 'Network Situation':'int',
-                'AckArrival(ms)':'int64',
-                'TSInsideAck(ms)':'int64',
-                'RTTAck(ms)':'int64'}))    
-                
+                'AckArrival(ms)':'int',
+                'TSInsideAck(ms)':'int',
+                'RTTAck(ms)':'int'}))         
                 
             lstBaseRouters.append(pd.read_csv(self.lstBaseRoutersPath[i],dtype={
-                '#Ack': 'int64',
-                'Last Router Ocupation Router Arrival(Packets)': 'float64',
-                'Last Router Ocupation Router Arrival_ewma(Packets)': 'float64',
+                '#Ack': 'int',
+                'Last Router Ocupation Router Arrival(Packets)': 'float',
+                'Last Router Ocupation Router Arrival_ewma(Packets)': 'float',
                 'Network Situation Router Arrival': 'int',
-                'Measure Time':'int64'}))
+                'Measure Time':'int'}))
         
         for i in range(len(self.lstBaseTerminalsPath)):
             
@@ -80,7 +83,7 @@ class ClientBufferArrival(Client):
          
         
         
-        base_merged = mrs.MergeAndConcatBases(lstBaseTerminals,lstBaseRouters)
+        base_merged, self.minRTT = mrs.MergeAndConcatBases(lstBaseTerminals,lstBaseRouters)
         
         
         #base = pd.merge(base_ack_terminal,base_packet_router, on='#Ack',how='inner')
@@ -88,9 +91,12 @@ class ClientBufferArrival(Client):
         base_merged.drop_duplicates(subset=['ack_ewma(ms)', 'send_ewma(ms)','rtt_ratio'],keep="last",ignore_index=True)
         base_consistent = mrs.DeleteInconsistences(base_merged)
         #base = mrs.SubtractMin(base_consistent,parFromFile,self.experimentPath)
-        base = mrs.NormalizeFeatures(base_consistent,parFromFile,self.experimentPath)
-        previsores = base.iloc[:, [1,2,3]].values        
-        classe = base.iloc[:, 13].values
+        baseTile = mrs.TileBase(base_consistent)
+        baseNor = mrs.NormalizeFeatures(baseTile,parFromFile,self.experimentPath,self.minRTT)
+        baseNor.to_csv(self.experimentPath+'/finalbaseDebugPrevision.csv',sep=',',index=False,encoding='utf-8')
+       
+        previsores = baseNor.iloc[:, [1,2,3]].values        
+        classe = baseNor.iloc[:, 13].values
         
         labelencoder = LabelEncoder()
         classe = labelencoder.fit_transform(classe)

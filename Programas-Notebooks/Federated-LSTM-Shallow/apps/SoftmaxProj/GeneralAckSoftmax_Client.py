@@ -172,13 +172,13 @@ class Client():
 
         #classificador.compile(optimizer = 'adam', loss = 'binary_crossentropy',
         #                      metrics = ['binary_accuracy'])
-        print("treinando...com 64 de bach-size e 1000 épocas")
+        print("treinando...com 512 de bach-size e 3000 épocas")
         #classificador.fit(previsores_treinamento, classe_treinamento,batch_size = 512, epochs = 100,verbose=0,callbacks=[LoggingCallback(parExpDir=".")])
 
         classificador.fit(self.previsores_treinamento, 
                           self.classe_treinamento, 
-                          batch_size = 128, 
-                          epochs = 1000,
+                          batch_size = 512, 
+                          epochs = 3000,
                           verbose=0)
         self.weightsClientModel = classificador.get_weights()
       else:

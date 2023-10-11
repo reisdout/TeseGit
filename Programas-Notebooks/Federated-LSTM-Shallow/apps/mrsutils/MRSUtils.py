@@ -10,6 +10,7 @@ Created on Fri Sep 29 11:08:28 2023
 from sys import exit
 import pandas as pd
 import seaborn as sns; sns.set()
+import os
 
 def ReadNormalizationFactors(par_exp_dir):
        
@@ -33,7 +34,7 @@ def ReadNormalizationFactors(par_exp_dir):
        return ack_ewma_normalizer, send_ewma_normalizer,min_rtt, rtt_ratio_normalizer, cwnd_normalizer
 
 
-def NormalizeFeatures(data, parFromFile,par_exp_dir):
+def NormalizeFeatures(data, parFromFile,par_exp_dir,parMinRtt=1.0):
        
        ack_ewma_normalizer=1.0
        send_ewma_normalizer=1.0
@@ -52,7 +53,7 @@ def NormalizeFeatures(data, parFromFile,par_exp_dir):
        else: 
            ack_ewma_normalizer = data['ack_ewma(ms)'].max()
            send_ewma_normalizer=data['send_ewma(ms)'].max()
-           min_rtt=data['rtt_ratio'].min()
+           min_rtt=parMinRtt
            cwnd_normalizer=data['cwnd_(Bytes)'].max()
 
        data['rtt_ratio'] = data['rtt_ratio'].div(min_rtt)
@@ -225,8 +226,8 @@ def MergeAndConcatBases(parLstBaseTerninais, parLstBaseRouter):
     
     lstMergedBases=[]
     
-    lstFeaturesMapeadas1Amount=[]
-    lstFeaturesMapeadas2Amount=[]
+    #lstFeaturesMapeadas1Amount=[]
+    #lstFeaturesMapeadas2Amount=[]
     
     
     for i in range (len(parLstBaseRouter)):
@@ -235,18 +236,20 @@ def MergeAndConcatBases(parLstBaseTerninais, parLstBaseRouter):
     #n1=lstMergedBases[0][lstMergedBases[0].Network_Situation_Router_Arrival == 1].shape[0] #features em 1 no arquivo 1
     n1=0;
     n2=0 #seria todas as features levadas em 2 nos arquivos
-    
+    '''
     for i in range (len(lstMergedBases)):
         lstFeaturesMapeadas1Amount.append(lstMergedBases[i][lstMergedBases[i].Network_Situation_Router_Arrival == 1].shape[0])
         lstFeaturesMapeadas2Amount.append(lstMergedBases[i][lstMergedBases[i].Network_Situation_Router_Arrival == 2].shape[0])
     
    
+   
     
     for i in range (1,len(lstMergedBases)):
         lstMergedBases[i].drop(lstMergedBases[i][lstMergedBases[i]['Network_Situation_Router_Arrival'] ==1].index,inplace=True)
-    
+    '''
 
     balanced_base = pd.concat(lstMergedBases,ignore_index=True)
+    min_rtt = balanced_base['rtt_ratio'].min()
     
     n1 = balanced_base[balanced_base.Network_Situation_Router_Arrival == 1].shape[0]
     n2 = balanced_base[balanced_base.Network_Situation_Router_Arrival == 2].shape[0]
@@ -256,7 +259,7 @@ def MergeAndConcatBases(parLstBaseTerninais, parLstBaseRouter):
     if(n1 > n2):
         while (n1 > n2):
             
-            #print ("(",i,",",n1,",",n2,")")
+            print ("(",i,",",n1,",",n2,")")
             
             if(i >= balanced_base.shape[0]):
                 i=0;
@@ -273,7 +276,7 @@ def MergeAndConcatBases(parLstBaseTerninais, parLstBaseRouter):
     elif(n2 > n1):
         while (n2 > n1):
             
-            #print ("(",i,",",n1,",",n2,")")
+            print ("(",i,",",n1,",",n2,")")
             
             if(i >= balanced_base.shape[0]):
                 i=0;
@@ -296,9 +299,60 @@ def MergeAndConcatBases(parLstBaseTerninais, parLstBaseRouter):
     n1 = balanced_base[balanced_base.Network_Situation_Router_Arrival == 1].shape[0]
     n2 = balanced_base[balanced_base.Network_Situation_Router_Arrival == 2].shape[0]
     print("bases merged")
-    return balanced_base_sampled
+    return balanced_base_sampled, min_rtt
+
+
+def TileBase(data):
+    
+    rttTile = data['rtt_ratio'].quantile(0.9)
+    ackTile = data['ack_ewma(ms)'].quantile(0.8)
+    sendTile = data['send_ewma(ms)'].quantile(0.8)
+    
+    '''
+    dataRTT_Tile = data.drop(data[data['rtt_ratio']> rttTile].index)
+    dataAckTile = data.drop(data[data['ack_ewma(ms)'] > ackTile].index)
+    dataSendTile = data.drop(data[data['send_ewma(ms)'] > sendTile].index)
+    dataTileConcat = pd.concat([dataRTT_Tile,dataAckTile,dataSendTile],ignore_index=True)
+    dataTileConcat.drop_duplicates(subset=['ack_ewma(ms)', 'send_ewma(ms)','rtt_ratio'],keep="last",ignore_index=True,inplace=True)
+    return dataTileConcat
+    '''
+    data.drop(data[data['rtt_ratio']> rttTile].index,inplace=True)
+    data.drop(data[data['ack_ewma(ms)'] > ackTile].index,inplace=True)
+    data.drop(data[data['send_ewma(ms)'] > sendTile].index,inplace=True)
+    data.reset_index(drop=True,inplace=True)
+    return data
+
+
+def RenameFile(parExpPath):
+   
+
+   
+    files = os.listdir(parExpPath)
     
     
+    router_count =1
+    terminal_count=1
+    files.sort()
+
+    for file in files:
+        if 'buffer' in  file:
+            print("Renomeando ", file)
+            os.rename(os.path.join(parExpPath, file), os.path.join(parExpPath,'router'+str(router_count).zfill(2)+'.csv'))
+            router_count = router_count+1
+            
+        else:
+            print("Renomeando ", file)
+            os.rename(os.path.join(parExpPath, file), os.path.join(parExpPath,'terminal'+str(terminal_count).zfill(2)+'.csv'))
+            terminal_count = terminal_count+1
+        
+        
+        
+        
+        
+        
+        
 
 
-
+        
+        
+        
