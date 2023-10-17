@@ -1,0 +1,11 @@
+#Ack,ack_ewma(ms),send_ewma(ms),rtt_ratio,cwnd_(Bytes),Last_Router_Ocupation_Ack_Arriaval(Packets),Last_Router_Ocupation_Packet_Sent(Packets),Network_Situation,AckArrival(ms),TSInsideAck(ms),RTTAck(ms),Last_Router_Ocupation_Router_Arrival(Packets),Last_Router_Ocupation_Router_Arrival_ewma(Packets),Network_Situation_Router_Arrival,Measure_Time
+59808001,0.704381720375477,0.755264205698359,0.917322834645669,0.00401279556352628,0.290155,0.27,1,893777,893311,466,0.24,0.239255,1,893355
+20062681,0.48726088114017,0.6194591842204,0.895669291338583,0.00589104692130601,0.211827,0.29,1,197567,197112,455,0.3,0.291731,1,197142
+79543821,0.654205626469566,0.589382384244902,0.913385826771653,0.00638213708805535,0.405935,0.23,1,1076368,1075904,464,0.28,0.26932,1,1075944
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,508,,,,,,,,,,,
+,0.895669291338583,,,,,,,,,,,,,
+,0.828740157480314,,,,,,,,,,,,,
+,1,,,,,,,,,,,,,

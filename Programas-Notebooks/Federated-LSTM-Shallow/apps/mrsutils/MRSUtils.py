@@ -62,6 +62,8 @@ def NormalizeFeatures(data, parFromFile,par_exp_dir,parMinRtt=1.0):
        data['ack_ewma(ms)'] = data['ack_ewma(ms)'].div(ack_ewma_normalizer)
        data['send_ewma(ms)'] = data['send_ewma(ms)'].div(send_ewma_normalizer)       
        data['rtt_ratio'] = data['rtt_ratio'].div(rtt_ratio_normalizer)
+       #data['rtt_ratio'] -=1
+       
        data['cwnd_(Bytes)'] = data['cwnd_(Bytes)'].div(cwnd_normalizer)
         
        if(not parFromFile):
@@ -305,8 +307,8 @@ def MergeAndConcatBases(parLstBaseTerninais, parLstBaseRouter):
 def TileBase(data):
     
     rttTile = data['rtt_ratio'].quantile(0.9)
-    ackTile = data['ack_ewma(ms)'].quantile(0.8)
-    sendTile = data['send_ewma(ms)'].quantile(0.8)
+    ackTile = data['ack_ewma(ms)'].quantile(0.7)
+    sendTile = data['send_ewma(ms)'].quantile(0.7)
     
     '''
     dataRTT_Tile = data.drop(data[data['rtt_ratio']> rttTile].index)
@@ -333,6 +335,7 @@ def RenameFile(parExpPath):
     router_count =1
     terminal_count=1
     files.sort()
+    print (files)
 
     for file in files:
         if 'buffer' in  file:
@@ -340,10 +343,13 @@ def RenameFile(parExpPath):
             os.rename(os.path.join(parExpPath, file), os.path.join(parExpPath,'router'+str(router_count).zfill(2)+'.csv'))
             router_count = router_count+1
             
-        else:
+        elif ".csv" in file:
             print("Renomeando ", file)
             os.rename(os.path.join(parExpPath, file), os.path.join(parExpPath,'terminal'+str(terminal_count).zfill(2)+'.csv'))
             terminal_count = terminal_count+1
+            
+        else:
+            print(file, " --> nao renomeado");
         
         
         

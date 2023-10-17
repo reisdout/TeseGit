@@ -92,16 +92,17 @@ se fazer o mege posterior.
 
 """
 
-lstTermianlsPath=['../../Exp_0000043/terminal01.csv',
-                  '../../Exp_0000043/terminal02.csv',
-                  '../../Exp_0000043/terminal03.csv',
-                  '../../Exp_0000043/terminal04.csv',
-                  '../../Exp_0000043/terminal05.csv',
-                  '../../Exp_0000043/terminal06.csv',
-                  '../../Exp_0000043/terminal07.csv',
-                  '../../Exp_0000043/terminal08.csv',
-                  '../../Exp_0000043/terminal09.csv',
-                  '../../Exp_0000043/terminal10.csv']
+lstTermianlsPath=['../../Exp_0000046/terminal01.csv',
+                  '../../Exp_0000046/terminal02.csv',
+                  '../../Exp_0000046/terminal03.csv',
+                  '../../Exp_0000046/terminal04.csv',
+                  '../../Exp_0000046/terminal05.csv',
+                  '../../Exp_0000046/terminal06.csv',
+                  '../../Exp_0000046/terminal07.csv',
+                  '../../Exp_0000046/terminal08.csv',
+                  '../../Exp_0000046/terminal09.csv',
+                  '../../Exp_0000046/terminal10.csv',
+                  '../../Exp_0000046/terminal11.csv']
 '''
                   '../../Exp_0000039/terminal03.csv',
                   '../../Exp_0000039/terminal04.csv',
@@ -121,16 +122,17 @@ lstTermianlsPath=['../../Exp_0000043/terminal01.csv',
 
 '''
 
-lstRouterPath=['../../Exp_0000043/router01.csv',
-               '../../Exp_0000043/router02.csv' ,
-               '../../Exp_0000043/router03.csv',
-               '../../Exp_0000043/router04.csv',
-               '../../Exp_0000043/router05.csv',
-               '../../Exp_0000043/router06.csv',
-               '../../Exp_0000043/router07.csv',
-               '../../Exp_0000043/router08.csv',
-               '../../Exp_0000043/router09.csv',
-               '../../Exp_0000043/router10.csv']
+lstRouterPath=['../../Exp_0000046/router01.csv',
+               '../../Exp_0000046/router02.csv' ,
+               '../../Exp_0000046/router03.csv',
+               '../../Exp_0000046/router04.csv',
+               '../../Exp_0000046/router05.csv',
+               '../../Exp_0000046/router06.csv',
+               '../../Exp_0000046/router07.csv',
+               '../../Exp_0000046/router08.csv',
+               '../../Exp_0000046/router09.csv',
+               '../../Exp_0000046/router10.csv',
+               '../../Exp_0000046/router11.csv']
 '''               
                ,
                '../../Exp_0000039/router03.csv',
@@ -150,7 +152,7 @@ lstRouterPath=['../../Exp_0000043/router01.csv',
 
 '''
 
-TreinarModeloBufferArrival('../../Exp_0000043','../../Exp_0000043/terminal00.csv', lstTermianlsPath,lstRouterPath)
+TreinarModeloBufferArrival('../../Exp_0000046','../../Exp_0000046/terminal00.csv', lstTermianlsPath,lstRouterPath)
 
 
 
