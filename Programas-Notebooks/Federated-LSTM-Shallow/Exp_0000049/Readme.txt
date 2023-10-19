@@ -1,14 +1,23 @@
-Aumentando a margem de segurança 40X80
+Aumentando a margem de segurança 40X70
 
 
-if(router_queue_ewma <= 40)
+if(router_queue_ewma <= 40 && Samples1 < max1Samples )
+  {
     networkSituation = 1;
+    get_1sample_interval = 0;
+    srand((unsigned) time(0)+rand());
+    flagToGet1Sample = rand()%20;
+      
+  }
 
-  else if(router_queue_ewma >= 80)
+  else if(router_queue_ewma >= 70 && Samples2 < max2Samples)
+  {
     networkSituation = 2;
-
-
-
+    get_2sample_interval = 0;    
+    srand((unsigned) time(0)+rand());
+    flagToGet2Sample = rand()%20;
+    
+  }
 
 
 td::string expBottleNeck = "2Mb"; //destination nodes link speed. Must be set in model flow
@@ -34,13 +43,16 @@ double expPacketSentSchedule = 2.0;
 
 conclusões
 
-O resultado ficou muito bom, confirmando que a construção de um intervalo entre os níveis, ajuda bastante o treinamento e a conseguinte
-obtenção do modelo
+Ficou ótimo
 
-[[1682   20]
- [  73 1043]]
+[[234   1]
+ [ 17 208]
 
-Vamos veriifcar 50 X 70;
+
+Posteriormente foi retirado o DeleteInconsistence. Os resultados permaneceram bons!!!
+
+[[560  51]
+ [ 38 778]]
 #############################DATAMINING##########################################################################################
 
 

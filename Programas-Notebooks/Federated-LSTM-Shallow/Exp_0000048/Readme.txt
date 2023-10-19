@@ -1,11 +1,13 @@
-Aumentando a margem de segurança 40X80
+Aumentando a margem de segurança 60X70
 
 
-if(router_queue_ewma <= 40)
+if(router_queue_ewma <= 60)
     networkSituation = 1;
 
-  else if(router_queue_ewma >= 80)
+  else if(router_queue_ewma >= 70)
     networkSituation = 2;
+  else
+    return;
 
 
 
@@ -34,13 +36,13 @@ double expPacketSentSchedule = 2.0;
 
 conclusões
 
-O resultado ficou muito bom, confirmando que a construção de um intervalo entre os níveis, ajuda bastante o treinamento e a conseguinte
-obtenção do modelo
+Ficou , no nível 2 , próximoaos 10%, o que não é tão ruim....
 
-[[1682   20]
- [  73 1043]]
+[[1843   28]
+ [ 152 1107]]
 
-Vamos veriifcar 50 X 70;
+[[1772   18]
+ [ 203 1137]]
 #############################DATAMINING##########################################################################################
 
 

@@ -28,6 +28,9 @@ class ClientBufferArrival(Client):
     
     def __init__(self,parId,parExperimentPath,parBasePath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths):
            
+        print(parLstBasesTerminalsPaths)
+        print(parLstBasesRoutersPaths)
+        input()
         if(len (parLstBasesTerminalsPaths) != len(parLstBasesRoutersPaths)):
             print("Listas com quantidades incompatíveis")
             exit(0);
@@ -54,7 +57,9 @@ class ClientBufferArrival(Client):
         print(self.lstBaseTerminalsPath)
         
         #df = pd.read_csv(self.lstBaseTerminalsPath[0])
-        
+        '''
+        mrs
+        '''
         for i in range(len(self.lstBaseRoutersPath)):        
             lstBaseTerminals.append(pd.read_csv(self.lstBaseTerminalsPath[i],dtype={
                 '#Ack': 'int',
@@ -84,16 +89,19 @@ class ClientBufferArrival(Client):
         
         
         base_merged, self.minRTT = mrs.MergeAndConcatBases(lstBaseTerminals,lstBaseRouters)
+        '''
+        mrs
+        '''
         
-        
-        #base = pd.merge(base_ack_terminal,base_packet_router, on='#Ack',how='inner')
-        
+                
         base_merged.drop_duplicates(subset=['ack_ewma(ms)', 'send_ewma(ms)','rtt_ratio'],keep="last",ignore_index=True)
-        base_consistent = mrs.DeleteInconsistences(base_merged)
+        #base_consistent = mrs.DeleteInconsistences(base_merged)
         #base = mrs.SubtractMin(base_consistent,parFromFile,self.experimentPath)
-        baseTile = mrs.TileBase(base_consistent)
+        #baseTile = mrs.TileBase(base_consistent)
+        baseTile = mrs.TileBase(base_merged)
         baseNor = mrs.NormalizeFeatures(baseTile,parFromFile,self.experimentPath,self.minRTT)
         baseNor.to_csv(self.experimentPath+'/finalbaseDebugPrevision.csv',sep=',',index=False,encoding='utf-8')
+        ####baseNor = pd.read_csv(self.experimentPath+'/finalbaseDebugPrevision.csv')
        
         previsores = baseNor.iloc[:, [1,2,3]].values        
         classe = baseNor.iloc[:, 13].values

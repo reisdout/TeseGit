@@ -1,5 +1,7 @@
 Testando com 80%, inclusive para o roteador
 
+Intervalo de segurança 55X70
+
 
 td::string expBottleNeck = "2Mb"; //destination nodes link speed. Must be set in model flow
 //float expWeightExpon = 1.0/8.0;//sampleRTT = (1-weightExpon)sampleRTT+weightExpon*RTT
