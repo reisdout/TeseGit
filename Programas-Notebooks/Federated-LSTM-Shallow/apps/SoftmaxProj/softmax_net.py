@@ -1,6 +1,7 @@
 
 from GeneralAckSoftmax_Client import Client  
 from FromRouterSoftmax_Client import ClientBufferArrival
+import os
 
 
 
@@ -43,7 +44,10 @@ def TreinarModelo(parExpDirPath, parBasePath):
 #TreinarModelo('./Exp_0000037','./Exp_0000037/05fl-10h-95_60-compatibilizado.csv')
 
 
-
+'''
+ parExpDirPath -> Onde se salva o modelo, no caso de treinamento, ou de onde 
+ se carega os pesos no sado de aderencia
+'''
 
 def TreinarModeloBufferArrival(parExpDirPath, parBasePath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths):
     
@@ -70,10 +74,10 @@ def TreinarModeloBufferArrival(parExpDirPath, parBasePath,parLstBasesTerminalsPa
     
     '''
 
-def EvalueteModelLevarage(parExpDirPath,
-                          parBasePath):
+def EvalueteModelLevarage(parExpDirPath, parBasePath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths):
     
-    client01 = Client(0,parExpDirPath,parBasePath)
+    #client01 = Client(0,parExpDirPath,parBasePath)
+    client01 = ClientBufferArrival(0,parExpDirPath,parBasePath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths)
     client01.AderenciaOutrosFluxos()
 
 
@@ -92,27 +96,58 @@ se fazer o mege posterior.
 
 """
 
-lstTermianlsPath=['../../Exp_0000049/terminal01.csv',
-                  '../../Exp_0000049/terminal02.csv',
-                  '../../Exp_0000049/terminal03.csv',
-                  '../../Exp_0000049/terminal04.csv',
-                  '../../Exp_0000049/terminal05.csv',
-                  '../../Exp_0000049/terminal06.csv',
-                  '../../Exp_0000049/terminal07.csv',
-                  '../../Exp_0000049/terminal08.csv',
-                  '../../Exp_0000049/terminal09.csv',
-                  '../../Exp_0000049/terminal10.csv',
-                  '../../Exp_0000049/terminal11.csv',
-                  '../../Exp_0000049/terminal12.csv',
-                  '../../Exp_0000049/terminal13.csv',
-                  '../../Exp_0000049/terminal14.csv',
-                  '../../Exp_0000049/terminal15.csv',
-                  '../../Exp_0000049/terminal16.csv',
-                  '../../Exp_0000049/terminal17.csv',
-                  '../../Exp_0000049/terminal18.csv',
-                  '../../Exp_0000049/terminal19.csv',
-                  '../../Exp_0000049/terminal20.csv']
+experimentDataPath = '../../Exp_0000054'
+
+files = os.listdir(experimentDataPath)
+
+lstTermianlsPath=[]
+lstRouterPath=[]
+    
+    
+files.sort()
+print (files)
+input()
+
+for file in files:
+    
+    if 'terminal' in  file:
+        print("Adicionando aos Terminais", file)
+        lstTermianlsPath.append(os.path.join(experimentDataPath, file))
+
+        
+    elif "router" in file:
+        print("Adicionando aos roteadores", file)
+        lstRouterPath.append(os.path.join(experimentDataPath, file))
+ 
+        
+    else:
+        print(file, " --> nao Adicionado");
+    
+    
 '''
+lstTermianlsPath=['../../Exp_0000050/terminal01.csv',
+                  '../../Exp_0000050/terminal02.csv',
+                  '../../Exp_0000050/terminal03.csv',
+                  '../../Exp_0000050/terminal04.csv',
+                  '../../Exp_0000050/terminal05.csv',
+                  '../../Exp_0000050/terminal06.csv',
+                  '../../Exp_0000050/terminal07.csv',
+                  '../../Exp_0000050/terminal08.csv',
+                  '../../Exp_0000050/terminal09.csv',
+                  '../../Exp_0000050/terminal10.csv']
+
+
+                  '../../Exp_0000050/terminal11.csv',
+                  '../../Exp_0000050/terminal12.csv',
+                  '../../Exp_0000050/terminal13.csv',
+                  '../../Exp_0000050/terminal14.csv',
+                  '../../Exp_0000050/terminal15.csv',
+                  '../../Exp_0000050/terminal16.csv',
+                  '../../Exp_0000050/terminal17.csv',
+                  '../../Exp_0000050/terminal18.csv',
+                  '../../Exp_0000050/terminal19.csv',
+                  '../../Exp_0000050/terminal20.csv']
+
                   '../../Exp_0000039/terminal03.csv',
                   '../../Exp_0000039/terminal04.csv',
                   '../../Exp_0000039/terminal05.csv',
@@ -129,29 +164,31 @@ lstTermianlsPath=['../../Exp_0000049/terminal01.csv',
                   '../../Exp_0000039/terminal16.csv']
 
 
-'''
 
-lstRouterPath=['../../Exp_0000049/router01.csv',
-               '../../Exp_0000049/router02.csv' ,
-               '../../Exp_0000049/router03.csv',
-               '../../Exp_0000049/router04.csv',
-               '../../Exp_0000049/router05.csv',
-               '../../Exp_0000049/router06.csv',
-               '../../Exp_0000049/router07.csv',
-               '../../Exp_0000049/router08.csv',
-               '../../Exp_0000049/router09.csv',
-               '../../Exp_0000049/router10.csv',
-               '../../Exp_0000049/router11.csv',
-               '../../Exp_0000049/router12.csv',
-               '../../Exp_0000049/router13.csv',
-               '../../Exp_0000049/router14.csv',
-               '../../Exp_0000049/router15.csv',
-               '../../Exp_0000049/router16.csv',
-               '../../Exp_0000049/router17.csv',
-               '../../Exp_0000049/router18.csv',
-               '../../Exp_0000049/router19.csv',
-               '../../Exp_0000049/router20.csv']
-'''               
+
+lstRouterPath=['../../Exp_0000050/router01.csv',
+               '../../Exp_0000050/router02.csv' ,
+               '../../Exp_0000050/router03.csv',
+               '../../Exp_0000050/router04.csv',
+               '../../Exp_0000050/router05.csv',
+               '../../Exp_0000050/router06.csv',
+               '../../Exp_0000050/router07.csv',
+               '../../Exp_0000050/router08.csv',
+               '../../Exp_0000050/router09.csv',
+               '../../Exp_0000050/router10.csv']
+
+             
+                            
+               '../../Exp_0000050/router11.csv',
+               '../../Exp_0000050/router12.csv',
+               '../../Exp_0000050/router13.csv',
+               '../../Exp_0000050/router14.csv',
+               '../../Exp_0000050/router15.csv',
+               '../../Exp_0000050/router16.csv',
+               '../../Exp_0000050/router17.csv',
+               '../../Exp_0000050/router18.csv',
+               '../../Exp_0000050/router19.csv',
+               '../../Exp_0000050/router20.csv']
                ,
                '../../Exp_0000039/router03.csv',
                '../../Exp_0000039/router04.csv',
@@ -170,7 +207,7 @@ lstRouterPath=['../../Exp_0000049/router01.csv',
 
 '''
 
-TreinarModeloBufferArrival('../../Exp_0000049','../../Exp_0000049/terminal00.csv', lstTermianlsPath,lstRouterPath)
+#TreinarModeloBufferArrival('../../Exp_0000049','../../Exp_0000049/terminal00.csv', lstTermianlsPath,lstRouterPath)
 
 
-
+EvalueteModelLevarage('../../Exp_0000049','../../Exp_0000049/terminal00.csv', lstTermianlsPath,lstRouterPath)

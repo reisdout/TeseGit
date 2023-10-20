@@ -220,7 +220,7 @@ class Client():
   
 
         from sklearn.metrics import confusion_matrix
-        matriz = confusion_matrix(previsoes2, classe_teste2)
+        matriz = confusion_matrix(classe_teste2,previsoes2)
         print(matriz)
         to_heat_map =[[matriz[0,0],matriz[0,1]],[matriz[1,0],matriz[1,1]]]
         to_heat_map = pd.DataFrame(to_heat_map, index = ["Hit","Fail"],columns = ["Fail","Hit"])

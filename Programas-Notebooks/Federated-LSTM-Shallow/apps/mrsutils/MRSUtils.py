@@ -20,7 +20,7 @@ def ReadNormalizationFactors(par_exp_dir):
        rtt_ratio_normalizer=1.0
        cwnd_normalizer=1.0
        
-       line_ref = 3 #criado para sair dos subtratores do SubtractMin()
+       line_ref = 0 #criado para sair dos subtratores do SubtractMin()
      
        file1 = open(par_exp_dir+"/normalization_factors.txt", 'r')
        Lines = file1.readlines()
@@ -325,15 +325,15 @@ def TileBase(data):
     return data
 
 
-def RenameFile(parExpPath):
+def RenameFile(parExpPath, parInicialCount=1):
    
 
    
     files = os.listdir(parExpPath)
     
     
-    router_count =1
-    terminal_count=1
+    router_count =parInicialCount
+    terminal_count=parInicialCount
     files.sort()
     print (files)
 
@@ -343,7 +343,7 @@ def RenameFile(parExpPath):
             os.rename(os.path.join(parExpPath, file), os.path.join(parExpPath,'router'+str(router_count).zfill(2)+'.csv'))
             router_count = router_count+1
             
-        elif ".csv" in file:
+        elif "10_" in file:
             print("Renomeando ", file)
             os.rename(os.path.join(parExpPath, file), os.path.join(parExpPath,'terminal'+str(terminal_count).zfill(2)+'.csv'))
             terminal_count = terminal_count+1
