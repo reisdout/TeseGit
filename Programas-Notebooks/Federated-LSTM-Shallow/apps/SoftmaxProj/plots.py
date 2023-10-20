@@ -10,9 +10,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-time = np.array([0,0.003,0.006,0.0126])
-fpr = np.array([ 0, 0.0106194690265487, 0.0126050420168067, 0.0108695652173913])
-tpr = np.array([1, 1, 0.994715984147952, 0.996268656716418])
+time = np.array([0,0.001,0.003,0.006,0.0126])
+fpr = np.array([ 0, 0.0106194690265487, 0.0126050420168067, 0.0108695652173913,0.00754716981132076])
+tpr = np.array([1, 1, 0.994715984147952, 0.996268656716418,1])
 
 # Initialize figure and axis
 fig, ax = plt.subplots(figsize=(5, 5))

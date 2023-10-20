@@ -233,6 +233,7 @@ def MergeAndConcatBases(parLstBaseTerninais, parLstBaseRouter):
     
     
     for i in range (len(parLstBaseRouter)):
+        print("Merge ", i)
         lstMergedBases.append(pd.merge(parLstBaseTerninais[i],parLstBaseRouter[i], on='#Ack',how='inner'))
     
     #n1=lstMergedBases[0][lstMergedBases[0].Network_Situation_Router_Arrival == 1].shape[0] #features em 1 no arquivo 1
