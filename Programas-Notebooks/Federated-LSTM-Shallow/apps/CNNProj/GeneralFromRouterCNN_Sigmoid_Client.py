@@ -77,8 +77,8 @@ class ClientBufferArrivaCNN(Client):
     def GetModel(self):
         
        regressor = Sequential()
-       regressor.add(Conv2D(16,(2,2),input_shape=(3,3,1),activation="relu"))
-       regressor.add(MaxPooling2D(pool_size=(2,2),padding='same'))
+       regressor.add(Conv2D(16,(1,3),input_shape=(3,3,1),activation="relu"))
+       regressor.add(MaxPooling2D(pool_size=(1,2),padding='same'))
        regressor.add(Flatten())       
       
        regressor.add(Dense(units = 64, activation = 'relu')) #para uma previsão
