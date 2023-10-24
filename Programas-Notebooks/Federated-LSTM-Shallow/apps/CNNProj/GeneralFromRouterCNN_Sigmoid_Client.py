@@ -46,9 +46,9 @@ class ClientBufferArrivaCNN(Client):
 
     def __init__(self,parId,parExperimentPath,parBasePath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths, parFeaturesWindow):
            
-        print(parLstBasesTerminalsPaths)
-        print(parLstBasesRoutersPaths)
-        input()
+        #print(parLstBasesTerminalsPaths)
+        #print(parLstBasesRoutersPaths)
+        #input()
         if(len (parLstBasesTerminalsPaths) != len(parLstBasesRoutersPaths)):
             print("Listas com quantidades incompatíveis")
             exit(0);
@@ -99,7 +99,7 @@ class ClientBufferArrivaCNN(Client):
         lstBaseTerminals=[]
         lstBaseRouters=[]
         
-        print(self.lstBaseTerminalsPath)
+        #print(self.lstBaseTerminalsPath)
         
         #df = pd.read_csv(self.lstBaseTerminalsPath[0])
         '''
@@ -261,11 +261,11 @@ class ClientBufferArrivaCNN(Client):
         #classe_teste2 = [np.argmax(t) for t in self.classe_teste]
         #previsoes2 = [np.argmax(t) for t in previsoes] #para softmax
         
-        
+        '''
         for i in range (len(previsoes)):
             if(previsoes[i] != self.classe_teste[i]):
                 print(self.previsores_teste[i])
-  
+        '''
 
         from sklearn.metrics import confusion_matrix
         matriz = confusion_matrix(self.classe_teste,previsoes)

@@ -107,18 +107,18 @@ lstRouterPath=[]
     
     
 files.sort()
-print (files)
-input()
+#print (files)
+#input()
 
 for file in files:
     
     if 'terminal' in  file:
-        print("Adicionando aos Terminais", file)
+        #print("Adicionando aos Terminais", file)
         lstTermianlsPath.append(os.path.join(experimentDataPath, file))
 
         
     elif "router" in file:
-        print("Adicionando aos roteadores", file)
+        #print("Adicionando aos roteadores", file)
         lstRouterPath.append(os.path.join(experimentDataPath, file))
  
         

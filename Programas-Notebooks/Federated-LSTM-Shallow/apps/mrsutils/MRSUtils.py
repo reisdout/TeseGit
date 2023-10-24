@@ -257,7 +257,7 @@ def MergeAndConcatBases(parLstBaseTerninais, parLstBaseRouter):
     
     
     for i in range (len(parLstBaseRouter)):
-        print("Merge ", i)
+        #print("Merge ", i)
         lstMergedBases.append(pd.merge(parLstBaseTerninais[i],parLstBaseRouter[i], on='#Ack',how='inner'))
     
     #n1=lstMergedBases[0][lstMergedBases[0].Network_Situation_Router_Arrival == 1].shape[0] #features em 1 no arquivo 1
@@ -286,7 +286,7 @@ def MergeAndConcatBases(parLstBaseTerninais, parLstBaseRouter):
     if(n1 > n2):
         while (n1 > n2):
             
-            print ("(",i,",",n1,",",n2,")")
+            #print ("(",i,",",n1,",",n2,")")
             
             if(i >= balanced_base.shape[0]):
                 i=0;
@@ -303,7 +303,7 @@ def MergeAndConcatBases(parLstBaseTerninais, parLstBaseRouter):
     elif(n2 > n1):
         while (n2 > n1):
             
-            print ("(",i,",",n1,",",n2,")")
+            #print ("(",i,",",n1,",",n2,")")
             
             if(i >= balanced_base.shape[0]):
                 i=0;
@@ -360,16 +360,16 @@ def RenameFile(parExpPath, parInicialCount=1):
     router_count =parInicialCount
     terminal_count=parInicialCount
     files.sort()
-    print (files)
+    #print (files)
 
     for file in files:
         if 'buffer' in  file:
-            print("Renomeando ", file)
+            #print("Renomeando ", file)
             os.rename(os.path.join(parExpPath, file), os.path.join(parExpPath,'router'+str(router_count).zfill(2)+'.csv'))
             router_count = router_count+1
             
         elif "10_" in file:
-            print("Renomeando ", file)
+            #print("Renomeando ", file)
             os.rename(os.path.join(parExpPath, file), os.path.join(parExpPath,'terminal'+str(terminal_count).zfill(2)+'.csv'))
             terminal_count = terminal_count+1
             

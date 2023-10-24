@@ -22,8 +22,9 @@ from sklearn.model_selection import train_test_split
 from GeneralClient import Client
 import keras
 from keras.layers import Dense
-#from keras.utils import np_utils
-import keras.utils
+from keras.utils import np_utils
+#import keras.utils.to_categorical
+#from tensorflow.keras import utils
 from keras.models import Sequential
 import seaborn as sns; sns.set()
 
@@ -36,9 +37,9 @@ class ClientBufferArrival(Client):
     
     def __init__(self,parId,parExperimentPath,parBasePath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths):
            
-        print(parLstBasesTerminalsPaths)
-        print(parLstBasesRoutersPaths)
-        input()
+        #print(parLstBasesTerminalsPaths)
+        #print(parLstBasesRoutersPaths)
+        #input()
         if(len (parLstBasesTerminalsPaths) != len(parLstBasesRoutersPaths)):
             print("Listas com quantidades incompatíveis")
             exit(0);
@@ -92,7 +93,7 @@ class ClientBufferArrival(Client):
         lstBaseTerminals=[]
         lstBaseRouters=[]
         
-        print(self.lstBaseTerminalsPath)
+        #print(self.lstBaseTerminalsPath)
         
         #df = pd.read_csv(self.lstBaseTerminalsPath[0])
         '''
@@ -179,11 +180,11 @@ class ClientBufferArrival(Client):
         classe_teste2 = [np.argmax(t) for t in self.classe_teste]
         previsoes2 = [np.argmax(t) for t in previsoes] #para softmax
         
-        
+        '''
         for i in range (len(previsoes2)):
             if(previsoes2[i] != classe_teste2[i]):
                 print(self.previsores_teste[i])
-  
+        '''
 
         from sklearn.metrics import confusion_matrix
         matriz = confusion_matrix(classe_teste2,previsoes2)
