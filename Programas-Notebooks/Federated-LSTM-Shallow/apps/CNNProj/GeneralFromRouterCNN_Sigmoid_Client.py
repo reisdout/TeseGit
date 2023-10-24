@@ -95,7 +95,8 @@ class ClientBufferArrivaCNN(Client):
         lstBaseTerminals=[]
         lstBaseRouters=[]
         
-        #print(self.lstBaseTerminalsPath)
+        print(self.lstBaseTerminalsPath)
+        input()
         
         #df = pd.read_csv(self.lstBaseTerminalsPath[0])
         '''
@@ -104,12 +105,12 @@ class ClientBufferArrivaCNN(Client):
         for i in range(len(self.lstBaseRoutersPath)):        
             lstBaseTerminals.append(pd.read_csv(self.lstBaseTerminalsPath[i],dtype={
                 '#Ack': 'int',
-                'ack_ewma(ms)': 'float32',
-                'send_ewma(ms)': 'float32',
-                'rtt_ratio': 'float32',
+                'ack_ewma(ms)': 'float',
+                'send_ewma(ms)': 'float',
+                'rtt_ratio': 'float',
                 'cwnd (Bytes)':'int',
-                'Last Router Ocupation Ack Arriaval(Packets)':'float32',
-                'Last Router Ocupation Packet Sent(Packets)':'float32',
+                'Last Router Ocupation Ack Arriaval(Packets)':'float',
+                'Last Router Ocupation Packet Sent(Packets)':'float',
                 'Network Situation':'int',
                 'AckArrival(ms)':'int',
                 'TSInsideAck(ms)':'int',
@@ -117,8 +118,8 @@ class ClientBufferArrivaCNN(Client):
                 
             lstBaseRouters.append(pd.read_csv(self.lstBaseRoutersPath[i],dtype={
                 '#Ack': 'int',
-                'Last Router Ocupation Router Arrival(Packets)': 'float32',
-                'Last Router Ocupation Router Arrival_ewma(Packets)': 'float32',
+                'Last Router Ocupation Router Arrival(Packets)': 'float',
+                'Last Router Ocupation Router Arrival_ewma(Packets)': 'float',
                 'Network Situation Router Arrival': 'int',
                 'Measure Time':'int'}))
         
@@ -217,6 +218,7 @@ class ClientBufferArrivaCNN(Client):
      #rlr = ReduceLROnPlateau(monitor = 'loss', factor = 0.2, patience = 5, verbose = 1)
      #mcp = ModelCheckpoint(filepath = self.exp_dir+"/pesos.h5", monitor = 'loss',  save_weights_only = True, save_freq='epoch',verbose = 1)
      #regressor.fit(previsores, real_congestion, epochs = 50, batch_size = 32, callbacks = [es, rlr, mcp])
+     print("Treinando o modelo CNN...")
      regressor.fit(self.previsores_treinamento, self.classe_treinamento, epochs = self.exp_epoch, batch_size = self.exp_batch_size,verbose=0,
                callbacks=[LoggingCallback(parExpDir=self.experimentPath)])
      #self.weightsClientModel = regressor.get_weights().copy()

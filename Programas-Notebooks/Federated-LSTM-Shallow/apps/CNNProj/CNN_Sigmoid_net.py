@@ -96,9 +96,9 @@ lstTermianlsPath=[]
 lstRouterPath=[]
     
     
-#files.sort()
+files.sort()
 #print (files)
-input()
+#input()
 
 for file in files:
     
