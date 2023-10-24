@@ -25,7 +25,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 from GeneralClient import Client
 from GeneralClient import LoggingCallback
-from keras.utils import np_utils
+#from keras.utils import np_utils
+#from tensorflow.keras import utils
 import seaborn as sns; sns.set()
 
 
@@ -127,11 +128,11 @@ class ClientBufferArrivalLSTM(Client):
         
         print ("Configurando dados tomados da chegada na fila e usando para LSTM....")
         
-        input()
+        #input()
         lstBaseTerminals=[]
         lstBaseRouters=[]
         
-        print(self.lstBaseTerminalsPath)
+        #print(self.lstBaseTerminalsPath)
         
         #df = pd.read_csv(self.lstBaseTerminalsPath[0])
         '''
@@ -301,6 +302,7 @@ class ClientBufferArrivalLSTM(Client):
      #rlr = ReduceLROnPlateau(monitor = 'loss', factor = 0.2, patience = 5, verbose = 1)
      #mcp = ModelCheckpoint(filepath = self.exp_dir+"/pesos.h5", monitor = 'loss',  save_weights_only = True, save_freq='epoch',verbose = 1)
      #regressor.fit(previsores, real_congestion, epochs = 50, batch_size = 32, callbacks = [es, rlr, mcp])
+     print("Treinando o modelo LSTM...")
      regressor.fit(self.previsores_treinamento, self.classe_treinamento, epochs = self.exp_epoch, batch_size = self.exp_batch_size,verbose=0,
                callbacks=[LoggingCallback(parExpDir=self.experimentPath)])
      #self.weightsClientModel = regressor.get_weights().copy()
