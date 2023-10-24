@@ -17,7 +17,8 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, LSTM#, Bidirectional
 #from sklearn.metrics import confusion_matrix, accuracy_score
 from sklearn.metrics import confusion_matrix #,classification_report, 
-from keras.utils import np_utils
+#from keras.utils import np_utils
+import keras.utils
 import numpy as np
 #from sys import exit
 #from sklearn.model_selection import train_test_split
