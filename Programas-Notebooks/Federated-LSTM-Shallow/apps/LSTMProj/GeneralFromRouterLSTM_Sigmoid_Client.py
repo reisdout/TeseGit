@@ -296,7 +296,7 @@ class ClientBufferArrivalLSTM(Client):
       
      self.LoadTrainingDataSet()
      regressor = self.GetModel();
-     opt = keras.optimizers.Adam(learning_rate=0.0001,decay=0.00001,clipvalue = 0.5)
+     opt = keras.optimizers.Adam(learning_rate=0.0001, weight_decay=0.00001,clipvalue = 0.5)
      regressor.compile(optimizer = opt, loss = 'binary_crossentropy',metrics = ['binary_accuracy'])
      #es = EarlyStopping(monitor = 'loss', min_delta = 1e-10, patience = 10, verbose = 1)
      #rlr = ReduceLROnPlateau(monitor = 'loss', factor = 0.2, patience = 5, verbose = 1)
