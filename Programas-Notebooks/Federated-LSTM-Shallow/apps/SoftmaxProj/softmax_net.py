@@ -1,5 +1,7 @@
 
-from GeneralAckSoftmax_Client import Client  
+import sys
+sys.path.append('..')
+from GeneralClient import Client  
 from FromRouterSoftmax_Client import ClientBufferArrival
 import os
 
@@ -96,7 +98,7 @@ se fazer o mege posterior.
 
 """
 
-experimentDataPath = '../../Exp_0000054'
+experimentDataPath = '../../Exp_0000055'
 
 files = os.listdir(experimentDataPath)
 
@@ -207,7 +209,7 @@ lstRouterPath=['../../Exp_0000050/router01.csv',
 
 '''
 
-#TreinarModeloBufferArrival('../../Exp_0000049','../../Exp_0000049/terminal00.csv', lstTermianlsPath,lstRouterPath)
+TreinarModeloBufferArrival(experimentDataPath,'../../Exp_0000049/terminal00.csv', lstTermianlsPath,lstRouterPath)
 
 
-EvalueteModelLevarage('../../Exp_0000049','../../Exp_0000049/terminal00.csv', lstTermianlsPath,lstRouterPath)
+#EvalueteModelLevarage('../../Exp_0000049','../../Exp_0000049/terminal00.csv', lstTermianlsPath,lstRouterPath)

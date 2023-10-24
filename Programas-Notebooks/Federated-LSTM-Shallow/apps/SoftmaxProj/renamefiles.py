@@ -9,7 +9,7 @@ Created on Wed Oct 11 17:09:03 2023
 import MRSUtils as mrs
 
 def RenameFile():
-    mrs.RenameFile('../../Exp_0000054', parInicialCount=41)
+    mrs.RenameFile('../../Exp_0000055', parInicialCount=1)
     print ("Renomeaçao Concluida")
     
 RenameFile()

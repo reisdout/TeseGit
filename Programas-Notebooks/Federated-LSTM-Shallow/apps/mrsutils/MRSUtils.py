@@ -8,9 +8,33 @@ Created on Fri Sep 29 11:08:28 2023
 
 #from sklearn.model_selection import train_test_split
 from sys import exit
+import numpy as np
 import pandas as pd
 import seaborn as sns; sns.set()
 import os
+
+def binary(num, string=True):
+    bits = np.unpackbits(np.array([num]).view('u1'))
+    if string:
+        return np.array2string(bits, separator='')[1:-1]
+    else:
+        return bits
+
+def BinarizerFloat32(parNum):
+    a = np.float32(parNum)
+    arrbin = binary(a,False)
+    #print(arrbin)
+    
+    bytes = np.zeros(4)
+    
+    bytenum = -1;
+    
+    for i in range(arrbin.shape[0]):
+        if(not (i % 8)):
+            bytenum += 1 
+        bytes[bytenum] = bytes[bytenum] + arrbin[i]*pow(2,7-(i-(8*bytenum)))
+    
+    return bytes
 
 def ReadNormalizationFactors(par_exp_dir):
        

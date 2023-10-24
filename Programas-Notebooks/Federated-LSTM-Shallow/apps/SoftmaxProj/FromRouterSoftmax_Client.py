@@ -11,14 +11,21 @@ no momento da chegada do segmento no roteador. As features são associadas às
 respectivas ocupações nas filas por meio do merge no número de sequencia (seq)
 Essa classe é , também, um cliente softmax, por isso deriva de Cleint
 """
+import sys
+from sys import exit
+sys.path.append('../mrsutils')
+sys.path.append('..')
+import numpy as np
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
-from GeneralAckSoftmax_Client import Client
+from GeneralClient import Client
+import keras
+from keras.layers import Dense
 from keras.utils import np_utils
-from sys import exit
-import sys
-sys.path.append('../mrsutils')
+from keras.models import Sequential
+import seaborn as sns; sns.set()
+
 
 import MRSUtils as mrs
 
@@ -44,8 +51,38 @@ class ClientBufferArrival(Client):
         super().__init__(parId,parExperimentPath,parBasePath)
 
 
+    def GetModel(self):
+        
+        classificador = Sequential()
+        
+        #classificador.add(Dense(units = 8, activation = 'relu', 
+         #                       kernel_initializer = 'random_uniform', input_dim = 4))#Com cwnd
+        
+        classificador.add(Dense(units = 20, activation = 'relu', 
+                                kernel_initializer = 'random_uniform', input_dim = 3))#sem cwnd
+        classificador.add(Dense(units = 20, activation = 'relu', 
+                                kernel_initializer = 'random_uniform'))
+        classificador.add(Dense(units = 20, activation = 'relu', 
+                                kernel_initializer = 'random_uniform'))
+        classificador.add(Dense(units = 20, activation = 'relu', 
+                                kernel_initializer = 'random_uniform'))
+        classificador.add(Dense(units = 20, activation = 'relu', 
+                                kernel_initializer = 'random_uniform'))
+        #classificador.add(Dense(units = classe_dummy.shape[1], activation = 'softmax'))
+        classificador.add(Dense(units = 2, activation = 'softmax'))
         
         
+        
+        opt = keras.optimizers.Adam(learning_rate=0.0001)
+        
+        print("Taxa de Aprendizado 0.0001")
+        
+        classificador.compile(optimizer = opt, loss = 'categorical_crossentropy',
+                              metrics = ['categorical_accuracy']) #para softmax. lembrar de ajustar no GetMappedMatrix
+ 
+        
+        return classificador
+
         
     def LoadTrainingDataSet(self, parFromFile=False):
         print ("Configurando dados tomados da chegada na fila....")
@@ -63,12 +100,12 @@ class ClientBufferArrival(Client):
         for i in range(len(self.lstBaseRoutersPath)):        
             lstBaseTerminals.append(pd.read_csv(self.lstBaseTerminalsPath[i],dtype={
                 '#Ack': 'int',
-                'ack_ewma(ms)': 'float',
-                'send_ewma(ms)': 'float',
-                'rtt_ratio': 'float',
+                'ack_ewma(ms)': 'float32',
+                'send_ewma(ms)': 'float32',
+                'rtt_ratio': 'float32',
                 'cwnd (Bytes)':'int',
-                'Last Router Ocupation Ack Arriaval(Packets)':'float',
-                'Last Router Ocupation Packet Sent(Packets)':'float',
+                'Last Router Ocupation Ack Arriaval(Packets)':'float32',
+                'Last Router Ocupation Packet Sent(Packets)':'float32',
                 'Network Situation':'int',
                 'AckArrival(ms)':'int',
                 'TSInsideAck(ms)':'int',
@@ -76,8 +113,8 @@ class ClientBufferArrival(Client):
                 
             lstBaseRouters.append(pd.read_csv(self.lstBaseRoutersPath[i],dtype={
                 '#Ack': 'int',
-                'Last Router Ocupation Router Arrival(Packets)': 'float',
-                'Last Router Ocupation Router Arrival_ewma(Packets)': 'float',
+                'Last Router Ocupation Router Arrival(Packets)': 'float32',
+                'Last Router Ocupation Router Arrival_ewma(Packets)': 'float32',
                 'Network Situation Router Arrival': 'int',
                 'Measure Time':'int'}))
         
@@ -126,13 +163,78 @@ class ClientBufferArrival(Client):
         #return previsores_treinamento, previsores_teste, classe_treinamento, classe_teste
     
         
+    def GetMapedMatrix(self):
         
-        '''
+        #previsores_treinamento, previsores_teste, classe_treinamento, classe_teste = self.LoadTrainingDataSet()
+
+        classificador = self.GetModel()
         
+        classificador.set_weights(self.weightsClientModel)
+        
+        #resultado = classificador.evaluate(self.previsores_teste, self.classe_teste)
+        previsoes = classificador.predict(self.previsores_teste)
+        previsoes = (previsoes > 0.5)
+
+        classe_teste2 = [np.argmax(t) for t in self.classe_teste]
+        previsoes2 = [np.argmax(t) for t in previsoes] #para softmax
+        
+        
+        for i in range (len(previsoes2)):
+            if(previsoes2[i] != classe_teste2[i]):
+                print(self.previsores_teste[i])
+  
+
+        from sklearn.metrics import confusion_matrix
+        matriz = confusion_matrix(classe_teste2,previsoes2)
+        print(matriz)
+        to_heat_map =[[matriz[0,0],matriz[0,1]],[matriz[1,0],matriz[1,1]]]
+        to_heat_map = pd.DataFrame(to_heat_map, index = ["Hit","Fail"],columns = ["Fail","Hit"])
+        ax = sns.heatmap(to_heat_map,annot=True, fmt="d")
+        
+    def AderenciaOutrosFluxos(self):
  
+        #previsores_treinamento, previsores_teste, classe_treinamento, classe_teste = self.LoadTrainingDataSet(parFromFile=True)
+        self.LoadTrainingDataSet(parFromFile=True)
+        arquivo = open(self.experimentPath+"/model.json",'r')
+        estrutura_classificador = arquivo.read()
+        arquivo.close()
+        from keras.models import model_from_json
+        classificador = model_from_json(estrutura_classificador)
+        classificador.load_weights(self.experimentPath+"/model_weights.h5")
+
  
-        
+        resultado = classificador.evaluate(self.previsores_teste, self.classe_teste)
+        previsoes = classificador.predict(self.previsores_teste)
+        previsoes = (previsoes > 0.5)
+        classe_teste2 = [np.argmax(t) for t in self.classe_teste]
+        previsoes2 = [np.argmax(t) for t in previsoes]
+
+        from sklearn.metrics import confusion_matrix
+        matriz = confusion_matrix(previsoes2, classe_teste2)
+        print(matriz)
+        to_heat_map =[[matriz[0,0],matriz[0,1]],[matriz[1,0],matriz[1,1]]]
+        to_heat_map = pd.DataFrame(to_heat_map, index = ["Hit","Fail"],columns = ["Fail","Hit"])
+        ax = sns.heatmap(to_heat_map,annot=True, fmt="d")
 
 
-        '''
+
+    def RefreshModel(self, parFromTraining=False): #Constroi na primeira vez e atualiza, a partir da avaliação do servidor cetral
+      #pensar melhor no critério
+      
+        #A filosofia, aqui, e sempre treinar do zero! 
         
+        self.LoadTrainingDataSet()
+        classificador = self.GetModel()
+    
+        #classificador.compile(optimizer = 'adam', loss = 'binary_crossentropy',
+        #                      metrics = ['binary_accuracy'])
+        print("treinando...com 512 de bach-size e 3000 épocas")
+        #classificador.fit(previsores_treinamento, classe_treinamento,batch_size = 512, epochs = 100,verbose=0,callbacks=[LoggingCallback(parExpDir=".")])
+    
+        classificador.fit(self.previsores_treinamento, 
+                          self.classe_treinamento, 
+                          batch_size = 512, 
+                          epochs = 3000,
+                          verbose=0)
+        self.weightsClientModel = classificador.get_weights()
+     
