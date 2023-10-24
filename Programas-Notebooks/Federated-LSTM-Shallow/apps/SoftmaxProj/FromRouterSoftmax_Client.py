@@ -22,9 +22,9 @@ from sklearn.model_selection import train_test_split
 from GeneralClient import Client
 import keras
 from keras.layers import Dense
-from keras.utils import np_utils
+#from keras.utils import np_utils
 #import keras.utils.to_categorical
-#from tensorflow.keras import utils
+from tensorflow.keras import utils
 from keras.models import Sequential
 import seaborn as sns; sns.set()
 
@@ -147,7 +147,8 @@ class ClientBufferArrival(Client):
         
         labelencoder = LabelEncoder()
         classe = labelencoder.fit_transform(classe)
-        classe_dummy = np_utils.to_categorical(classe)
+        #classe_dummy = np_utils.to_categorical(classe)
+        classe_dummy = utils.to_categorical(classe)
         # sem congestionamento    1 0 0
         #congestionamento medio 0 1 0
         # alto congestionamento 0 0 1
