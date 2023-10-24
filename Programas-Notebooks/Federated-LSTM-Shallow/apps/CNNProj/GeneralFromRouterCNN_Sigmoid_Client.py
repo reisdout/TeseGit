@@ -96,7 +96,7 @@ class ClientBufferArrivaCNN(Client):
         lstBaseRouters=[]
         
         print(self.lstBaseTerminalsPath)
-        input()
+        #input()
         
         #df = pd.read_csv(self.lstBaseTerminalsPath[0])
         '''
