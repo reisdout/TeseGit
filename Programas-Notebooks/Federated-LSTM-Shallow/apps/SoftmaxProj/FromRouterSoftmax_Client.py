@@ -22,7 +22,8 @@ from sklearn.model_selection import train_test_split
 from GeneralClient import Client
 import keras
 from keras.layers import Dense
-from keras.utils import np_utils
+#from keras.utils import np_utils
+import keras.utils
 from keras.models import Sequential
 import seaborn as sns; sns.set()
 
