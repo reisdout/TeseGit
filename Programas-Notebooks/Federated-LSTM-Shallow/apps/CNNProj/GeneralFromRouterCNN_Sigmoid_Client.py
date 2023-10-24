@@ -20,12 +20,9 @@ import pandas as pd
 import keras
 from keras.models import Sequential
 from keras.layers import Dense, Flatten,Conv2D, MaxPooling2D#, Bidirectional
-from sklearn.preprocessing import LabelEncoder
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 from GeneralClient import Client
 from GeneralClient import LoggingCallback
-from keras.utils import np_utils
 import seaborn as sns; sns.set()
 
 
