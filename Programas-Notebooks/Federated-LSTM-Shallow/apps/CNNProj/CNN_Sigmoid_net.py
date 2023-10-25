@@ -1,7 +1,10 @@
-
+import sys
 from GeneralClient import Client  
 from GeneralFromRouterCNN_Sigmoid_Client import ClientBufferArrivaCNN
 import os
+import os
+sys.path.append('../mrsutils')
+import MRSUtils as mrs
 
 
 
@@ -45,6 +48,7 @@ def TreinarModeloBufferArrival(parExpDirPath, parBasePath,parLstBasesTerminalsPa
     
     client01 = ClientBufferArrivaCNN(0,parExpDirPath,parBasePath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths,parFeaturesWindow=3)    
     client01.RefreshModel(True)
+    client01.GetHistory(parTitleValidationGraph='CNN Model Accuracy', parTitleLossGraph='CNN Model Loss')
     client01.GetMapedMatrix()
     
 
@@ -113,7 +117,7 @@ for file in files:
  
         
     else:
-        print(file, " --> nao Adicionado");
+        mrs.MyPrint([file], ['Nao adicionado'])
     
     
 '''

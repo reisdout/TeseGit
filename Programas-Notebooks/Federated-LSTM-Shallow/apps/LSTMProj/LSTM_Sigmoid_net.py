@@ -39,6 +39,7 @@ def TreinarModeloBufferArrival(parExpDirPath, parBasePath,parLstBasesTerminalsPa
     
     client01 = ClientBufferArrivalLSTM(0,parExpDirPath,parBasePath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths,parFeaturesWindow=3)    
     client01.RefreshModel(True)
+    client01.GetHistory(parTitleValidationGraph='LSTM Model Accuracy', parTitleLossGraph='LSTM Model Loss')
     client01.GetMapedMatrix()
     
 

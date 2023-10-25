@@ -56,7 +56,7 @@ class ClientBufferArrivaCNN(Client):
         self.n_steps_out = 0; #e o valor do ultimo
         #self.base_treinamento =  np.array([])
         #self.base_teste =  np.array([])
-        self.exp_batch_size = 64
+        self.exp_batch_size = 512
         self.currentConfusionMatriz =np.full((2,2), 0) # Apesar de ser obtidas a partir de listas, a matriz de comfusão é numpy
         self.exp_epoch =  3000
         #self.len_base_teste = 0;
@@ -213,14 +213,21 @@ class ClientBufferArrivaCNN(Client):
      self.LoadTrainingDataSet()
      regressor = self.GetModel();
      opt = tf.keras.optimizers.Adam(learning_rate=0.0001, weight_decay=0.00001,clipvalue = 0.5)
-     regressor.compile(optimizer = opt, loss = 'binary_crossentropy',metrics = ['binary_accuracy'])
-     #es = EarlyStopping(monitor = 'loss', min_delta = 1e-10, patience = 10, verbose = 1)
+     regressor.compile(optimizer = opt, 
+                       loss = tf.keras.losses.BinaryCrossentropy(),
+                       metrics = [tf.keras.metrics.BinaryAccuracy()])     #es = EarlyStopping(monitor = 'loss', min_delta = 1e-10, patience = 10, verbose = 1)
      #rlr = ReduceLROnPlateau(monitor = 'loss', factor = 0.2, patience = 5, verbose = 1)
      #mcp = ModelCheckpoint(filepath = self.exp_dir+"/pesos.h5", monitor = 'loss',  save_weights_only = True, save_freq='epoch',verbose = 1)
      #regressor.fit(previsores, real_congestion, epochs = 50, batch_size = 32, callbacks = [es, rlr, mcp])
      print("Treinando o modelo CNN...")
-     regressor.fit(self.previsores_treinamento, self.classe_treinamento, epochs = self.exp_epoch, batch_size = self.exp_batch_size,verbose=0,
-               callbacks=[LoggingCallback(parExpDir=self.experimentPath)])
+     self.history = regressor.fit(self.previsores_treinamento, 
+                                  self.classe_treinamento, 
+                                  epochs = self.exp_epoch, 
+                                  batch_size = self.exp_batch_size,
+                                  verbose=0,
+                                  validation_split=0.2,
+                                  callbacks=[LoggingCallback(parExpDir=self.experimentPath)])
+     
      #self.weightsClientModel = regressor.get_weights().copy()
      self.weightsClientModel = regressor.get_weights()
 

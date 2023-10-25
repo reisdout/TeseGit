@@ -61,7 +61,7 @@ class ClientBufferArrivalLSTM(Client):
         self.n_steps_out = 0; #e o valor do ultimo
         #self.base_treinamento =  np.array([])
         #self.base_teste =  np.array([])
-        self.exp_batch_size = 64
+        self.exp_batch_size = 512
         self.currentConfusionMatriz =np.full((2,2), 0) # Apesar de ser obtidas a partir de listas, a matriz de comfusão é numpy
         self.exp_epoch =  3000
         #self.len_base_teste = 0;
@@ -308,8 +308,13 @@ class ClientBufferArrivalLSTM(Client):
      #regressor.fit(previsores, real_congestion, epochs = 50, batch_size = 32, callbacks = [es, rlr, mcp])
      
      print("Treinando o modelo LSTM...")
-     regressor.fit(self.previsores_treinamento, self.classe_treinamento, epochs = self.exp_epoch, batch_size = self.exp_batch_size,verbose=0,
-               callbacks=[LoggingCallback(parExpDir=self.experimentPath)])
+     self.history = regressor.fit(self.previsores_treinamento, 
+                                  self.classe_treinamento, 
+                                  epochs = self.exp_epoch, 
+                                  batch_size = self.exp_batch_size,
+                                  verbose=0,
+                                  validation_split=0.2,
+                                  callbacks=[LoggingCallback(parExpDir=self.experimentPath)])
      #self.weightsClientModel = regressor.get_weights().copy()
      self.weightsClientModel = regressor.get_weights()
 
