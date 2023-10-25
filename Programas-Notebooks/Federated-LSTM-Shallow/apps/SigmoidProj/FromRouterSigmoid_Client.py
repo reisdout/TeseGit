@@ -203,7 +203,7 @@ class ClientBufferArrivalSigmoid(Client):
     
         #classificador.compile(optimizer = 'adam', loss = 'binary_crossentropy',
         #                      metrics = ['binary_accuracy'])
-        print("treinando...com 512 de bach-size e 3000 épocas")
+        print("treinando...com 512 de bach-size e 3000 épocas, utilizabdo Sigmoid")
         #classificador.fit(previsores_treinamento, classe_treinamento,batch_size = 512, epochs = 100,verbose=0,callbacks=[LoggingCallback(parExpDir=".")])
         
         opt = keras.optimizers.Adam(learning_rate=0.0001)
