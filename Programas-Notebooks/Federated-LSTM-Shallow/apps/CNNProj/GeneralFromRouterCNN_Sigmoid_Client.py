@@ -141,7 +141,7 @@ class ClientBufferArrivaCNN(Client):
         #base = mrs.SubtractMin(base_consistent,parFromFile,self.experimentPath)
         #baseTile = mrs.TileBase(base_consistent)
         baseTile = mrs.TileBase(base_merged)
-        baseNor = mrs.NormalizeFeatures(baseTile,parFromFile,self.experimentPath,self.minRTT)
+        baseNor = mrs.NormalizeFeatures(baseTile,parFromFile,self.modelPath,self.minRTT)
         
         baseNor.to_csv(self.experimentPath+'/finalbaseDebugPrevision.csv',sep=',',index=False,encoding='utf-8')
      

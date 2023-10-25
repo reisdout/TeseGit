@@ -58,7 +58,9 @@ class Client():
 
     #resultadoTreinamento = np.eye(10)
 
-    def __init__(self,parId,parExperimentPath,parBasePath,
+    def __init__(self,parId,
+                 parExperimentPath,
+                 parModelpath,
                  parPrevisores_treinamento=[],
                  parPrevisores_teste=[],
                  parClasse_treinamento=[],
@@ -66,8 +68,8 @@ class Client():
     
         
       self.id=parId
-      self.basePath=parBasePath
       self.experimentPath = parExperimentPath
+      self.modelPath=parModelpath
       #self.testPath = parTestPath
       #self.T = parPrevisionWindow
       #centralServer = Server_FederatedAMA()
@@ -175,7 +177,7 @@ class Client():
       self.RefreshConfusionClientMatrix()
 
     '''
-    def GetHistory(self, parTitleValidationGraph, parTitleLossGraph):
+    def GetHistory(self, parTitleValidationGraph, parTitleLossGraph,parModel):
         
         '''
         https://neptune.ai/blog/keras-loss-functions
@@ -210,7 +212,7 @@ class Client():
         plt.xlabel('Epoch')
         plt.ylabel('Accuracy')
         plt.legend(['Train','Test'])
-        plt.savefig(self.experimentPath+'/mlp_accuracy')
+        plt.savefig(self.experimentPath+'/accuracy_'+parModel+'.png')
         plt.show()
         
         plt.plot(self.history.history['loss'])
@@ -219,23 +221,23 @@ class Client():
         plt.xlabel('Epoch')
         plt.ylabel('Loss')
         plt.legend(['Train','Test'])
-        plt.savefig(self.experimentPath+'/mlp_accuracy')
+        plt.savefig(self.experimentPath+'/loss_'+parModel+'.png')
         plt.show()
 
     def GetPrevision(self): #evalueta indica que é uma avaliação do modelo recebido como parametro, no caso do servidor
         print("A ser implementada na classe concreta") 
        
-    def SaveModel(self):
+    def SaveModel(self,parModel):
     
         classificador = self.GetModel()        
         classificador.set_weights(self.weightsClientModel)
         
         classificador_json = classificador.to_json()
-        with open(self.experimentPath+"/model.json",'w') as json_file:
+        with open(self.experimentPath+"/model_"+parModel+".json",'w') as json_file:
             json_file.write(classificador_json)
-        classificador.save_weights(self.experimentPath+"/model_weights.h5")
+        classificador.save_weights(self.experimentPath+"/model_weights_"+parModel+".h5")
         from keras2cpp import export_model
-        export_model(classificador, self.experimentPath+"/example.model")
+        export_model(classificador, self.experimentPath+"/example_"+parModel+".model")
         
     def ServerModelIsBetter(self):
         regressorServer = Sequential()

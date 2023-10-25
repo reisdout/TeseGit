@@ -130,7 +130,7 @@ class ClientBufferArrivalSigmoid(Client):
         #base = mrs.SubtractMin(base_consistent,parFromFile,self.experimentPath)
         #baseTile = mrs.TileBase(base_consistent)
         baseTile = mrs.TileBase(base_merged)
-        baseNor = mrs.NormalizeFeatures(baseTile,parFromFile,self.experimentPath,self.minRTT)
+        baseNor = mrs.NormalizeFeatures(baseTile,parFromFile,self.modelPath,self.minRTT)
         baseNor.to_csv(self.experimentPath+'/finalbaseDebugPrevision.csv',sep=',',index=False,encoding='utf-8')
         ####baseNor = pd.read_csv(self.experimentPath+'/finalbaseDebugPrevision.csv')
        
@@ -167,33 +167,29 @@ class ClientBufferArrivalSigmoid(Client):
         print(matriz)
         to_heat_map =[[matriz[0,0],matriz[0,1]],[matriz[1,0],matriz[1,1]]]
         to_heat_map = pd.DataFrame(to_heat_map, index = ["Hit","Fail"],columns = ["Fail","Hit"])
-        ax = sns.heatmap(to_heat_map,annot=True, fmt="d")
+        sns.heatmap(to_heat_map,annot=True, fmt="d")
         
         
-    def AderenciaOutrosFluxos(self):
+    def AderenciaOutrosFluxos(self,parModel):
  
         #previsores_treinamento, previsores_teste, classe_treinamento, classe_teste = self.LoadTrainingDataSet(parFromFile=True)
         self.LoadTrainingDataSet(parFromFile=True)
-        arquivo = open(self.experimentPath+"/model.json",'r')
+        arquivo = open(self.modelPath+"/model_"+parModel+".json",'r')
         estrutura_classificador = arquivo.read()
         arquivo.close()
         from keras.models import model_from_json
         classificador = model_from_json(estrutura_classificador)
-        classificador.load_weights(self.experimentPath+"/model_weights.h5")
-
- 
-        resultado = classificador.evaluate(self.previsores_teste, self.classe_teste)
+        classificador.load_weights(self.modelPath+"/model_weights_"+parModel+".h5") 
+        #resultado = classificador.evaluate(self.previsores_teste, self.classe_teste)
         previsoes = classificador.predict(self.previsores_teste)
         previsoes = (previsoes > 0.5)
-        classe_teste2 = [np.argmax(t) for t in self.classe_teste]
-        previsoes2 = [np.argmax(t) for t in previsoes]
 
         from sklearn.metrics import confusion_matrix
-        matriz = confusion_matrix(previsoes2, classe_teste2)
+        matriz = confusion_matrix(previsoes, self.classe_teste)
         print(matriz)
         to_heat_map =[[matriz[0,0],matriz[0,1]],[matriz[1,0],matriz[1,1]]]
         to_heat_map = pd.DataFrame(to_heat_map, index = ["Hit","Fail"],columns = ["Fail","Hit"])
-        ax = sns.heatmap(to_heat_map,annot=True, fmt="d")
+        sns.heatmap(to_heat_map,annot=True, fmt="d")
 
 
 

@@ -54,7 +54,7 @@ def BinarizerFloat32(parNum):
     
     return bytes
 
-def ReadNormalizationFactors(par_exp_dir):
+def ReadNormalizationFactors(par_model_dir):
        
        ack_ewma_normalizer=1.0
        send_ewma_normalizer=1.0
@@ -64,7 +64,7 @@ def ReadNormalizationFactors(par_exp_dir):
        
        line_ref = 0 #criado para sair dos subtratores do SubtractMin()
      
-       file1 = open(par_exp_dir+"/normalization_factors.txt", 'r')
+       file1 = open(par_model_dir+"/normalization_factors.txt", 'r')
        Lines = file1.readlines()
        
        ack_ewma_normalizer = float(Lines[0+line_ref].split()[len(Lines[0+line_ref].split())-1])# split retorna uma lista com as strings da linha que estão separadas por espaço
@@ -76,7 +76,7 @@ def ReadNormalizationFactors(par_exp_dir):
        return ack_ewma_normalizer, send_ewma_normalizer,min_rtt, rtt_ratio_normalizer, cwnd_normalizer
 
 
-def NormalizeFeatures(data, parFromFile,par_exp_dir,parMinRtt=1.0):
+def NormalizeFeatures(data, parFromFile,par_model_dir,parMinRtt=1.0):
        
        ack_ewma_normalizer=1.0
        send_ewma_normalizer=1.0
@@ -89,7 +89,7 @@ def NormalizeFeatures(data, parFromFile,par_exp_dir,parMinRtt=1.0):
        #data['rtt_ratio'] = data['rtt_ratio'].div(264)#264 é o rtt min do fluxo de treinamento.
         
        if(parFromFile):
-          ack_ewma_normalizer, send_ewma_normalizer,min_rtt,rtt_ratio_normalizer,cwnd_normalizer = ReadNormalizationFactors(par_exp_dir)
+          ack_ewma_normalizer, send_ewma_normalizer,min_rtt,rtt_ratio_normalizer,cwnd_normalizer = ReadNormalizationFactors(par_model_dir)
   
         
        else: 
@@ -108,8 +108,8 @@ def NormalizeFeatures(data, parFromFile,par_exp_dir,parMinRtt=1.0):
        
        data['cwnd_(Bytes)'] = data['cwnd_(Bytes)'].div(cwnd_normalizer)
         
-       if(not parFromFile):
-           file1 = open(par_exp_dir+"/normalization_factors.txt", 'w')
+       if(not parFromFile):# e treinamento
+           file1 = open(par_model_dir+"/normalization_factors.txt", 'w')
            file1.writelines("ack_ewma: "+str(ack_ewma_normalizer)+"\n")
            file1.writelines("send_ewma: "+str(send_ewma_normalizer)+"\n")
            file1.writelines("rtt_min: "+str(min_rtt)+"\n")
