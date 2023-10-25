@@ -89,6 +89,7 @@ class Client():
       self.previsores_teste = parPrevisores_teste 
       self.classe_treinamento = parClasse_treinamento 
       self.classe_teste = parClasse_teste
+      self.history=[]
 
     def EvaluateServerModel(self):
       print ("Modelo do Servidor avaliado")

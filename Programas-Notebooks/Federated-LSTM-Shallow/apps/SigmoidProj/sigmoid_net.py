@@ -4,6 +4,8 @@ sys.path.append('..')
 from GeneralClient import Client  
 from FromRouterSigmoid_Client import ClientBufferArrivalSigmoid
 import os
+sys.path.append('../mrsutils')
+import MRSUtils as mrs
 
 
 
@@ -55,6 +57,7 @@ def TreinarModeloBufferArrival(parExpDirPath, parBasePath,parLstBasesTerminalsPa
     
     client01 = ClientBufferArrivalSigmoid(0,parExpDirPath,parBasePath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths)    
     client01.RefreshModel(True)
+    client01.GetHistory()
     client01.GetMapedMatrix()
     
 
@@ -123,7 +126,7 @@ for file in files:
  
         
     else:
-        print(file, " --> nao Adicionado");
+        mrs.MyPrint([file], ['Nao adicionado'])
     
     
 '''

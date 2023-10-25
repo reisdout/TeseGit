@@ -13,6 +13,24 @@ import pandas as pd
 import seaborn as sns; sns.set()
 import os
 
+print_output = False
+
+def MyPrint(parDescriptions,parValues,parSameLine=True):
+    
+    if(not print_output):
+        return;
+    
+    for i in range (len(parDescriptions)):
+        if(parSameLine):
+            if(parValues[i] == ' '):
+                print(parDescriptions[i])
+            else:
+                print(parDescriptions[i], "==>", parValues[i])
+        else:
+            print(parDescriptions[i],":")
+            print(parValues[i])
+    
+
 def binary(num, string=True):
     bits = np.unpackbits(np.array([num]).view('u1'))
     if string:
@@ -99,12 +117,18 @@ def NormalizeFeatures(data, parFromFile,par_exp_dir,parMinRtt=1.0):
            file1.writelines("cwnd_(Bytes): "+str(cwnd_normalizer)+"\n")
            file1.close()
     
-       print(ack_ewma_normalizer) 
-       print(send_ewma_normalizer)
-       print(min_rtt)
-       print(rtt_ratio_normalizer)
-       print(cwnd_normalizer) 
-       print("Eis os normalizadores acima")
+       #print(ack_ewma_normalizer)
+       MyPrint(['ack_ewma_normalizer'], [ack_ewma_normalizer])
+       #print(send_ewma_normalizer)
+       MyPrint(['send_ewma_normalizer'],[send_ewma_normalizer])
+       #print(min_rtt)
+       MyPrint(['min_rtt'],[min_rtt])
+       #print(rtt_ratio_normalizer)  
+       MyPrint(['rtt_ratio_normalizer'],[rtt_ratio_normalizer])
+       #print(cwnd_normalizer) 
+       MyPrint(['cwnd_normalizer'],[cwnd_normalizer])
+       #print("Eis os normalizadores acima")
+       MyPrint(['Eis os normalizadores acima'], [' '])
        #a=input("Eis os normalizadores acima")
        #seguir = input("Deseja Prosseguir? (N/n-->Sair)")
     
@@ -319,7 +343,8 @@ def MergeAndConcatBases(parLstBaseTerninais, parLstBaseRouter):
     
     
     
-    print(n1,",",n2)
+    #print(n1,",",n2)
+    print("Total Features: ",n1+n2)
         
     balanced_base.reset_index(drop=True,inplace=True)
     balanced_base_sampled = balanced_base.sample(frac = 1).reset_index(drop=True)
