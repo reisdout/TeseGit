@@ -23,7 +23,7 @@ from sklearn.model_selection import train_test_split
 from GeneralClient import Client
 import keras
 from keras.layers import Dense
-import matplotlib.pyplot as plt
+
 
 #from keras.utils import np_utils
 #import keras.utils.to_categorical
@@ -169,52 +169,6 @@ class ClientBufferArrivalSigmoid(Client):
         to_heat_map = pd.DataFrame(to_heat_map, index = ["Hit","Fail"],columns = ["Fail","Hit"])
         ax = sns.heatmap(to_heat_map,annot=True, fmt="d")
         
-    def GetHistory(self):
-        
-        '''
-        https://neptune.ai/blog/keras-loss-functions
-
-        Binary Classification
-            Binary classification loss function comes into play when solving a problem involving just two classes. For example, when predicting fraud in credit card transactions, a transaction is either fraudulent or not. 
-            
-            Binary Cross Entropy
-            The Binary Cross entropy will calculate the cross-entropy loss between the predicted classes and the true classes. By default, the sum_over_batch_size reduction is used. This means that the loss will return the average of the per-sample losses in the batch.
-            
-            y_true = [[0., 1.], [0.2, 0.8],[0.3, 0.7],[0.4, 0.6]]
-            y_pred = [[0.6, 0.4], [0.4, 0.6],[0.6, 0.4],[0.8, 0.2]]
-            bce = tf.keras.losses.BinaryCrossentropy(reduction='sum_over_batch_size')
-            bce(y_true, y_pred).numpy()
-            The sum reduction means that the loss function will return the sum of the per-sample losses in the batch.
-            
-            bce = tf.keras.losses.BinaryCrossentropy(reduction='sum')
-            bce(y_true, y_pred).numpy()
-            Using the reduction as none returns the full array of the per-sample losses.
-            
-            bce = tf.keras.losses.BinaryCrossentropy(reduction='none')
-            bce(y_true, y_pred).numpy()
-            array([0.9162905 , 0.5919184 , 0.79465103, 1.0549198 ], dtype=float32)
-            In binary classification, the activation function used is the sigmoid activation function. It constrains the output to a number between 0 and 1. 
-        '''
-        
-        #print(self.history.history.keys())
-        mrs.MyPrint(['Parametros de historico'], [self.history.history.keys()],parSameLine=False)
-        plt.plot(self.history.history['binary_accuracy'])
-        plt.plot(self.history.history['val_binary_accuracy'])
-        plt.title('MLP Model Accuracy')
-        plt.xlabel('Epoch')
-        plt.ylabel('Accuracy')
-        plt.legend(['Train','Test'])
-        plt.savefig(self.experimentPath+'/mlp_accuracy')
-        plt.show()
-        
-        plt.plot(self.history.history['loss'])
-        plt.plot(self.history.history['val_loss'])
-        plt.title('MLP Model Loss')
-        plt.xlabel('Epoch')
-        plt.ylabel('Loss')
-        plt.legend(['Train','Test'])
-        plt.savefig(self.experimentPath+'/mlp_accuracy')
-        plt.show()
         
     def AderenciaOutrosFluxos(self):
  

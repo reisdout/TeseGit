@@ -1,16 +1,10 @@
-
+import sys
 from GeneralClient import Client  
 from GeneralFromRouterLSTM_Sigmoid_Client import ClientBufferArrivalLSTM
 import os
-
-
-
-
-
-       
+sys.path.append('../mrsutils')
+import MRSUtils as mrs
     
-
-
 
 def TreinarModelo(parExpDirPath, parBasePath):
     
@@ -113,7 +107,7 @@ for file in files:
  
         
     else:
-        print(file, " --> nao Adicionado");
+       mrs.MyPrint([file], ['Nao adicionado'])
     
     
 '''

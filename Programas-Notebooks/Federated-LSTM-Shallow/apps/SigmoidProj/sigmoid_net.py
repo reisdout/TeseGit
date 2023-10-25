@@ -57,7 +57,7 @@ def TreinarModeloBufferArrival(parExpDirPath, parBasePath,parLstBasesTerminalsPa
     
     client01 = ClientBufferArrivalSigmoid(0,parExpDirPath,parBasePath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths)    
     client01.RefreshModel(True)
-    client01.GetHistory()
+    client01.GetHistory('MLP Model Accuracy','MLP Model Loss')
     client01.GetMapedMatrix()
     
 
