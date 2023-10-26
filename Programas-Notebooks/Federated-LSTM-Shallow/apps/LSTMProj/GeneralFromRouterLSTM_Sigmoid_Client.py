@@ -61,7 +61,7 @@ class ClientBufferArrivalLSTM(Client):
         self.n_steps_out = 0; #e o valor do ultimo
         #self.base_treinamento =  np.array([])
         #self.base_teste =  np.array([])
-        self.exp_batch_size = 512
+        self.exp_batch_size = 64
         self.currentConfusionMatriz =np.full((2,2), 0) # Apesar de ser obtidas a partir de listas, a matriz de comfusão é numpy
         self.exp_epoch =  3000
         #self.len_base_teste = 0;
@@ -450,18 +450,7 @@ class ClientBufferArrivalLSTM(Client):
       self.currentConfusionMatriz = confusion_matrix(classe_teste2,previsoes2)
       return self.currentConfusionMatriz # Com a configuração corrente, essa é a matriz....
         
-    def SaveModel(self):
     
-        classificador = self.GetModel()        
-        classificador.set_weights(self.weightsClientModel)
-        
-        classificador_json = classificador.to_json()
-        with open(self.experimentPath+"/model.json",'w') as json_file:
-            json_file.write(classificador_json)
-        classificador.save_weights(self.experimentPath+"/model_weights.h5")
-        from keras2cpp import export_model
-        export_model(classificador, self.experimentPath+"/example.model")
-        
     def ServerModelIsBetter(self):
         regressorServer = Sequential()
         regressorServer.add(LSTM(units = 100, return_sequences = True, input_shape = (self.input_shape, 4)))# 4, pois são 4 previsores
@@ -484,26 +473,24 @@ class ClientBufferArrivalLSTM(Client):
         return self.EvalueteServerModel(regressorServer)
     
     
-    def AderenciaOutrosFluxos(self):
+    def AderenciaOutrosFluxos(self,parModel):
  
+        
         #previsores_treinamento, previsores_teste, classe_treinamento, classe_teste = self.LoadTrainingDataSet(parFromFile=True)
         self.LoadTrainingDataSet(parFromFile=True)
-        arquivo = open(self.experimentPath+"/model.json",'r')
+        arquivo = open(self.modelPath+"/model_"+parModel+".json",'r')
         estrutura_classificador = arquivo.read()
         arquivo.close()
         from keras.models import model_from_json
         classificador = model_from_json(estrutura_classificador)
-        classificador.load_weights(self.experimentPath+"/model_weights.h5")
-
-
-        resultado = classificador.evaluate(self.previsores_teste, self.classe_teste)
+        classificador.load_weights(self.modelPath+"/model_weights_"+parModel+".h5") 
+        #resultado = classificador.evaluate(self.previsores_teste, self.classe_teste)
         previsoes = classificador.predict(self.previsores_teste)
         previsoes = (previsoes > 0.5)
-
 
         from sklearn.metrics import confusion_matrix
         matriz = confusion_matrix(previsoes, self.classe_teste)
         print(matriz)
         to_heat_map =[[matriz[0,0],matriz[0,1]],[matriz[1,0],matriz[1,1]]]
         to_heat_map = pd.DataFrame(to_heat_map, index = ["Hit","Fail"],columns = ["Fail","Hit"])
-        ax = sns.heatmap(to_heat_map,annot=True, fmt="d")
+        sns.heatmap(to_heat_map,annot=True, fmt="d") 

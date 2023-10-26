@@ -13,7 +13,7 @@ import pandas as pd
 import seaborn as sns; sns.set()
 import os
 
-print_output = False
+print_output = True
 
 def MyPrint(parDescriptions,parValues,parSameLine=True):
     

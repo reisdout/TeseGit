@@ -1,0 +1,5 @@
+ack_ewma: 6.0
+send_ewma: 7.22662
+rtt_min: 421.0
+rtt_ratio: 1.1140142517814726
+cwnd_(Bytes): 398791700

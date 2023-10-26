@@ -227,7 +227,7 @@ class Client():
     def GetPrevision(self): #evalueta indica que é uma avaliação do modelo recebido como parametro, no caso do servidor
         print("A ser implementada na classe concreta") 
        
-    def SaveModel(self,parModel):
+    def SaveModel(self, parModel):
     
         classificador = self.GetModel()        
         classificador.set_weights(self.weightsClientModel)
