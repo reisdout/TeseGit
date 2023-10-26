@@ -33,12 +33,12 @@ def PlotROC(parData,parLabels):
     descricao_experimeto = parLabels
     
     #desloc_x_text=[0,-0.0007,0,0,0]
-    desloc_x_text=[0,0]
+    desloc_x_text=[0.0010,0.0010,0.0010]
     
     #desloc_y_text=[-0.1,-0.06,-0.1,-0.07,-0.1]
     
     #desloc_y_text=[-0.1,-0.06,-0.1,-0.07,-0.1]
-    desloc_y_text=[-0.1,-0.1]
+    desloc_y_text=[-0.1,-0.1,-0.1]
     
     y_max = max(tpr)
     y_min = min(tpr)
@@ -84,8 +84,16 @@ def PlotROC(parData,parLabels):
     sns.scatterplot(df,x="FPR",y="TPR",ax=ax,color ='blue',s=50)
     invar = sns.lineplot(x=x_bisse, y=y_bisse, sort=False, color ='red', linewidth=1.5,label="TPR=FPR",ax=ax)
     
-    line = invar.get_lines()
-    plt.fill_between(line[0].get_xdata(), line[1].get_ydata(),line[0].get_ydata(), color='green', label="AUC",alpha=.12)
+    #Calculando as distancias do modelo sem discernimento y=x
+    for i in range(numPoints):
+        sns.lineplot(x=[fpr[i],fpr[i]], y=[fpr[i],tpr[i]], sort=False, color ='purple', estimator=None, linewidth=2.5,linestyle='dashed',ax=ax)
+        plt.text(x = fpr[i]+desloc_x_text[i], # x-coordinate position of data label
+                 y = (fpr[i]+tpr[i])/2, # y-coordinate position of data label, adjusted to be 150 below the data point
+                 s="{0:.3f}".format((tpr[i]-fpr[i])/2),#s = str(((tpr[i]-fpr[i])/2)), # data label, formatted to ignore decimals
+                 color = 'purple') # set colour of line
+
+    #line = invar.get_lines()
+    #plt.fill_between(line[0].get_xdata(), line[1].get_ydata(),line[0].get_ydata(), color='green', label="AUC",alpha=.12)
     
     
     # label points on the plot
@@ -98,7 +106,7 @@ def PlotROC(parData,parLabels):
      color = 'purple') # set colour of line
      i=i+1
     
-    plt.legend(loc='center right')
+    plt.legend(loc='lower left')
     plt.savefig('../../ROC.pdf')
     plt.show()
     
@@ -139,10 +147,11 @@ def ConstructROCGraph(parConfusionMatrizes, parPointLabels):
             'FPR': lstFPRs} 
 
     PlotROC(data,parPointLabels)
-cf1 = np.array([[854,0],[34,781]])
-cf2 = np.array([[554,4],[36,787]])
-lstCFs = [cf1,cf2]
-lstLabels = ["40 MLP","10 CNN"]
+cf1 = np.array([[598,48],[38,738]])
+cf2 = np.array([[578,24],[30,786]])
+cf3 = np.array([[565,43],[19,791]])
+lstCFs = [cf1,cf2,cf3]
+lstLabels = ["Treino MLP","Treino LSTM","Treino CNN"]
 
 ConstructROCGraph(lstCFs, lstLabels)
 
