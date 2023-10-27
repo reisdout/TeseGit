@@ -357,8 +357,8 @@ def MergeAndConcatBases(parLstBaseTerninais, parLstBaseRouter):
 def TileBase(data):
     
     rttTile = data['rtt_ratio'].quantile(0.9)
-    ackTile = data['ack_ewma(ms)'].quantile(0.7)
-    sendTile = data['send_ewma(ms)'].quantile(0.7)
+    ackTile = data['ack_ewma(ms)'].quantile(0.9)
+    sendTile = data['send_ewma(ms)'].quantile(0.9)
     
     '''
     dataRTT_Tile = data.drop(data[data['rtt_ratio']> rttTile].index)
@@ -378,7 +378,7 @@ def TileBase(data):
 def RenameFile(parExpPath, parInicialCount=1):
    
 
-   
+    print("Renomeando...")
     files = os.listdir(parExpPath)
     
     
