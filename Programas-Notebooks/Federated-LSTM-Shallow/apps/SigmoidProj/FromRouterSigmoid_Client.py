@@ -222,6 +222,6 @@ class ClientBufferArrivalSigmoid(Client):
                           batch_size = 64, 
                           epochs = 3000,
                           validation_split=0.2,
-                          verbose=1)
+                          verbose=0)
         self.weightsClientModel = classificador.get_weights()
      
