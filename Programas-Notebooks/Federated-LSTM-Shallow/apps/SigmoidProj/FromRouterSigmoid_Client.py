@@ -191,7 +191,7 @@ class ClientBufferArrivalSigmoid(Client):
         to_heat_map =[[matriz[0,0],matriz[0,1]],[matriz[1,0],matriz[1,1]]]
         to_heat_map = pd.DataFrame(to_heat_map, index = ["Hit","Fail"],columns = ["Fail","Hit"])
         sns.heatmap(to_heat_map,annot=True, fmt="d")
-
+        return matriz
 
 
     def RefreshModel(self, parFromTraining=False): #Constroi na primeira vez e atualiza, a partir da avaliação do servidor cetral

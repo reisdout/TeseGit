@@ -495,3 +495,4 @@ class ClientBufferArrivalLSTM(Client):
         to_heat_map =[[matriz[0,0],matriz[0,1]],[matriz[1,0],matriz[1,1]]]
         to_heat_map = pd.DataFrame(to_heat_map, index = ["Hit","Fail"],columns = ["Fail","Hit"])
         sns.heatmap(to_heat_map,annot=True, fmt="d") 
+        return matriz
