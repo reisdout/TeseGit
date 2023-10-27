@@ -29,6 +29,8 @@ import seaborn as sns; sns.set()
 
 
 import sys
+import os
+from time import gmtime, strftime
 sys.path.append('../mrsutils')
 
 import MRSUtils as mrs 
@@ -41,10 +43,17 @@ class LoggingCallback(keras.callbacks.Callback):
     def __init__(self, parExpDir):
        
         self.exp_dir = parExpDir
+        self.init_history = True;
 
 
     def on_epoch_end(self, epoch, logs=None):
+        
+        if(self.init_history):
+            
+            if(os.path.isfile(self.exp_dir+"/readme.txt")):
+                os.rename(os.path.join(self.exp_dir, "readme.txt"), os.path.join(self.exp_dir,'readme_back'+strftime('%Y-%m-%d %H-%M-%S',gmtime())+'.txt'))
 
+            self.init_history = False
         
         file_path = self.exp_dir+"/readme.txt"
 

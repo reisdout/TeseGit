@@ -12,6 +12,9 @@ import numpy as np
 import pandas as pd
 import seaborn as sns; sns.set()
 import os
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 
 print_output = False
 
@@ -356,6 +359,9 @@ def MergeAndConcatBases(parLstBaseTerninais, parLstBaseRouter):
 
 def TileBase(data):
     
+    #quantil = 0.9 degrada muito o treino, mas o desempenho da CNN consegue superar a dificuldade
+    #quantil = 0.8
+    #quantil = 0.7 fica show
     rttTile = data['rtt_ratio'].quantile(0.9)
     ackTile = data['ack_ewma(ms)'].quantile(0.9)
     sendTile = data['send_ewma(ms)'].quantile(0.9)
@@ -402,7 +408,139 @@ def RenameFile(parExpPath, parInicialCount=1):
             print(file, " --> nao renomeado");
         
         
-        
+def PlotROC(parData,parLabels):
+
+    
+    df = pd.DataFrame(parData) 
+    
+    
+    tpr = df.iloc[:,[0]].values.T
+    fpr = df.iloc[:,[1]].values.T
+    tpr = tpr[0]
+    fpr = fpr[0]
+    
+    numPoints = fpr.shape[0]
+    
+    #descricao_experimeto = ["5","10"]
+    
+    descricao_experimeto = parLabels
+    
+    #desloc_x_text=[0,-0.0007,0,0,0]
+    desloc_x_text=[0.0010,0.0010,0.0010]
+    
+    #desloc_y_text=[-0.1,-0.06,-0.1,-0.07,-0.1]
+    
+    #desloc_y_text=[-0.1,-0.06,-0.1,-0.07,-0.1]
+    desloc_y_text=[-0.1,-0.1,-0.1]
+    
+    y_max = max(tpr)
+    y_min = min(tpr)
+         
+    x_min = min(fpr)
+    x_max = max(fpr)
+ 
+    
+    pass_bisse = (x_max-x_min)/(numPoints-1)  
+    #x_bisse = np.array([0,0.003,0.006,0.010,0.0126050420168067])
+    #y_bisse = np.array([0,0.003,0.006,0.010,0.0126050420168067])
+    x_bisse = np.zeros(numPoints)
+    y_bisse = np.zeros(numPoints)
+
+    x_bisse[0] = x_min
+    y_bisse[0] = x_min
+    
+    
+
+    for i in range(1,numPoints):
+        x_bisse[i] = x_bisse[0]+i*pass_bisse
+        y_bisse[i] = x_bisse[i]
+    
+    # Create the pandas DataFrame 
+    
+    fig = plt.figure(figsize=(20,20))
+    # print dataframe. 
+    fig, ax = plt.subplots()
+    #ax.set_xlim(left=-0.0015, right=0.015)
+    #ax.set_xlim(left=x_min-0.0015, right=x_max+0.015)
+    #ax.set_ylim(bottom=-0.020, top=1.05)
+    #ax.set_ylim(bottom=y_min-0.020, top=y_max+1.05)
+    
+    custom_params = {"axes.spines.right": False, "axes.spines.top": False}
+    sns.set_theme(style="ticks", rc=custom_params)
+    sns.set_theme(style="whitegrid", palette="pastel")
+    
+    
+    
+    sns.axes_style("ticks")
+    
+    roc = sns.lineplot(df,x="FPR",y="TPR", label= 'ROC por Fluxo',color ='blue', linewidth=1.5,ax=ax).set(title="ROC - Modelo 20 Fluxos")
+    sns.scatterplot(df,x="FPR",y="TPR",ax=ax,color ='blue',s=50)
+    invar = sns.lineplot(x=x_bisse, y=y_bisse, sort=False, color ='red', linewidth=1.5,label="TPR=FPR",ax=ax)
+    
+    #Calculando as distancias do modelo sem discernimento y=x
+    for i in range(numPoints):
+        sns.lineplot(x=[fpr[i],fpr[i]], y=[fpr[i],tpr[i]], sort=False, color ='purple', estimator=None, linewidth=2.5,linestyle='dashed',ax=ax)
+        plt.text(x = fpr[i]+desloc_x_text[i], # x-coordinate position of data label
+                 y = (fpr[i]+tpr[i])/2, # y-coordinate position of data label, adjusted to be 150 below the data point
+                 s="{0:.3f}".format((tpr[i]-fpr[i])/2),#s = str(((tpr[i]-fpr[i])/2)), # data label, formatted to ignore decimals
+                 color = 'purple') # set colour of line
+
+    #line = invar.get_lines()
+    #plt.fill_between(line[0].get_xdata(), line[1].get_ydata(),line[0].get_ydata(), color='green', label="AUC",alpha=.12)
+    
+    
+    # label points on the plot
+    i=0
+    for x in fpr:
+     # the position of the data label relative to the data point can be adjusted by adding/subtracting a value from the x &/ y coordinates
+     plt.text(x = x+desloc_x_text[i], # x-coordinate position of data label
+     y = tpr[i]+desloc_y_text[i], # y-coordinate position of data label, adjusted to be 150 below the data point
+     s = descricao_experimeto[i], # data label, formatted to ignore decimals
+     color = 'purple') # set colour of line
+     i=i+1
+    
+    plt.legend(loc='lower left')
+    plt.savefig('../../ROC.pdf')
+    plt.show()
+    
+    
+data = {'TPR': [1,       1           , 0.994715984147952 , 0.996268656716418 ,       1],
+        'FPR': [0, 0.0106194690265487, 0.0126050420168067, 0.0108695652173913,0.00754716981132076]} 
+df = pd.DataFrame(data) 
+
+
+tpr = df.iloc[:,[0]].values.T
+fpr = df.iloc[:,[1]].values.T
+
+tpr = tpr[0]
+fpr = fpr[0]
+
+#PlotROC(data)
+
+
+
+
+def ConstructROCGraph(parConfusionMatrizes, parPointLabels):
+    print("em construçao")
+    if(len(parConfusionMatrizes) != len(parPointLabels)):
+        print("Dimensoes incompativeis")
+        return
+    
+ 
+    lstTPRs =  []
+    lstFPRs =  []
+    
+    for i in range (len (parConfusionMatrizes)):
+        temp_TPR = parConfusionMatrizes[i][1][1]/(parConfusionMatrizes[i][0][1]+parConfusionMatrizes[i][1][1])
+        lstTPRs.append(temp_TPR)
+        temp_FPR = parConfusionMatrizes[i][1][0]/(parConfusionMatrizes[i][0][0]+parConfusionMatrizes[i][1][0])
+        lstFPRs.append(temp_FPR)
+    
+    data = {'TPR': lstTPRs,
+            'FPR': lstFPRs} 
+
+    PlotROC(data,parPointLabels)
+
         
         
         

@@ -31,8 +31,9 @@ def TreinarModeloBufferArrival(parExpDirPath, parModelPath,parLstBasesTerminalsP
     client01 = ClientBufferArrivalLSTM(0,parExpDirPath,parModelPath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths,parFeaturesWindow=3)    
     client01.RefreshModel(True)
     client01.GetHistory('LSTM Model Accuracy', 'LSTM Model Loss','LSTM')
-    client01.GetMapedMatrix()
+    matrix = client01.GetMapedMatrix()
     client01.SaveModel("LSTM")
+    mrs.ConstructROCGraph([matrix], ["LSTM"])
 
 
 def EvalueteModelLevarage(parExpDirPath, parBasePath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths):
