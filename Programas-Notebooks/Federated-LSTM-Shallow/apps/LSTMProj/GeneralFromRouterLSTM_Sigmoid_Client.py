@@ -46,7 +46,7 @@ class ClientBufferArrivalLSTM(Client):
 
     #resultadoTreinamento = np.eye(10)
 
-    def __init__(self,parId,parExperimentPath,parBasePath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths, parFeaturesWindow):
+    def __init__(self,parId,parExperimentPath,parBasePath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths, parFeaturesWindow,parLstFeatues=[1,2,3]):
            
         #print(parLstBasesTerminalsPaths)
         #print(parLstBasesRoutersPaths)
@@ -69,7 +69,7 @@ class ClientBufferArrivalLSTM(Client):
         #self.previsores_teste = [] 
         #self.classe_treinamento = [] 
         #self.classe_teste = []
-        super().__init__(parId,parExperimentPath,parBasePath)
+        super().__init__(parId,parExperimentPath,parBasePath,parLstFeatues=parLstFeatues)
 
 
         
@@ -183,11 +183,18 @@ class ClientBufferArrivalLSTM(Client):
         baseNor.to_csv(self.experimentPath+'/finalbaseDebugPrevision.csv',sep=',',index=False,encoding='utf-8')
      
         #base = self.NormalizeFeatures(base,parLoadFromNotTrainedFile=False)
-        base_treinamento, base_teste = self.SplitBase(baseNor)    
+        base_treinamento, base_teste = self.SplitBase(baseNor)
+        
+        lstFeatures = self.lstFeatures.append(13)
      
      
-        base_treinamento = base_treinamento.iloc[:, [1,2,3,13]].values
-        base_teste = base_teste.iloc[:, [1,2,3,13]].values
+        #base_treinamento = base_treinamento.iloc[:, [1,2,3,13]].values
+        
+        base_treinamento = base_treinamento.iloc[:, lstFeatures].values
+        
+        #base_teste = base_teste.iloc[:, [1,2,3,13]].values
+        base_teste = base_teste.iloc[:, lstFeatures].values
+        
         previsores=[]
         real_congestion_treino = []
         real_congestion_teste = []
@@ -198,9 +205,15 @@ class ClientBufferArrivalLSTM(Client):
             end_ix = i+self.n_steps_out
             if end_ix > base_treinamento_len:
                 break;
+            #o que é considerado é o limite superior do range -1 e sem a informação do percentual de ocupação do buffer
             #previsores.append(base_treinamento[i-self.T:i, 0:4])#o que é considerado é o limite superior do rante -1
-            previsores.append(base_treinamento[i-self.T:i, 0:3])#o que é considerado é o limite superior do rante -1 e sem a informação do percentual de ocupação do buffer
-            real_congestion_treino.append(base_treinamento[(i-1)+self.n_steps_out,3]-1)
+            #previsores.append(base_treinamento[i-self.T:i, 0:3])#o que é considerado é o limite superior do rante -1 e sem a informação do percentual de ocupação do buffer
+            #                                                                                Para pegar a ultima feature, que e o estado do congestionamento
+            #                                                                                                             |
+            previsores.append(base_treinamento[i-self.T:i, 0:len(lstFeatures)-1])#                                        | Para quee o estado seja (0) ou (1)                          |
+            #real_congestion_treino.append(base_treinamento[(i-1)+self.n_steps_out,3]-1)                                  |  |
+            real_congestion_treino.append(base_treinamento[(i-1)+self.n_steps_out,len(lstFeatures)-1]-1)#len(lstFeatures)-1]-1
+            
             
             
             
@@ -210,10 +223,10 @@ class ClientBufferArrivalLSTM(Client):
         for i in range(self.T,base_teste_len): # para as duzentas previsoes, o mesmo tramanho do Teste.csv, ou seja 290-90
           if i >= base_teste_len:
             break;
-          X_teste.append(base_teste[i-self.T:i, 0:3])
-          real_congestion_teste.append(base_teste[(i-1)+self.n_steps_out,3]-1)
-
-        
+          #X_teste.append(base_teste[i-self.T:i, 0:3])#                                            Para pegar a ultima feature, que e o estado do congestionamento
+          X_teste.append(base_teste[i-self.T:i, 0:len(lstFeatures)-1])#                                          |  Para quee o estado seja (0) ou (1)
+          #real_congestion_teste.append(base_teste[(i-1)+self.n_steps_out,3]-1)#                                 |  |
+          real_congestion_teste.append(base_teste[(i-1)+self.n_steps_out,len(lstFeatures)-1]-1)#len(lstFeatures)-1]-1
 
         '''
           *********************************SOBRE O RESHAPE**************************************

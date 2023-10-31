@@ -1,0 +1,78 @@
+Introdução
+"Fig. 1 - ideia toda" e Research Questions
+----------------------------------
+Trabalhos Relacionados
+    puxar artigos que usem machine learning com tcp
+    tcp supervisionado
+----------------------------------
+Arquitetura 
+    descrever os parametros do remy
+    pseudo-algoritmo do tcp com ML
+----------------------------------
+Preparação de Dataset
+    descrever o simulador
+    descrever os cenarios, geração de trafego
+    captura de tempos
+----------------------------------
+Resultados respondendo as research questions
+
+    Research Questions
+    RQ1 - is it possible to learn the congestion control?
+        RQ1.1 - does it generalize under different flow amount?
+        RQ1.2 - is it possible to learn using mixed congestion control? (mixed Reno and Cubic)
+
+    MLP
+    CNN
+    LSTM
+
+    dataset 
+    ... (simulado com ns-3)
+
+    BOX - answer RQ1
+        sim, eh possivel detectar com aprendizado ... e o melhor modelo é CNN com uma matriz de 3 baseado nos parametros de atrasos.
+------------
+    RQ2 - is it possible to use less "remy" parameters? 
+        2 parametros, comparativo
+------------
+    RQ3 - using the learnt congestion, is there a use case for it, in order to optimize bandwidth? 
+
+    BOX - answer RQ3
+        sim, os resultados mostraram melhoria de desempenho qdo perdas aleatorias são introduzidas, e diferenciadas.
+------------
+    RQ4 - how feasible in practice to run congestion control learning algorithm using software? 
+
+    CNN - 
+        tempo treinamento
+        matriz de pesos 
+            dado uma entrada 
+                3 valores EWMA, RTT, SEND
+                output - nivel cong
+                input * M = output (per packet, per 3 packet)
+
+        1 ms inter-time arrival
+        3 ms = output
+        inferencia CNN - 
+            tempo de resposta (5 msec)
+
+        interarrival time = inverso banda
+            100 Mbps = 1 microseg
+            1Gbps = 1 nanoseg
+            10Gbps = 1 picoseg
+
+    inferencia = 0 seg
+    tempo de resposta = cnn(ewma, sendma, rtt) = 0
+
+    tcp_cong (per ack)
+        cong_level = cnn(ewma, sendma, rtt)
+        cwnd = cong_level * (cwnd-1)
+
+    cnn(ewma, sendma, rtt)
+        start = gettimeofday
+        ...
+        end = gettimeofday
+
+        limitações (fizemos com simulação ...):
+            switch P4 com ML
+            inferencia tempo real (CNN em tempo real)
+------------
+Conclusion and future work

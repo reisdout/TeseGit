@@ -38,7 +38,7 @@ import MRSUtils as mrs
 
 class ClientBufferArrivalSigmoid(Client):
     
-    def __init__(self,parId,parExperimentPath,parBasePath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths):
+    def __init__(self,parId,parExperimentPath,parBasePath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths,parLstFeatues=[1,2,3]):
            
         #print(parLstBasesTerminalsPaths)
         #print(parLstBasesRoutersPaths)
@@ -53,7 +53,7 @@ class ClientBufferArrivalSigmoid(Client):
         #self.previsores_teste = [] 
         #self.classe_treinamento = [] 
         #self.classe_teste = []
-        super().__init__(parId,parExperimentPath,parBasePath)
+        super().__init__(parId,parExperimentPath,parBasePath,parLstFeatues=parLstFeatues)
 
 
     def GetModel(self):
@@ -64,7 +64,7 @@ class ClientBufferArrivalSigmoid(Client):
          #                       kernel_initializer = 'random_uniform', input_dim = 4))#Com cwnd
         
         classificador.add(Dense(units = 20, activation = 'relu', 
-                                kernel_initializer = 'random_uniform', input_dim = 3))#sem cwnd
+                                kernel_initializer = 'random_uniform', input_dim = len(self.lstFeatures)))#sem cwnd
         
         classificador.add(Dense(units = 20, activation = 'relu', 
                                 kernel_initializer = 'random_uniform'))
@@ -134,7 +134,8 @@ class ClientBufferArrivalSigmoid(Client):
         baseNor.to_csv(self.experimentPath+'/finalbaseDebugPrevision.csv',sep=',',index=False,encoding='utf-8')
         ####baseNor = pd.read_csv(self.experimentPath+'/finalbaseDebugPrevision.csv')
        
-        previsores = baseNor.iloc[:, [1,2,3]].values        
+        #previsores = baseNor.iloc[:, [1,2,3]].values   
+        previsores = baseNor.iloc[:, self.lstFeatures].values   
         classe = baseNor.iloc[:, 13].values
         classe -=1        
         self.previsores_treinamento, self.previsores_teste,self.classe_treinamento,self.classe_teste = train_test_split(previsores, classe, test_size=0.20)

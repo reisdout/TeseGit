@@ -73,7 +73,8 @@ class Client():
                  parPrevisores_treinamento=[],
                  parPrevisores_teste=[],
                  parClasse_treinamento=[],
-                 parClasse_teste=[]):
+                 parClasse_teste=[],
+                 parLstFeatues=[1,2,3]): #Lista de features a ser considerada, ou seja, C3,2 ack_ewma; send_ewma; RTTRatio
     
         
       self.id=parId
@@ -102,6 +103,7 @@ class Client():
       self.classe_treinamento = parClasse_treinamento 
       self.classe_teste = parClasse_teste
       self.history=[]
+      self.lstFeatures = parLstFeatues
 
     def EvaluateServerModel(self):
       print ("Modelo do Servidor avaliado")
