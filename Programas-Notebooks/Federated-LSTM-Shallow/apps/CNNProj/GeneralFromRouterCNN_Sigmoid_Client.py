@@ -58,7 +58,7 @@ class ClientBufferArrivalCNN(Client):
         #self.base_teste =  np.array([])
         self.exp_batch_size = 64
         self.currentConfusionMatriz =np.full((2,2), 0) # Apesar de ser obtidas a partir de listas, a matriz de comfusão é numpy
-        self.exp_epoch =  3
+        self.exp_epoch =  3000
         #self.len_base_teste = 0;
         #self.previsores_treinamento=[]
         #self.previsores_teste = [] 
@@ -309,75 +309,7 @@ class ClientBufferArrivalCNN(Client):
       self.confusionMatrizModelServer = np.full((2,2),random.randint(0,9))
     '''       
 
-    def GetPrevision(self): #evalueta indica que é uma avaliação do modelo recebido como parametro, no caso do servidor
-      test_vectors = self.LoadTestData()
-      regressor = Sequential()
-      regressor.add(LSTM(units = 100, return_sequences = True, input_shape = (self.input_shape, 4)))# 4, pois são 4 previsores
-      regressor.add(Dropout(0.3)) #zerar 30% das entradas para evitar o overfiting
-      regressor.add(LSTM(units = 50, return_sequences = True))
-      regressor.add(Dropout(0.3))
-      regressor.add(LSTM(units = 50, return_sequences = True))
-      regressor.add(Dropout(0.3))
-      regressor.add(LSTM(units = 50))
-      regressor.add(Dropout(0.3))
-      regressor.add(Dense(units = 1, activation = 'sigmoid',name="client_eval_"+str(self.id)))
-      regressor.compile(optimizer = 'adam', loss = 'mean_squared_error',metrics = ['mean_absolute_error'])
 
-      regressor.set_weights(self.weightsClientModel)
-
-      previsoes = regressor.predict(test_vectors)
-      #previsoes = parNeuralModel.predict(self.test_vectors)
-     
-      '''
-      Observe que os previsores teste tem 90 quádruplas que conduzem ao resultado
-      do último estado, da quádrupla 90. Prontamente preparado para pevisões....
-      '''
-      #classe_teste2 = np.array([])
-      #previsoes2 =  np.array([])
-      classe_teste2,previsoes2 = self.GetMapedMatrix(previsoes)
-      '''
-      for i in range(0, len(self.base_teste)):
-        if(self.real_congestion_test[i] < 0.3):
-          classe_teste2 = np.append(classe_teste2,0)
-        elif (self.real_congestion_test[i,0] >= 0.3 and self.real_congestion_test[i] < 0.75):
-          classe_teste2= np.append(classe_teste2,1)
-        else:
-          classe_teste2 = np.append(classe_teste2,2)
-
-      for i in range(0, len(previsoes)):
-        if(previsoes[i] < 0.3):
-          previsoes2= np.append(previsoes2,0)
-        elif (previsoes[i] >= 0.3 and previsoes[i] < 0.75):
-          previsoes2= np.append(previsoes2,1)
-        else:
-          previsoes2 = np.append(previsoes2,2)
-      '''
-      self.currentConfusionMatriz = confusion_matrix(classe_teste2,previsoes2)
-      return self.currentConfusionMatriz # Com a configuração corrente, essa é a matriz....
-        
-        
-    def ServerModelIsBetter(self):
-        regressorServer = Sequential()
-        regressorServer.add(LSTM(units = 100, return_sequences = True, input_shape = (self.input_shape, 4)))# 4, pois são 4 previsores
-        regressorServer.add(Dropout(0.3)) #zerar 30% das entradas para evitar o overfiting
-        regressorServer.add(LSTM(units = 50, return_sequences = True))
-        regressorServer.add(Dropout(0.3))
-        regressorServer.add(LSTM(units = 50, return_sequences = True))
-        regressorServer.add(Dropout(0.3))
-        regressorServer.add(LSTM(units = 50))
-        regressorServer.add(Dropout(0.3))
-
-        '''
-        Segundo https://towardsdatascience.com/illustrated-guide-to-lstms-and-gru-s-a-step-by-step-explanation-44e9eb85bf21
-        as saídas de cada unidade da LSTM e, portanto, a saída global é a dimenção do número de previsores, que, no nosso
-        caso, é 4. Daí esses 4 estão sendo levados em um softmax de tres neurônios, pois há tres categorias no final"
-        ''' 
-        regressorServer.add(Dense(units = 1, activation = 'sigmoid',name="client_eval_"+str(self.id)))
-        regressorServer.compile(optimizer = 'adam', loss = 'mean_squared_error',metrics = ['mean_absolute_error'])
-        regressorServer.set_weights(self.weightsServerModel)
-        return self.EvalueteServerModel(regressorServer)
-    
-    
     def AderenciaOutrosFluxos(self,parModel):       
         #previsores_treinamento, previsores_teste, classe_treinamento, classe_teste = self.LoadTrainingDataSet(parFromFile=True)
         self.LoadTrainingDataSet(parFromFile=True)
