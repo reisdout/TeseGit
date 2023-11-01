@@ -3,6 +3,7 @@ sys.path.append('..')
 #from GeneralClient import Client  
 from FromRouterSigmoid_Client import ClientBufferArrivalSigmoid
 from GeneralTerminal import GeneralTerminal
+import MRSUtils as mrs
 
 
 
@@ -32,7 +33,8 @@ class TerminalSigmoid(GeneralTerminal):
         client01 = ClientBufferArrivalSigmoid(0,self.basePath,self.modelPath,self.lstTermianlsPath, self.lstRouterPath,self.lstTrainFeatures)    
         client01.RefreshModel(True)
         client01.GetHistory('MLP Model Accuracy ('+self.PrepareHistoryTitle()+')','MLP Model Loss '+'('+self.PrepareHistoryTitle()+')','MLP')
-        client01.GetMapedMatrix()
+        matrix = client01.GetMapedMatrix()
+        mrs.ConstructROCGraph([matrix], ["LSTM"])
         client01.SaveModel("MLP")
     
         '''

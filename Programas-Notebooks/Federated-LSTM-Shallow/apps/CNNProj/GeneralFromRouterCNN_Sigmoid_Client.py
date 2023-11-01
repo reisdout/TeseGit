@@ -210,7 +210,8 @@ class ClientBufferArrivalCNN(Client):
      #rlr = ReduceLROnPlateau(monitor = 'loss', factor = 0.2, patience = 5, verbose = 1)
      #mcp = ModelCheckpoint(filepath = self.exp_dir+"/pesos.h5", monitor = 'loss',  save_weights_only = True, save_freq='epoch',verbose = 1)
      #regressor.fit(previsores, real_congestion, epochs = 50, batch_size = 32, callbacks = [es, rlr, mcp])
-     print("Treinando o modelo CNN...")
+     
+     print("Treinando o modelo CNN, com {} epocas...".format(self.exp_epoch))
      self.history = regressor.fit(self.previsores_treinamento, 
                                   self.classe_treinamento, 
                                   epochs = self.exp_epoch, 

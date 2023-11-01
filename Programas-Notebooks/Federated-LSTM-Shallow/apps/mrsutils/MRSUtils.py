@@ -482,7 +482,7 @@ def PlotROC(parData,parLabels):
         sns.lineplot(x=[fpr[i],fpr[i]], y=[fpr[i],tpr[i]], sort=False, color ='purple', estimator=None, linewidth=2.5,linestyle='dashed',ax=ax)
         plt.text(x = fpr[i]+desloc_x_text[i], # x-coordinate position of data label
                  y = (fpr[i]+tpr[i])/2, # y-coordinate position of data label, adjusted to be 150 below the data point
-                 s="{0:.3f}".format((tpr[i]-fpr[i])/2),#s = str(((tpr[i]-fpr[i])/2)), # data label, formatted to ignore decimals
+                 s="{0:.3f}".format((tpr[i]-fpr[i])),#s = str(((tpr[i]-fpr[i])/2)), # data label, formatted to ignore decimals
                  color = 'purple') # set colour of line
 
     #line = invar.get_lines()
@@ -500,7 +500,7 @@ def PlotROC(parData,parLabels):
      i=i+1
     
     plt.legend(loc='lower left')
-    plt.savefig('../../ROC.pdf')
+    #plt.savefig('../../ROC.pdf')
     plt.show()
     
     

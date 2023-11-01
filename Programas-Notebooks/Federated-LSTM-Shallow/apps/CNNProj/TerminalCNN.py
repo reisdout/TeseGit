@@ -9,11 +9,14 @@ import MRSUtils as mrs
 class TerminalCNN(GeneralTerminal):
     
     def __init__(self, 
-                 parTreino,
+                 parBasePath,
+                 parExpDirPath,
+                 parModelPath,
+                 parTreino=True,
                  parLstTrainFeatures=[1,2,3]):
            
   
-        super().__init__(parTreino,parLstTrainFeatures=parLstTrainFeatures)
+        super().__init__(parBasePath,parExpDirPath,parModelPath,parTreino,parLstTrainFeatures=parLstTrainFeatures)
 
         
 
