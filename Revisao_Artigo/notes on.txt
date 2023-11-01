@@ -168,7 +168,7 @@ Revisão 02
 
 Professor, em relação às minhas observações, os autores corrigiram todas.
 Só há uma questão a respeito da reprodutivilidade (6 EXPERIMENTING WITH RAYNET) que eles resolveram
-abordar por meio da seguinte nota  na página 16:
+abordar por meio da seguinte nota,  na página 16:
 
 "We do not discuss the reproducibility principle any further here; OMNeT++ simulations are deterministic therefore any reproducibility limitations only stem from RL algorithms’ intrinsics."
 
