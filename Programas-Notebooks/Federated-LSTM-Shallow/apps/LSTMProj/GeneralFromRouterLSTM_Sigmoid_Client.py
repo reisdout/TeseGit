@@ -63,7 +63,7 @@ class ClientBufferArrivalLSTM(Client):
         #self.base_teste =  np.array([])
         self.exp_batch_size = 64
         self.currentConfusionMatriz =np.full((2,2), 0) # Apesar de ser obtidas a partir de listas, a matriz de comfusão é numpy
-        self.exp_epoch =  3
+        self.exp_epoch =  3000
         #self.len_base_teste = 0;
         #self.previsores_treinamento=[]
         #self.previsores_teste = [] 
@@ -322,7 +322,7 @@ class ClientBufferArrivalLSTM(Client):
      #mcp = ModelCheckpoint(filepath = self.exp_dir+"/pesos.h5", monitor = 'loss',  save_weights_only = True, save_freq='epoch',verbose = 1)
      #regressor.fit(previsores, real_congestion, epochs = 50, batch_size = 32, callbacks = [es, rlr, mcp])
      
-     print("Treinando o modelo LSTM...")
+     print("Treinando o modelo LSTM, com {} epocas...".format(self.exp_epoch))
      self.history = regressor.fit(self.previsores_treinamento, 
                                   self.classe_treinamento, 
                                   epochs = self.exp_epoch, 
