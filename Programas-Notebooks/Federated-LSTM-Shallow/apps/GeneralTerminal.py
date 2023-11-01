@@ -10,6 +10,9 @@ class GeneralTerminal():
     #resultadoTreinamento = np.eye(10)
 
     def __init__(self,
+                 parBasePath,
+                 parExperimentPath,
+                 parModelPath,
                  parTreino = True,
                  parLstTrainFeatures=[1,2,3]):
     
@@ -18,26 +21,12 @@ class GeneralTerminal():
       self.treino = parTreino
       self.lstTermianlsPath=[]
       self.lstRouterPath=[]            
-      self.basePath = []
-      self.experimentPath =[]
-      self.modelPath = []
+      self.basePath = parBasePath
+      self.experimentPath = parExperimentPath
+      self.modelPath = parModelPath
       self.lstTrainFeatures = parLstTrainFeatures
-      if(self.treino == True):
-          #Para Treinamento
-          
-          self.basePath = "../../Exp_0000055" #Para se montar a lista com os arquivos da base. No caso de treinameno, geralmente e a mesma do experiment path
-          self.experimentPath = "../../Exp_0000055"  #Diretorio do experimento. Tem a conotaçao de registrar as saidas do experimento (graficos, por exemplo)
-          self.modelPath =  "../../Exp_0000055" #De onde se deve carregar um modelo em caso de aderencia. No caso de treinamento, pode ser o experimentPath, uma vez que nao carrega modelo algum
-
-
-
-      else:
-          #Para aderencia
-          
-          self.basePath = '../../Exp_0000056_Aderencia_05_Fluxos' #Para se montar a lista com os arquivos da base. No caso de treinameno, geralmente e a mesma do experiment path
-          self.experimentPath = '../../Exp_0000056_Aderencia_05_Fluxos'  #Diretorio do experimento. Tem a conotaçao de registrar as saidas do experimento (graficos, por exemplo)
-          self.modelPath =  "../../Exp_0000055" #De onde se deve carregar um modelo em caso de aderencia. No caso de treinamento, pode ser o experimentPath, uma vez que nao carrega modelo algum
-
+      
+ 
     def GetCvsFiles(self):   
     
         files = os.listdir(self.basePath)            

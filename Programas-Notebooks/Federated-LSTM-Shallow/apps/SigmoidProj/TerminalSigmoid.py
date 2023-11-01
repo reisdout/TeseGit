@@ -9,12 +9,19 @@ from GeneralTerminal import GeneralTerminal
 
 class TerminalSigmoid(GeneralTerminal):
     
-    def __init__(self, 
+    def __init__(self,                  
+                 parBasePath,
+                 parExperimentPath,
+                 parModelPath,
                  parTreino,
                  parLstTrainFeatures = [1,2,3]):
            
   
-        super().__init__(parTreino,parLstTrainFeatures=parLstTrainFeatures)
+        super().__init__(parBasePath,
+                         parExperimentPath,
+                         parModelPath,
+                         parTreino,
+                         parLstTrainFeatures)
 
 
     
