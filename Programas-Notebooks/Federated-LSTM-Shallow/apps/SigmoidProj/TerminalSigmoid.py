@@ -13,7 +13,7 @@ class TerminalSigmoid(GeneralTerminal):
                  parBasePath,
                  parExperimentPath,
                  parModelPath,
-                 parTreino,
+                 parTreino=True,
                  parLstTrainFeatures = [1,2,3]):
            
   
