@@ -20,14 +20,21 @@ class GeneralTerminal():
       self.lstFeatures_Names = ['#', "ACK_ewma", "Send_ewma","RTT_ratio"]#Replica o cabeçlho do csv
       self.treino = parTreino
       self.lstTermianlsPath=[]
-      self.lstRouterPath=[]            
+      self.lstRouterPath=[]      
+      '''
+      Observe que os terminais tem os tres caminhos, pois precisam sempre do base_path para carregar o caminho dos arquivos.
+      Os clientes ja nao precisam receber o base_path, pois ja recebem o caminho da base de trinamento dos terminais, por isso
+      na instanciçao dos clientes, pasasa-se o experiment_path e nao base_path.
+      Lembrando que po model_path so faz real sentido quando da avaliaçao do treinamento, quando deve ser necessariamente diferente de 
+      experimentPath.
+      '''
       self.basePath = parBasePath
       self.experimentPath = parExperimentPath
       self.modelPath = parModelPath
       self.lstTrainFeatures = parLstTrainFeatures
       
  
-    def GetCvsFiles(self):   
+    def GetCvsPathFiles(self):   
     
         files = os.listdir(self.basePath)            
         files.sort()
@@ -64,10 +71,10 @@ class GeneralTerminal():
 
     def RunClient(self):
         
-        self.GetCvsFiles()
+        self.GetCvsPathFiles()
         #no "TreinarModeloBufferArrival", o modelPath e onde se salva o modelo, que no caso do treinamento e o mesmo do experimentPath
         if(self.treino):
-            self.TreinarModeloBufferArrival(self.experimentPath,self.experimentPath, self.lstTermianlsPath,self.lstRouterPath)
+            self.TreinarModeloBufferArrival()
         
         
         #no "EvalueteModelLevarage", o modelPath e de onde se carrega o modelo cuja aderencia deve ser avaliada.

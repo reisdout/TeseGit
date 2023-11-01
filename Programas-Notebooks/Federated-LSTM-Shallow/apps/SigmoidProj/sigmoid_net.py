@@ -20,5 +20,5 @@ else:
     modelPath =  "../../Exp_0000055" #De onde se deve carregar um modelo em caso de aderencia. No caso de treinamento, pode ser o experimentPath, uma vez que nao carrega modelo algum
 
 
-objTerminal = TerminalSigmoid(basePath, experimentPath, modelPath, parTreino=True,parLstTrainFeatures=[1,3])
+objTerminal = TerminalSigmoid(basePath, experimentPath, modelPath, parTreino=True,parLstTrainFeatures=[1,2,3])
 objTerminal.RunClient()

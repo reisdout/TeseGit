@@ -531,8 +531,14 @@ def ConstructROCGraph(parConfusionMatrizes, parPointLabels):
     lstFPRs =  []
     
     for i in range (len (parConfusionMatrizes)):
+        if(not (parConfusionMatrizes[i][0][1]+parConfusionMatrizes[i][1][1])):
+            print("Impossivel Construir Grafico ROC")
+            return
         temp_TPR = parConfusionMatrizes[i][1][1]/(parConfusionMatrizes[i][0][1]+parConfusionMatrizes[i][1][1])
         lstTPRs.append(temp_TPR)
+        if(not (parConfusionMatrizes[i][0][0]+parConfusionMatrizes[i][1][0])):
+            print("Impossivel construir grafico ROC")
+            return
         temp_FPR = parConfusionMatrizes[i][1][0]/(parConfusionMatrizes[i][0][0]+parConfusionMatrizes[i][1][0])
         lstFPRs.append(temp_FPR)
     

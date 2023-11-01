@@ -37,11 +37,11 @@ DDoS Atack.
 
 """
 
-class ClientBufferArrivaCNN(Client):
+class ClientBufferArrivalCNN(Client):
 
     #resultadoTreinamento = np.eye(10)
 
-    def __init__(self,parId,parExperimentPath,parBasePath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths, parFeaturesWindow):
+    def __init__(self,parId,parExperimentPath,parBasePath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths, parLstFeatues=[1,2,3], parFeaturesWindow=3):
            
         #print(parLstBasesTerminalsPaths)
         #print(parLstBasesRoutersPaths)
@@ -80,7 +80,7 @@ class ClientBufferArrivaCNN(Client):
            (no caso, ack_ewma, send_ewma e rtt_ratio). Por isso (1,3), no Conv2D. Diante disso, a matriz que
            passara pelo pool e de 1X3, o que motivou o pool_size=(1,2), que focara nas linhas.
        '''
-       regressor.add(Conv2D(16,(1,3),input_shape=(3,3,1),activation="relu"))
+       regressor.add(Conv2D(16,(1,len(self.lstFeatures)),input_shape=(self.T,len(self.lstFeatures),1),activation="relu"))
        regressor.add(MaxPooling2D(pool_size=(1,2),padding='same'))
        regressor.add(Flatten())       
       
@@ -154,46 +154,31 @@ class ClientBufferArrivaCNN(Client):
         #base = self.NormalizeFeatures(base,parLoadFromNotTrainedFile=False)
         base_treinamento, base_teste = self.SplitBase(baseNor)    
      
+        lstFeaturestoGet = [] #Tem que abarcar as de treinamento e os respectivos valores de estado
+        lstFeaturestoGet.extend(self.lstFeatures)
+        lstFeaturestoGet.append(13)
      
-        base_treinamento = base_treinamento.iloc[:, [1,2,3,13]].values
-        base_teste = base_teste.iloc[:, [1,2,3,13]].values        
-        #base_treinamento_bin = np.zeros((base_treinamento.shape[0],4*(base_treinamento.shape[1]-1)))
-        #base_teste_bin = np.zeros((base_teste.shape[0],4*(base_teste.shape[1]-1)))
-        base_treinamento_len = base_treinamento.shape[0]
-        #base_features_dimension = base_treinamento.shape[1]-1
-        '''
-        for i in range(0, base_treinamento_len):
-            for j in range (0, base_features_dimension):
-                binarizedFeature = mrs.BinarizerFloat32(base_treinamento[i][j])
-                for k in range(4):
-                    base_treinamento_bin[i][4*j+k] = binarizedFeature[k]
+     
+        #base_treinamento = base_treinamento.iloc[:, [1,2,3,13]].values
         
-        base_teste_len = base_teste.shape[0]
+        base_treinamento = base_treinamento.iloc[:, lstFeaturestoGet].values
         
-        for i in range(0, base_teste_len):
-            for j in range (0, base_features_dimension):
-                binarizedFeature = mrs.BinarizerFloat32(base_teste[i][j])
-                for k in range(4):
-                    base_teste_bin[i][4*j+k] = binarizedFeature[k]
-                    
-        base_treinamento_bin /=255
-        base_teste_bin /=255
-        '''
-        
+        #base_teste = base_teste.iloc[:, [1,2,3,13]].values
+        base_teste = base_teste.iloc[:, lstFeaturestoGet].values
         previsores=[]
         real_congestion_treino = []
         real_congestion_teste = []
         X_teste = []
 
         
-        
+        base_treinamento_len = base_treinamento.shape[0]
         for i in range(self.T, base_treinamento_len):
             end_ix = i+self.n_steps_out
             if end_ix > base_treinamento_len:
                 break;
             #previsores.append(base_treinamento[i-self.T:i, 0:4])#o que é considerado é o limite superior do rante -1
-            previsores.append(base_treinamento[i-self.T:i, 0:3])#o que é considerado é o limite superior do rante -1 e sem a informação do percentual de ocupação do buffer
-            real_congestion_treino.append(base_treinamento[(i-1)+self.n_steps_out,3]-1)
+            previsores.append(base_treinamento[i-self.T:i, 0:len(lstFeaturestoGet)-1])#o que é considerado é o limite superior do rante -1 e sem a informação do percentual de ocupação do buffer
+            real_congestion_treino.append(base_treinamento[(i-1)+self.n_steps_out,len(lstFeaturestoGet)-1]-1)
             
             
             
@@ -203,8 +188,8 @@ class ClientBufferArrivaCNN(Client):
         for i in range(self.T,base_teste_len): # para as duzentas previsoes, o mesmo tramanho do Teste.csv, ou seja 290-90
           if i >= base_teste_len:
             break;
-          X_teste.append(base_teste[i-self.T:i, 0:3])
-          real_congestion_teste.append(base_teste[(i-1)+self.n_steps_out,3]-1)
+          X_teste.append(base_teste[i-self.T:i, 0:len(lstFeaturestoGet)-1])
+          real_congestion_teste.append(base_teste[(i-1)+self.n_steps_out,len(lstFeaturestoGet)-1]-1)
 
         
 

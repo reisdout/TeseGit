@@ -27,13 +27,9 @@ class TerminalSigmoid(GeneralTerminal):
     
     
     
-    def TreinarModeloBufferArrival(self,parExperimentPath, parModelPath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths):
+    def TreinarModeloBufferArrival(self):
         
-        
-        
-       
-        
-        client01 = ClientBufferArrivalSigmoid(0,parExperimentPath,parModelPath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths,self.lstTrainFeatures)    
+        client01 = ClientBufferArrivalSigmoid(0,self.basePath,self.modelPath,self.lstTermianlsPath, self.lstRouterPath,self.lstTrainFeatures)    
         client01.RefreshModel(True)
         client01.GetHistory('MLP Model Accuracy ('+self.PrepareHistoryTitle()+')','MLP Model Loss '+'('+self.PrepareHistoryTitle()+')','MLP')
         client01.GetMapedMatrix()
@@ -49,10 +45,10 @@ class TerminalSigmoid(GeneralTerminal):
         
         '''
     
-    def EvalueteModelLevarage(parBasePath, parModelPath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths):
+    def EvalueteModelLevarage(self):
         
         #client01 = Client(0,parExpDirPath,parBasePath)
-        client01 = ClientBufferArrivalSigmoid(0,parBasePath,parModelPath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths)
+        client01 = ClientBufferArrivalSigmoid(0,self.experimentPath,self.modelPath,self.lstTermianlsPath, self.lstRouterPath,parLstFeatues=self.lstTrainFeatures)
         client01.AderenciaOutrosFluxos("MLP")
         
         

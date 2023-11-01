@@ -46,7 +46,7 @@ class ClientBufferArrivalLSTM(Client):
 
     #resultadoTreinamento = np.eye(10)
 
-    def __init__(self,parId,parExperimentPath,parBasePath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths, parFeaturesWindow,parLstFeatues=[1,2,3]):
+    def __init__(self,parId,parExperimentPath,parBasePath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths, parLstFeatues=[1,2,3],parFeaturesWindow=3):
            
         #print(parLstBasesTerminalsPaths)
         #print(parLstBasesRoutersPaths)
@@ -88,7 +88,7 @@ class ClientBufferArrivalLSTM(Client):
        #regressor.add(LSTM(units = 20, return_sequences = True, input_shape = (self.input_shape, 4)))
        #regressor.add(LSTM(units = 10, return_sequences = True, input_shape = (self.input_shape, 4)))
        #regressor.add(LSTM(units = 6, return_sequences = True, input_shape = (self.input_shape, 4)))
-       regressor.add(LSTM(units = 3, return_sequences = True, input_shape = (self.T, 3)))
+       regressor.add(LSTM(units = 3, return_sequences = True, input_shape = (self.T, len(self.lstFeatures))))
        regressor.add(Dropout(0.3)) #zerar 30% das entradas para evitar o overfiting
        
        
@@ -185,15 +185,17 @@ class ClientBufferArrivalLSTM(Client):
         #base = self.NormalizeFeatures(base,parLoadFromNotTrainedFile=False)
         base_treinamento, base_teste = self.SplitBase(baseNor)
         
-        lstFeatures = self.lstFeatures.append(13)
+        lstFeaturestoGet = [] #Tem que abarcar as de treinamento e os respectivos valores de estado
+        lstFeaturestoGet.extend(self.lstFeatures)
+        lstFeaturestoGet.append(13)
      
      
         #base_treinamento = base_treinamento.iloc[:, [1,2,3,13]].values
         
-        base_treinamento = base_treinamento.iloc[:, lstFeatures].values
+        base_treinamento = base_treinamento.iloc[:, lstFeaturestoGet].values
         
         #base_teste = base_teste.iloc[:, [1,2,3,13]].values
-        base_teste = base_teste.iloc[:, lstFeatures].values
+        base_teste = base_teste.iloc[:, lstFeaturestoGet].values
         
         previsores=[]
         real_congestion_treino = []
@@ -210,9 +212,9 @@ class ClientBufferArrivalLSTM(Client):
             #previsores.append(base_treinamento[i-self.T:i, 0:3])#o que é considerado é o limite superior do rante -1 e sem a informação do percentual de ocupação do buffer
             #                                                                                Para pegar a ultima feature, que e o estado do congestionamento
             #                                                                                                             |
-            previsores.append(base_treinamento[i-self.T:i, 0:len(lstFeatures)-1])#                                        | Para quee o estado seja (0) ou (1)                          |
+            previsores.append(base_treinamento[i-self.T:i, 0:len(lstFeaturestoGet)-1])#                                        | Para quee o estado seja (0) ou (1)                          |
             #real_congestion_treino.append(base_treinamento[(i-1)+self.n_steps_out,3]-1)                                  |  |
-            real_congestion_treino.append(base_treinamento[(i-1)+self.n_steps_out,len(lstFeatures)-1]-1)#len(lstFeatures)-1]-1
+            real_congestion_treino.append(base_treinamento[(i-1)+self.n_steps_out,len(lstFeaturestoGet)-1]-1)#len(lstFeatures)-1]-1
             
             
             
@@ -224,9 +226,9 @@ class ClientBufferArrivalLSTM(Client):
           if i >= base_teste_len:
             break;
           #X_teste.append(base_teste[i-self.T:i, 0:3])#                                            Para pegar a ultima feature, que e o estado do congestionamento
-          X_teste.append(base_teste[i-self.T:i, 0:len(lstFeatures)-1])#                                          |  Para quee o estado seja (0) ou (1)
+          X_teste.append(base_teste[i-self.T:i, 0:len(lstFeaturestoGet)-1])#                                          |  Para quee o estado seja (0) ou (1)
           #real_congestion_teste.append(base_teste[(i-1)+self.n_steps_out,3]-1)#                                 |  |
-          real_congestion_teste.append(base_teste[(i-1)+self.n_steps_out,len(lstFeatures)-1]-1)#len(lstFeatures)-1]-1
+          real_congestion_teste.append(base_teste[(i-1)+self.n_steps_out,len(lstFeaturestoGet)-1]-1)#len(lstFeatures)-1]-1
 
         '''
           *********************************SOBRE O RESHAPE**************************************

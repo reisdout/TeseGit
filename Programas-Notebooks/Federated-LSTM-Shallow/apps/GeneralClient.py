@@ -69,8 +69,8 @@ class Client():
 
     def __init__(self,parId,
                  parExperimentPath,
-                 parModelpath,
-                 parPrevisores_treinamento=[],
+                 parModelpath, #Nao ha basePath, pois e so para carregar os csv no load, que estarao no experimenPath(treino) ou modelPath(Evaluate)
+                 parPrevisores_treinamento=[],#Quem sabe em algum momento nao pode receber pronto.
                  parPrevisores_teste=[],
                  parClasse_treinamento=[],
                  parClasse_teste=[],
