@@ -216,12 +216,12 @@ class ClientBufferArrivalSigmoid(Client):
                               loss = tf.keras.losses.BinaryCrossentropy(),
                               metrics = [tf.keras.metrics.BinaryAccuracy()]) 
         
-        print("treinando...com 64 de bach-size e 3 épocas, utilizabdo Sigmoid")
+        print("treinando...com 64 de bach-size e 3000 épocas, utilizabdo Sigmoid")
         print("Taxa de Aprendizado 0.0001")
         self.history = classificador.fit(self.previsores_treinamento, 
                           self.classe_treinamento, 
                           batch_size = 64, 
-                          epochs = 3,
+                          epochs = 3000,
                           validation_split=0.2,
                           verbose=0)
         self.weightsClientModel = classificador.get_weights()
