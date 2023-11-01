@@ -63,7 +63,7 @@ class ClientBufferArrivalLSTM(Client):
         #self.base_teste =  np.array([])
         self.exp_batch_size = 64
         self.currentConfusionMatriz =np.full((2,2), 0) # Apesar de ser obtidas a partir de listas, a matriz de comfusão é numpy
-        self.exp_epoch =  3000
+        self.exp_epoch =  3
         #self.len_base_teste = 0;
         #self.previsores_treinamento=[]
         #self.previsores_teste = [] 
