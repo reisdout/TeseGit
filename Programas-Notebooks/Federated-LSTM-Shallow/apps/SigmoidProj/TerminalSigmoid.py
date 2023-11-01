@@ -34,7 +34,8 @@ class TerminalSigmoid(GeneralTerminal):
         client01.RefreshModel(True)
         client01.GetHistory('MLP Model Accuracy ('+self.PrepareHistoryTitle()+')','MLP Model Loss '+'('+self.PrepareHistoryTitle()+')','MLP')
         matrix = client01.GetMapedMatrix()
-        mrs.ConstructROCGraph([matrix], ["LSTM"])
+        title = "ROC MLP Treino - Dados {} Fluxos\n".format(len(self.lstTermianlsPath))+'({})'.format(self.PrepareHistoryTitle())
+        mrs.ConstructROCGraph([matrix], ["MLP"],title)
         client01.SaveModel("MLP")
     
         '''

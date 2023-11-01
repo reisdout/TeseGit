@@ -35,9 +35,9 @@ class TerminalLSTM(GeneralTerminal):
         client01.RefreshModel(True)
         client01.GetHistory('LSTM Model Accuracy ('+self.PrepareHistoryTitle()+')', 'LSTM Model Loss '+'('+self.PrepareHistoryTitle()+')','LSTM')
         matrix = client01.GetMapedMatrix()
+        title = "ROC LSTM Treino - Dados {} Fluxos\n".format(len(self.lstTermianlsPath))+'({})'.format(self.PrepareHistoryTitle())
+        mrs.ConstructROCGraph([matrix], ["LSTM"],title)
         client01.SaveModel("LSTM")
-        mrs.ConstructROCGraph([matrix], ["LSTM"])
-    
     
     def EvalueteModelLevarage(self):
         

@@ -408,7 +408,7 @@ def RenameFile(parExpPath, parInicialCount=1):
             print(file, " --> nao renomeado");
         
         
-def PlotROC(parData,parLabels):
+def PlotROC(parData,parLabels,parTitle):
 
     
     df = pd.DataFrame(parData) 
@@ -426,12 +426,12 @@ def PlotROC(parData,parLabels):
     descricao_experimeto = parLabels
     
     #desloc_x_text=[0,-0.0007,0,0,0]
-    desloc_x_text=[0.0010,0.0010,0.0010]
+    desloc_x_text=[0.0030,0.0010,0.0010]
     
     #desloc_y_text=[-0.1,-0.06,-0.1,-0.07,-0.1]
     
     #desloc_y_text=[-0.1,-0.06,-0.1,-0.07,-0.1]
-    desloc_y_text=[-0.1,-0.1,-0.1]
+    desloc_y_text=[-0.01,-0.1,-0.1]
     
     y_max = max(tpr)
     y_min = min(tpr)
@@ -439,21 +439,33 @@ def PlotROC(parData,parLabels):
     x_min = min(fpr)
     x_max = max(fpr)
  
+    if(numPoints > 1):
+        pass_bisse = (x_max-x_min)/(numPoints-1)
+        #x_bisse = np.array([0,0.003,0.006,0.010,0.0126050420168067])
+        #y_bisse = np.array([0,0.003,0.006,0.010,0.0126050420168067])
+        x_bisse = np.zeros(numPoints)
+        y_bisse = np.zeros(numPoints)
     
-    pass_bisse = (x_max-x_min)/(numPoints-1)  
-    #x_bisse = np.array([0,0.003,0.006,0.010,0.0126050420168067])
-    #y_bisse = np.array([0,0.003,0.006,0.010,0.0126050420168067])
-    x_bisse = np.zeros(numPoints)
-    y_bisse = np.zeros(numPoints)
+        x_bisse[0] = x_min
+        y_bisse[0] = x_min
+        
+        
+    
+        for i in range(1,numPoints):
+            x_bisse[i] = x_bisse[0]+i*pass_bisse
+            y_bisse[i] = x_bisse[i]
+    else:
+        
+        x_bisse = np.zeros(2)
+        y_bisse = np.zeros(2)
+    
+        x_bisse[0] = 0.0
+        y_bisse[0] = 0.0
+        x_bisse[1] = 2*x_min
+        y_bisse[1] = x_bisse[1]
+        
+        
 
-    x_bisse[0] = x_min
-    y_bisse[0] = x_min
-    
-    
-
-    for i in range(1,numPoints):
-        x_bisse[i] = x_bisse[0]+i*pass_bisse
-        y_bisse[i] = x_bisse[i]
     
     # Create the pandas DataFrame 
     
@@ -473,7 +485,7 @@ def PlotROC(parData,parLabels):
     
     sns.axes_style("ticks")
     
-    roc = sns.lineplot(df,x="FPR",y="TPR", label= 'ROC por Fluxo',color ='blue', linewidth=1.5,ax=ax).set(title="ROC - Modelo 20 Fluxos")
+    roc = sns.lineplot(df,x="FPR",y="TPR", label= 'ROC por Fluxo',color ='blue', linewidth=1.5,ax=ax).set(title=parTitle)
     sns.scatterplot(df,x="FPR",y="TPR",ax=ax,color ='blue',s=50)
     invar = sns.lineplot(x=x_bisse, y=y_bisse, sort=False, color ='red', linewidth=1.5,label="TPR=FPR",ax=ax)
     
@@ -520,7 +532,7 @@ fpr = fpr[0]
 
 
 
-def ConstructROCGraph(parConfusionMatrizes, parPointLabels):
+def ConstructROCGraph(parConfusionMatrizes, parPointLabels, parTitle):
     print("em construçao")
     if(len(parConfusionMatrizes) != len(parPointLabels)):
         print("Dimensoes incompativeis")
@@ -545,7 +557,7 @@ def ConstructROCGraph(parConfusionMatrizes, parPointLabels):
     data = {'TPR': lstTPRs,
             'FPR': lstFPRs} 
 
-    PlotROC(data,parPointLabels)
+    PlotROC(data,parPointLabels,parTitle)
 
         
         

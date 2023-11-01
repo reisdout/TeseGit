@@ -28,8 +28,10 @@ class TerminalCNN(GeneralTerminal):
         client01.RefreshModel(True)
         client01.GetHistory('CNN Model Accuracy ('+self.PrepareHistoryTitle()+')', 'CNN Model Loss '+'('+self.PrepareHistoryTitle()+')',parModel="CNN")
         matrix = client01.GetMapedMatrix()
-        client01.SaveModel('CNN')
-        mrs.ConstructROCGraph([matrix], ["CNN"])
+        title = "ROC CNN Treino - Dados {} Fluxos\n".format(len(self.lstTermianlsPath))+'({})'.format(self.PrepareHistoryTitle())
+        mrs.ConstructROCGraph([matrix], ["CNN"],title)
+        client01.SaveModel("CNN")
+        
     
     def EvalueteModelLevarage(self):
         
