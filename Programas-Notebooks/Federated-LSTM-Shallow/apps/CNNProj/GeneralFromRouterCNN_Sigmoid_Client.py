@@ -41,7 +41,7 @@ class ClientBufferArrivalCNN(Client):
 
     #resultadoTreinamento = np.eye(10)
 
-    def __init__(self,parId,parExperimentPath,parBasePath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths, parLstFeatues=[1,2,3], parFeaturesWindow=3):
+    def __init__(self,parId,parExperimentPath,parBasePath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths, parClineteCNNLstFeatues=[1,2,3], parFeaturesWindow=3):
            
         #print(parLstBasesTerminalsPaths)
         #print(parLstBasesRoutersPaths)
@@ -64,7 +64,7 @@ class ClientBufferArrivalCNN(Client):
         #self.previsores_teste = [] 
         #self.classe_treinamento = [] 
         #self.classe_teste = []
-        super().__init__(parId,parExperimentPath,parBasePath)
+        super().__init__(parId,parExperimentPath,parBasePath,parLstFeatues=parClineteCNNLstFeatues)
 
 
         
@@ -193,8 +193,8 @@ class ClientBufferArrivalCNN(Client):
 
         
 
-        self.previsores_treinamento,self.classe_treinamento = np.array(previsores), np.array(real_congestion_treino)
-        self.previsores_teste, self.classe_teste =  np.array(X_teste), np.array(real_congestion_teste) # equivalente ao X_teste
+        self.previsores_treinamento,self.classe_treinamento = np.array(previsores).reshape((len(previsores),self.T,len(self.lstFeatures),1)), np.array(real_congestion_treino)
+        self.previsores_teste, self.classe_teste =  np.array(X_teste).reshape((len(X_teste),self.T,len(self.lstFeatures),1)), np.array(real_congestion_teste) # equivalente ao X_teste
        
         
 
