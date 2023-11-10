@@ -10,12 +10,24 @@ realizar o treinamento de uma rede neural softmax, com dados
 provenientes das leituras das features (ack_ewma, send_ewma e rtt_ratio)
 no momento da chegada dos ack nos clientes.
 """
+
+import sys
+import os
+from time import gmtime, strftime
+sys.path.append('./mrsutils')
+import MRSUtils as mrs 
+
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import keras
-from keras.models import Sequential
-from keras.layers import Dense, Dropout, LSTM#, Bidirectional
+#from keras.models import Sequential
+#from keras.layers import Dense
 #from sklearn.metrics import confusion_matrix, accuracy_score
+
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense#, Bidirectional
+
 from sklearn.metrics import confusion_matrix #,classification_report, 
 #from keras.utils import np_utils
 import keras.utils
@@ -28,12 +40,8 @@ from sklearn.preprocessing import LabelEncoder
 import seaborn as sns; sns.set()
 
 
-import sys
-import os
-from time import gmtime, strftime
-sys.path.append('../mrsutils')
 
-import MRSUtils as mrs 
+
 
 class LoggingCallback(keras.callbacks.Callback):
     """Callback that logs message at end of epoch.
@@ -242,7 +250,7 @@ class Client():
     
         classificador = self.GetModel()        
         classificador.set_weights(self.weightsClientModel)
-        
+
         classificador_json = classificador.to_json()
         with open(self.experimentPath+"/model_"+parModel+".json",'w') as json_file:
             json_file.write(classificador_json)
@@ -250,7 +258,13 @@ class Client():
         from keras2cpp import export_model
         export_model(classificador, self.experimentPath+"/example_"+parModel+".model")
         
+        tf.keras.models.save_model(classificador, 'keras2c_model')
+        
+        
     def ServerModelIsBetter(self):
+        
+        print("A ser ativada em caso do federated learning")
+        '''
         regressorServer = Sequential()
         regressorServer.add(LSTM(units = 100, return_sequences = True, input_shape = (self.input_shape, 4)))# 4, pois são 4 previsores
         regressorServer.add(Dropout(0.3)) #zerar 30% das entradas para evitar o overfiting
@@ -262,15 +276,17 @@ class Client():
         regressorServer.add(Dropout(0.3))
 
         '''
+        '''
         Segundo https://towardsdatascience.com/illustrated-guide-to-lstms-and-gru-s-a-step-by-step-explanation-44e9eb85bf21
         as saídas de cada unidade da LSTM e, portanto, a saída global é a dimenção do número de previsores, que, no nosso
         caso, é 4. Daí esses 4 estão sendo levados em um softmax de tres neurônios, pois há tres categorias no final"
         ''' 
+        '''
         regressorServer.add(Dense(units = 1, activation = 'sigmoid',name="client_eval_"+str(self.id)))
         regressorServer.compile(optimizer = 'adam', loss = 'mean_squared_error',metrics = ['mean_absolute_error'])
         regressorServer.set_weights(self.weightsServerModel)
         return self.EvalueteServerModel(regressorServer)
-    
+        '''
     
     def AderenciaOutrosFluxos(self):
  

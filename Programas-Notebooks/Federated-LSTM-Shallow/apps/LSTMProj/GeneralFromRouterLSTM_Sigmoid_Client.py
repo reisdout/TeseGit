@@ -29,6 +29,7 @@ from GeneralClient import LoggingCallback
 #from keras.utils import np_utils
 #from tensorflow.keras import utils
 import seaborn as sns; sns.set()
+from contextlib import redirect_stdout
 
 
 import MRSUtils as mrs
@@ -46,7 +47,7 @@ class ClientBufferArrivalLSTM(Client):
 
     #resultadoTreinamento = np.eye(10)
 
-    def __init__(self,parId,parExperimentPath,parBasePath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths, parLstFeatues=[1,2,3],parFeaturesWindow=3):
+    def __init__(self,parId,parExperimentPath,parBasePath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths, parClienteLSTMLstFeatues=[1,2,3],parFeaturesWindow=3):
            
         #print(parLstBasesTerminalsPaths)
         #print(parLstBasesRoutersPaths)
@@ -69,7 +70,7 @@ class ClientBufferArrivalLSTM(Client):
         #self.previsores_teste = [] 
         #self.classe_treinamento = [] 
         #self.classe_teste = []
-        super().__init__(parId,parExperimentPath,parBasePath,parLstFeatues=parLstFeatues)
+        super().__init__(parId,parExperimentPath,parBasePath,parLstFeatues=parClienteLSTMLstFeatues)
 
 
         
@@ -312,7 +313,8 @@ class ClientBufferArrivalLSTM(Client):
       
      self.LoadTrainingDataSet()
      regressor = self.GetModel();
-     opt = tf.keras.optimizers.Adam(learning_rate=0.0001, weight_decay=0.00001,clipvalue = 0.5)
+     #opt = tf.keras.optimizers.Adam(learning_rate=0.0001, weight_decay=0.00001,clipvalue = 0.5)
+     opt = tf.keras.optimizers.legacy.Adam(learning_rate=0.0001)
      regressor.compile(optimizer = opt, 
                        loss = tf.keras.losses.BinaryCrossentropy(),
                        metrics = [tf.keras.metrics.BinaryAccuracy()])
@@ -363,6 +365,13 @@ class ClientBufferArrivalLSTM(Client):
         
         #resultado = classificador.evaluate(self.previsores_teste, self.classe_teste)
         previsoes = classificador.predict(self.previsores_teste)
+        print("SAlvando Arquivo de teste k2c...")
+        for i in range (len(previsoes)):
+            with open('testkeras2c.txt', 'a') as f:
+                with redirect_stdout(f):
+                    print(self.previsores_teste[i],self.classe_teste[i],previsoes[i])   
+                    
+        print("Arquivo teste k2c salvo.")
         previsoes = (previsoes > 0.5)
 
         #classe_teste2 = [np.argmax(t) for t in self.classe_teste]

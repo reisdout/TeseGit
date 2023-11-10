@@ -30,6 +30,7 @@ from keras.layers import Dense
 #from tensorflow.keras import utils
 from keras.models import Sequential
 import seaborn as sns; sns.set()
+from contextlib import redirect_stdout
 
 
 import MRSUtils as mrs
@@ -38,7 +39,7 @@ import MRSUtils as mrs
 
 class ClientBufferArrivalSigmoid(Client):
     
-    def __init__(self,parId,parExperimentPath,parBasePath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths,parLstFeatues=[1,2,3]):
+    def __init__(self,parId,parExperimentPath,parBasePath,parLstBasesTerminalsPaths, parLstBasesRoutersPaths,parClienteMLPLstFeatues=[1,2,3]):
            
         #print(parLstBasesTerminalsPaths)
         #print(parLstBasesRoutersPaths)
@@ -53,7 +54,7 @@ class ClientBufferArrivalSigmoid(Client):
         #self.previsores_teste = [] 
         #self.classe_treinamento = [] 
         #self.classe_teste = []
-        super().__init__(parId,parExperimentPath,parBasePath,parLstFeatues=parLstFeatues)
+        super().__init__(parId,parExperimentPath,parBasePath,parLstFeatues=parClienteMLPLstFeatues)
 
 
     def GetModel(self):
@@ -154,6 +155,12 @@ class ClientBufferArrivalSigmoid(Client):
         
         #resultado = classificador.evaluate(self.previsores_teste, self.classe_teste)
         previsoes = classificador.predict(self.previsores_teste)
+        print("SAlvando Arquivo de teste k2c...")
+        for i in range (len(previsoes)):
+            with open('testkeras2c.txt', 'a') as f:
+                with redirect_stdout(f):
+                    print(self.previsores_teste[i],self.classe_teste[i],previsoes[i])   
+
         previsoes = (previsoes > 0.5)
 
                 

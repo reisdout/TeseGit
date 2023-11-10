@@ -1,0 +1,3 @@
+{Epoch: 0} loss: 0.696812, binary_accuracy: 0.492069, val_loss: 0.696528, val_binary_accuracy: 0.489432
+{Epoch: 1} loss: 0.694057, binary_accuracy: 0.506775, val_loss: 0.693995, val_binary_accuracy: 0.492734
+{Epoch: 2} loss: 0.691125, binary_accuracy: 0.511071, val_loss: 0.690753, val_binary_accuracy: 0.496037
