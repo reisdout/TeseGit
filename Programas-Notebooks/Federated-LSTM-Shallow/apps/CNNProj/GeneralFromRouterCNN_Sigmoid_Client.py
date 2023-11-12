@@ -81,7 +81,7 @@ class ClientBufferArrivalCNN(Client):
            (no caso, ack_ewma, send_ewma e rtt_ratio). Por isso (1,3), no Conv2D. Diante disso, a matriz que
            passara pelo pool e de 1X3, o que motivou o pool_size=(1,2), que focara nas linhas.
        '''
-       regressor.add(Conv2D(16,(1,len(self.lstFeatures)),input_shape=(self.T,len(self.lstFeatures),1),activation="relu"))
+       regressor.add(Conv2D(16,(1,len(self.lstFeatures)-1),input_shape=(self.T,len(self.lstFeatures),1),activation="relu"))
        regressor.add(MaxPooling2D(pool_size=(1,2),padding='same'))
        regressor.add(Flatten())       
       

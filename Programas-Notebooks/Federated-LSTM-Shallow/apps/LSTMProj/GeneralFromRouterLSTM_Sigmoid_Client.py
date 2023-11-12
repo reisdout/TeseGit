@@ -96,7 +96,7 @@ class ClientBufferArrivalLSTM(Client):
        #regressor.add(LSTM(units = 50, return_sequences = True))
        #regressor.add(LSTM(units = 10, return_sequences = True))
        #regressor.add(LSTM(units = 6, return_sequences = True))
-       regressor.add(LSTM(units = 2, return_sequences = False))
+       regressor.add(LSTM(units = 3, return_sequences = False))
        regressor.add(Dropout(0.3))
 
        """
