@@ -69,6 +69,8 @@ class ClientBufferArrivalSigmoid(Client):
         
         classificador.add(Dense(units = 20, activation = 'relu', 
                                 kernel_initializer = 'random_uniform'))
+        classificador.add(Dense(units = 20, activation = 'relu', 
+                                kernel_initializer = 'random_uniform'))
         #classificador.add(Dense(units = classe_dummy.shape[1], activation = 'softmax'))
         classificador.add(Dense(units = 1, activation = 'sigmoid'))
         
