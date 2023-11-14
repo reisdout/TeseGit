@@ -34,14 +34,16 @@ class TerminalLSTM(GeneralTerminal):
         client01 = ClientBufferArrivalLSTM(0,self.basePath,self.modelPath,self.lstTermianlsPath, self.lstRouterPath,self.lstTrainFeatures,parFeaturesWindow=3)    
         client01.RefreshModel(True)
         client01.GetHistory('LSTM Model Accuracy ('+self.PrepareHistoryTitle()+')', 'LSTM Model Loss '+'('+self.PrepareHistoryTitle()+')','LSTM')
-        matrix = client01.GetMapedMatrix()
+        matrix = client01.GetMapedMatrix()        
         title = "ROC LSTM Treino - Dados {} Fluxos\n".format(len(self.lstTermianlsPath))+'({})'.format(self.PrepareHistoryTitle())
+        
         mrs.ConstructROCGraph([matrix], ["LSTM"],title)
-        client01.SaveModel("LSTM")
+        client01.SaveModel("LSTM_"+self.PrepareHistoryTitle())
     
     def EvalueteModelLevarage(self):
         
         #client01 = Client(0,parExpDirPath,parBasePath)
-        client01 = ClientBufferArrivalLSTM(0,self.experimentPath,self.modelPath,self.lstTermianlsPath, self.lstRouterPath,parLstFeatues=self.lstTrainFeatures, parFeaturesWindow=3)
-        client01.AderenciaOutrosFluxos('LSTM')
-        
+        client01 = ClientBufferArrivalLSTM(0,self.experimentPath,self.modelPath,self.lstTermianlsPath, self.lstRouterPath,parClienteLSTMLstFeatues=self.lstTrainFeatures, parFeaturesWindow=3)
+        matrix = client01.AderenciaOutrosFluxos('LSTM_'+self.PrepareHistoryTitle())
+        title = "ROC LSTM Generalizaçao - Dados {:.0f} Fluxos\n".format(len(self.lstTermianlsPath)/2)+'({})'.format(self.PrepareHistoryTitle())
+        mrs.ConstructROCGraph([matrix], ["LSTM"],title)

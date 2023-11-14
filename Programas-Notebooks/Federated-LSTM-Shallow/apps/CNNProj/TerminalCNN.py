@@ -30,11 +30,13 @@ class TerminalCNN(GeneralTerminal):
         matrix = client01.GetMapedMatrix()
         title = "ROC CNN Treino - Dados {} Fluxos\n".format(len(self.lstTermianlsPath))+'({})'.format(self.PrepareHistoryTitle())
         mrs.ConstructROCGraph([matrix], ["CNN"],title)
-        client01.SaveModel("CNN")
+        client01.SaveModel("CNN_"+self.PrepareHistoryTitle())
         
     
     def EvalueteModelLevarage(self):
         
         #client01 = Client(0,parExpDirPath,parBasePath)
-        client01 = ClientBufferArrivalCNN(0,self.experimentPath,self.modelPath,self.lstTermianlsPath, self.lstRouterPath,parLstFeatues=self.lstTrainFeatures, parFeaturesWindow=3)
-        client01.AderenciaOutrosFluxos('CNN')
+        client01 = ClientBufferArrivalCNN(0,self.experimentPath,self.modelPath,self.lstTermianlsPath, self.lstRouterPath, parClineteCNNLstFeatues=self.lstTrainFeatures, parFeaturesWindow=3)
+        matrix =client01.AderenciaOutrosFluxos('CNN_'+self.PrepareHistoryTitle())
+        title = "ROC CNN Generalizaçao - Dados {:.0f} Fluxos\n".format(len(self.lstTermianlsPath)/2)+'({})'.format(self.PrepareHistoryTitle())
+        mrs.ConstructROCGraph([matrix], ["CNN"],title)

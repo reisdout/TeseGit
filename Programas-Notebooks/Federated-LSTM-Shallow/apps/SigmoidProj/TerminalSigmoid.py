@@ -36,7 +36,7 @@ class TerminalSigmoid(GeneralTerminal):
         matrix = client01.GetMapedMatrix()
         title = "ROC MLP Treino - Dados {} Fluxos\n".format(len(self.lstTermianlsPath))+'({})'.format(self.PrepareHistoryTitle())
         mrs.ConstructROCGraph([matrix], ["MLP"],title)
-        client01.SaveModel("MLP")
+        client01.SaveModel("MLP_"+self.PrepareHistoryTitle())
     
         '''
         classificador_json = classificador.to_json()
@@ -51,7 +51,9 @@ class TerminalSigmoid(GeneralTerminal):
     def EvalueteModelLevarage(self):
         
         #client01 = Client(0,parExpDirPath,parBasePath)
-        client01 = ClientBufferArrivalSigmoid(0,self.experimentPath,self.modelPath,self.lstTermianlsPath, self.lstRouterPath,parLstFeatues=self.lstTrainFeatures)
-        client01.AderenciaOutrosFluxos("MLP")
+        client01 = ClientBufferArrivalSigmoid(0,self.experimentPath,self.modelPath,self.lstTermianlsPath, self.lstRouterPath,parClienteMLPLstFeatues=self.lstTrainFeatures)
+        matrix=client01.AderenciaOutrosFluxos("MLP_"+self.PrepareHistoryTitle())
+        title = "ROC MLP Generalizaçao - Dados {:.0f} Fluxos\n".format(len(self.lstTermianlsPath)/2)+'({})'.format(self.PrepareHistoryTitle())
+        mrs.ConstructROCGraph([matrix], ["MLP"],title)
         
         

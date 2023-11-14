@@ -1,7 +1,7 @@
 from TerminalLSTM import TerminalLSTM
 
 
-treino = True
+treino = False
 
 if(treino == True):
     #Para Treinamento

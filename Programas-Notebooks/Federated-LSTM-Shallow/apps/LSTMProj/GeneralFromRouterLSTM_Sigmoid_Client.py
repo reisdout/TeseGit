@@ -304,6 +304,8 @@ class ClientBufferArrivalLSTM(Client):
          
         '''
         self.previsores_treinamento,self.classe_treinamento = np.array(previsores), np.array(real_congestion_treino)
+        #print (self.previsores_treinamento.shape)
+        #input()
         self.previsores_teste, self.classe_teste =  np.array(X_teste), np.array(real_congestion_teste) # equivalente ao X_teste
        
         

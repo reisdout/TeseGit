@@ -79,4 +79,4 @@ class GeneralTerminal():
         
         #no "EvalueteModelLevarage", o modelPath e de onde se carrega o modelo cuja aderencia deve ser avaliada.
         else:
-            self.EvalueteModelLevarage(self.basePath, self.modelPath, self.lstTermianlsPath,self.lstRouterPath)
+            self.EvalueteModelLevarage()

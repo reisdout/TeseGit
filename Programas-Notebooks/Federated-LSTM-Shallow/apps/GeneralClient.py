@@ -86,6 +86,14 @@ class Client():
     
         
       self.id=parId
+      '''
+          Para o cliente a logica e a seguinte quando da aderencia:
+              *Onde eu pego o moelo(modelPath) para realizar os esperimentos com os dados do
+              experimento(experimentPath)
+          Tanto e que se nao for aderencia, nao se usa modePath. O save model usa 
+          experimentPath para salvar o modelo, o qual servira de modelPath em algum teste
+          de aderencia.
+      '''
       self.experimentPath = parExperimentPath
       self.modelPath=parModelpath
       #self.testPath = parTestPath
@@ -258,7 +266,7 @@ class Client():
         from keras2cpp import export_model
         export_model(classificador, self.experimentPath+"/example_"+parModel+".model")
         
-        tf.keras.models.save_model(classificador, 'keras2c_model')
+        tf.keras.models.save_model(classificador, 'keras2c_model_'+parModel)
         
         
     def ServerModelIsBetter(self):

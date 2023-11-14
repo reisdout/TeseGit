@@ -22,5 +22,5 @@ else:
 
 
 
-objTerminal = TerminalCNN(basePath, experimentPath, modelPath, parTreino=treino,parLstTrainFeatures=[1,2,3])
+objTerminal = TerminalCNN(basePath, experimentPath, modelPath, parTreino=treino,parLstTrainFeatures=[2,3])
 objTerminal.RunClient()
