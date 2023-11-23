@@ -14,6 +14,7 @@ import seaborn as sns; sns.set()
 import os
 import matplotlib.pyplot as plt
 import seaborn as sns
+import copy
 
 
 print_output = False
@@ -56,6 +57,66 @@ def BinarizerFloat32(parNum):
         bytes[bytenum] = bytes[bytenum] + arrbin[i]*pow(2,7-(i-(8*bytenum)))
     
     return bytes
+
+
+
+def CutBase(parNorBase, parCorte):
+
+  if(len(parNorBase) <= parCorte):
+    print("Impossivel Cortar!")
+    return parNorBase;
+
+  cuted_base = parNorBase #copy.deepcopy(parMergedBase)
+  #n1 = cuteded_base[cuteded_base.Network_Situation_Router_Arrival == 1].shape[0]
+  #n2 = cuteded_base[cuteded_base.Network_Situation_Router_Arrival == 2].shape[0]
+
+  numCorte = len(cuted_base) - parCorte;
+  n = 0
+  fase = 0;
+  i=0 #Linha a ser cortada
+  more1=True
+  more2=True
+  while(n < numCorte):
+
+    if(i >= cuted_base.shape[0]):
+      i=0;
+
+    if(fase == 0 and more1):
+      fase = 1
+      while (i < cuted_base.shape[0]):
+        if(cuted_base.iloc[i]['Network_Situation_Router_Arrival'] == 1):
+          cuted_base.drop(cuted_base.index[i],inplace=True)
+          n = n+1
+          break
+        i=i+1
+      if(i == cuted_base.shape[0]):
+        more1=False
+    if(n == numCorte):
+        break;
+    i=0
+    if (fase == 1 and more2):
+      fase=0
+      while (i < cuted_base.shape[0]):
+        if(cuted_base.iloc[i]['Network_Situation_Router_Arrival'] == 2):
+          cuted_base.drop(cuted_base.index[i],inplace=True)
+          n = n+1
+          break
+        i=i+1
+      if(i == cuted_base.shape[0]):
+        more2=False               
+   
+       
+  cuted_base.reset_index(drop=True,inplace=True)
+  cuted_base_sampled = cuted_base.sample(frac = 1).reset_index(drop=True)
+  n1 = cuted_base_sampled[cuted_base_sampled.Network_Situation_Router_Arrival == 1].shape[0]
+  n2 = cuted_base_sampled[cuted_base_sampled.Network_Situation_Router_Arrival == 2].shape[0]
+  print("bases cuted")
+  print("Total Features: ",n1+n2)
+  return cuted_base_sampled;
+
+
+ 
+
 
 def ReadNormalizationFactors(par_model_dir):
        
@@ -302,9 +363,16 @@ def MergeAndConcatBases(parLstBaseTerninais, parLstBaseRouter):
         lstMergedBases[i].drop(lstMergedBases[i][lstMergedBases[i]['Network_Situation_Router_Arrival'] ==1].index,inplace=True)
     '''
 
-    balanced_base = pd.concat(lstMergedBases,ignore_index=True)
-    min_rtt = balanced_base['rtt_ratio'].min()
+    merged_base = pd.concat(lstMergedBases,ignore_index=True)
+    #merged_base.reset_index(drop=True,inplace=True)
+    min_rtt = merged_base['rtt_ratio'].min()
     
+    return merged_base, min_rtt
+
+
+def BalanceBase(parMergedBase):
+    
+    balanced_base = parMergedBase #copy.deepcopy(parMergedBase)
     n1 = balanced_base[balanced_base.Network_Situation_Router_Arrival == 1].shape[0]
     n2 = balanced_base[balanced_base.Network_Situation_Router_Arrival == 2].shape[0]
 
@@ -347,14 +415,17 @@ def MergeAndConcatBases(parLstBaseTerninais, parLstBaseRouter):
     
     
     #print(n1,",",n2)
-    print("Total Features: ",n1+n2)
+    
         
     balanced_base.reset_index(drop=True,inplace=True)
     balanced_base_sampled = balanced_base.sample(frac = 1).reset_index(drop=True)
-    n1 = balanced_base[balanced_base.Network_Situation_Router_Arrival == 1].shape[0]
-    n2 = balanced_base[balanced_base.Network_Situation_Router_Arrival == 2].shape[0]
+    n1 = balanced_base_sampled[balanced_base_sampled.Network_Situation_Router_Arrival == 1].shape[0]
+    n2 = balanced_base_sampled[balanced_base_sampled.Network_Situation_Router_Arrival == 2].shape[0]
     print("bases merged")
-    return balanced_base_sampled, min_rtt
+    print("Total Features: ",n1+n2)
+    return balanced_base_sampled;
+
+
 
 
 def TileBase(data):
@@ -378,6 +449,7 @@ def TileBase(data):
     data.drop(data[data['ack_ewma(ms)'] > ackTile].index,inplace=True)
     data.drop(data[data['send_ewma(ms)'] > sendTile].index,inplace=True)
     data.reset_index(drop=True,inplace=True)
+    print('liquiid data: ', data.shape[0])
     return data
 
 

@@ -95,7 +95,7 @@ class ClientBufferArrivalCNN(Client):
 
 
 
-    def LoadTrainingDataSet(self, parFromFile=False):
+    def LoadTrainingDataSet(self, parFromFile=False, parCorte=-1, parPercTeste=20):
         
         print ("Configurando dados tomados da chegada na fila e usando para CNN....")
         
@@ -138,22 +138,26 @@ class ClientBufferArrivalCNN(Client):
         
         
         base_merged, self.minRTT = mrs.MergeAndConcatBases(lstBaseTerminals,lstBaseRouters)
+        base_merged.drop_duplicates(subset=['ack_ewma(ms)', 'send_ewma(ms)','rtt_ratio'],keep="last",ignore_index=True)
         '''
         mrs
         '''
         
-                
-        base_merged.drop_duplicates(subset=['ack_ewma(ms)', 'send_ewma(ms)','rtt_ratio'],keep="last",ignore_index=True)
+        base_balanced = mrs.BalanceBase(base_merged)
+
         #base_consistent = mrs.DeleteInconsistences(base_merged)
         #base = mrs.SubtractMin(base_consistent,parFromFile,self.experimentPath)
         #baseTile = mrs.TileBase(base_consistent)
-        baseTile = mrs.TileBase(base_merged)
+        baseTile = mrs.TileBase(base_balanced)
         baseNor = mrs.NormalizeFeatures(baseTile,parFromFile,self.modelPath,self.minRTT)
+        if(parCorte > 0):
+            baseCuted = mrs.CutBase(baseNor, parCorte)
+            baseNor = baseCuted
         
         baseNor.to_csv(self.experimentPath+'/finalbaseDebugPrevision.csv',sep=',',index=False,encoding='utf-8')
      
         #base = self.NormalizeFeatures(base,parLoadFromNotTrainedFile=False)
-        base_treinamento, base_teste = self.SplitBase(baseNor)    
+        base_treinamento, base_teste = self.SplitBase(baseNor,parPercTeste)    
      
         lstFeaturestoGet = [] #Tem que abarcar as de treinamento e os respectivos valores de estado
         lstFeaturestoGet.extend(self.lstFeatures)
@@ -225,12 +229,12 @@ class ClientBufferArrivalCNN(Client):
      #self.weightsClientModel = regressor.get_weights().copy()
      self.weightsClientModel = regressor.get_weights()
 
-    def SplitBase(self, base):
+    def SplitBase(self, base, parPercTeste=20):
         """
             Como agora estamos nos aproximenaod do artigo do DDoS Atack, sem apelo a previsao, mas apenas a 
             detecçao, vamos dividir proporcionalmente, como no caso do modelo Sigmoid
         """
-        splitPoint = (base.shape[0]*20)//100
+        splitPoint = (base.shape[0]*parPercTeste)//100
         training_base = base.iloc[0:base.shape[0]-splitPoint,:]
         teste = base.iloc[base.shape[0]-splitPoint:base.shape[0],:]
         return training_base, teste
@@ -321,7 +325,7 @@ class ClientBufferArrivalCNN(Client):
 
     def AderenciaOutrosFluxos(self,parModel):       
         #previsores_treinamento, previsores_teste, classe_treinamento, classe_teste = self.LoadTrainingDataSet(parFromFile=True)
-        self.LoadTrainingDataSet(parFromFile=True)
+        self.LoadTrainingDataSet(parFromFile=True,parCorte=4000, parPercTeste=70)
         arquivo = open(self.modelPath+"/model_"+parModel+".json",'r')
         estrutura_classificador = arquivo.read()
         arquivo.close()

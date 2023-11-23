@@ -38,12 +38,12 @@ class TerminalLSTM(GeneralTerminal):
         title = "ROC LSTM Treino - Dados {} Fluxos\n".format(len(self.lstTermianlsPath))+'({})'.format(self.PrepareHistoryTitle())
         
         mrs.ConstructROCGraph([matrix], ["LSTM"],title)
-        client01.SaveModel("LSTM_"+self.PrepareHistoryTitle())
+        client01.SaveModel("LSTM_"+self.PrepareHistoryTitle().replace(", ","_"))
     
     def EvalueteModelLevarage(self):
         
         #client01 = Client(0,parExpDirPath,parBasePath)
         client01 = ClientBufferArrivalLSTM(0,self.experimentPath,self.modelPath,self.lstTermianlsPath, self.lstRouterPath,parClienteLSTMLstFeatues=self.lstTrainFeatures, parFeaturesWindow=3)
-        matrix = client01.AderenciaOutrosFluxos('LSTM_'+self.PrepareHistoryTitle())
+        matrix = client01.AderenciaOutrosFluxos('LSTM_'+self.PrepareHistoryTitle().replace(", ","_"))
         title = "ROC LSTM Generalizaçao - Dados {:.0f} Fluxos\n".format(len(self.lstTermianlsPath)/2)+'({})'.format(self.PrepareHistoryTitle())
         mrs.ConstructROCGraph([matrix], ["LSTM"],title)

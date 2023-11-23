@@ -128,7 +128,7 @@ class Client():
         
         print ("A ser implementado no Cliente Concreto")
 
-    def LoadTrainingDataSet(self, parFromFile=False):
+    def LoadTrainingDataSet(self, parFromFile=False, parCorte=-1, parPercTeste=20):
         
         print ("A ser implementado no Cliente Concreto")
 

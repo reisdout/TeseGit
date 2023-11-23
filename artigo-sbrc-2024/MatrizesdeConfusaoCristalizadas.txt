@@ -1,0 +1,92 @@
+Dados de Teste
+
+MLP  
+
+	ack_ewma,  send_ewma, rtt_ratio
+
+	[[872  79]
+ 	[111 831]]
+	
+
+	ack_ewma, rtt_ratio
+
+	[[893 77 ]
+ 	[121 802]]
+
+
+	send_ewma  rtt_tatio
+	
+
+	[[738 218]
+ 	[16 921]]
+
+
+	ack_ewma  send_ewma
+
+
+	[[635 318  ]
+ 	[303 637]]
+
+
+
+
+LSTM
+
+	ack_ewma,  send_ewma, rtt_ratio
+
+	[[883  69]
+ 	[137 800]]
+
+
+	ack_ewma, rtt_ratio
+
+	[[879, 117]
+ 	[114 779]]
+
+
+
+	send_ewma,  rtt_tatio
+	
+
+	[[785 175  ]
+ 	[86 843]]
+
+
+	ack_ewma  send_ewma
+
+
+	[[652 317  ]
+ 	[260 660]]
+
+
+
+
+CNN
+
+	ack_ewma,  send_ewma, rtt_ratio
+
+	[[922  61]
+ 	[78 828]]
+
+
+	ack_ewma, rtt_ratio
+
+	[[748 231]
+ 	[17 892]]
+
+
+
+	send_ewma,  rtt_tatio
+	
+
+	[[741 243]
+ 	[16 889]]
+
+
+	ack_ewma  send_ewma
+
+
+	[[662 282  ]
+ 	[342 603]]
+
+

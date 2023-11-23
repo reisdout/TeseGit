@@ -81,7 +81,7 @@ class ClientBufferArrivalSigmoid(Client):
         return classificador
 
         
-    def LoadTrainingDataSet(self, parFromFile=False):
+    def LoadTrainingDataSet(self, parFromFile=False, parCorte=-1, parPercTeste=20):
         print ("Configurando dados tomados da chegada na fila....")
         
         
@@ -126,14 +126,20 @@ class ClientBufferArrivalSigmoid(Client):
         '''
         mrs
         '''
-        
-                
         base_merged.drop_duplicates(subset=['ack_ewma(ms)', 'send_ewma(ms)','rtt_ratio'],keep="last",ignore_index=True)
+        base_balanced = mrs.BalanceBase(base_merged)
+        #base_balanced.drop_duplicates(subset=['ack_ewma(ms)', 'send_ewma(ms)','rtt_ratio'],keep="last",ignore_index=True)
+
+        #base_balanced = mrs.BalanceBase(base_merged)
         #base_consistent = mrs.DeleteInconsistences(base_merged)
         #base = mrs.SubtractMin(base_consistent,parFromFile,self.experimentPath)
         #baseTile = mrs.TileBase(base_consistent)
-        baseTile = mrs.TileBase(base_merged)
+        baseTile = mrs.TileBase(base_balanced)
         baseNor = mrs.NormalizeFeatures(baseTile,parFromFile,self.modelPath,self.minRTT)
+        if(parCorte > 0):
+            baseCuted = mrs.CutBase(baseNor, parCorte)
+            baseNor = baseCuted
+
         baseNor.to_csv(self.experimentPath+'/finalbaseDebugPrevision.csv',sep=',',index=False,encoding='utf-8')
         ####baseNor = pd.read_csv(self.experimentPath+'/finalbaseDebugPrevision.csv')
        
@@ -141,7 +147,7 @@ class ClientBufferArrivalSigmoid(Client):
         previsores = baseNor.iloc[:, self.lstFeatures].values   
         classe = baseNor.iloc[:, 13].values
         classe -=1        
-        self.previsores_treinamento, self.previsores_teste,self.classe_treinamento,self.classe_teste = train_test_split(previsores, classe, test_size=0.20)
+        self.previsores_treinamento, self.previsores_teste,self.classe_treinamento,self.classe_teste = train_test_split(previsores, classe, test_size=parPercTeste/100)
         
         print("Dados preparados")
         #return previsores_treinamento, previsores_teste, classe_treinamento, classe_teste
@@ -184,7 +190,7 @@ class ClientBufferArrivalSigmoid(Client):
     def AderenciaOutrosFluxos(self,parModel):
  
         #previsores_treinamento, previsores_teste, classe_treinamento, classe_teste = self.LoadTrainingDataSet(parFromFile=True)
-        self.LoadTrainingDataSet(parFromFile=True)
+        self.LoadTrainingDataSet(parFromFile=True,parCorte=4000,parPercTeste=70)
         arquivo = open(self.modelPath+"/model_"+parModel+".json",'r')
         estrutura_classificador = arquivo.read()
         arquivo.close()
