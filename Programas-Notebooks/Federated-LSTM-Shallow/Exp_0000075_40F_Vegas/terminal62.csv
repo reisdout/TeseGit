@@ -1,0 +1,2 @@
+#Ack,ack_ewma(ms),send_ewma(ms),rtt_ratio,cwnd (Bytes),Last Router Ocupation Ack Arriaval(Packets),Last Router Ocupation Packet Sent(Packets),Network Situation,AckArrival(ms),TSInsideAck(ms),RTTAck(ms)
+132861,2,2,491,27740,0.9,0.94,2,323446,322955,491

@@ -1,0 +1,221 @@
+import matplotlib.pyplot as plt
+import matplotlib.markers
+import seaborn as sns #;  sns.set()
+import pandas as pd
+import numpy as np
+import matplotlib.ticker as ticker
+
+
+
+
+
+lstCFs=[]
+lstCFMLP=[]
+lstCFLSTM=[]
+lstCFCNN=[]
+
+###########################RENO####################################################
+
+#############################05 FLUXOS #####################################
+lstCFMLP.append(np.array([[1551,0],[78,1171]]))
+#############################10 FLUXOS #####################################
+lstCFMLP.append(np.array([[1430,21],[49,1300]]))
+
+#############################20 FLUXOS #####################################
+lstCFMLP.append(np.array([[1312,38],[34,1416]]))
+
+#############################40 FLUXOS #####################################
+lstCFMLP.append(np.array([[1203,136],[63,1398]]))
+
+###########################CUBIC####################################################
+
+#############################05 FLUXOS #####################################
+
+lstCFMLP.append(np.array([[1275,0],[124,1401]]))
+
+
+#############################10 FLUXOS #####################################
+
+lstCFMLP.append(np.array([[1381,11],[57,1351]]))
+#############################20 FLUXOS #####################################
+
+lstCFMLP.append(np.array([[1285,29],[53,1433]]))
+#############################40 FLUXOS #####################################
+
+lstCFMLP.append(np.array([[1264,91],[69,1376]]))
+
+
+##########################################BBR############################################################################
+
+#############################05 FLUXOS #####################################
+
+lstCFMLP.append(np.array([[1530,0],[0,1270]]))
+#############################10 FLUXOS #####################################
+
+lstCFMLP.append(np.array([[1628,0],[0,1172]]))
+
+#############################20 FLUXOS #####################################
+lstCFMLP.append(np.array([[1581,0],[1,1218]]))
+
+#############################40 FLUXOS #####################################
+lstCFMLP.append(np.array([[1449,0],[3,1348]]))
+
+###################################################################################################
+
+##########################################BVEGASBR############################################################################
+'''
+#############################05 FLUXOS #####################################
+
+lstCFMLP.append(np.array([[1530,0],[0,1270]]))
+'''
+#############################10 FLUXOS #####################################
+
+lstCFMLP.append(np.array([[1655,15],[97,1033]]))
+
+#############################20 FLUXOS #####################################
+lstCFMLP.append(np.array([[1500,2],[50,1248]]))
+
+
+#############################40 FLUXOS #####################################
+lstCFMLP.append(np.array([[1596,22],[39,1143]]))
+
+###################################################################################################
+
+
+
+
+
+
+cf,checked_mlp = CheckSumCF(parLstCF=lstCFMLP, parSum=2800)#MLP
+if(not checked_mlp):
+  print("Soma Errada")
+  print(cf)
+
+cf,checked_lstm = CheckSumCF(parLstCF=lstCFLSTM, parSum=2797)#LSTM
+if(not checked_lstm):
+  print("Soma Errada")
+  print(cf)
+
+cf,checked_cnn = CheckSumCF(parLstCF=lstCFCNN, parSum=2797)#CNN
+if(not checked_cnn):
+  print("Soma Errada")
+  print(cf)
+
+
+lstCFs.extend(lstCFMLP)
+#lstCFs.extend(lstCFLSTM)
+#lstCFs.extend(lstCFCNN)
+
+lstModelos = [u"MLP\u2081\u2082\u2083",
+                            
+             u"MLP\u2081\u2082\u2083",
+              
+             u"MLP\u2081\u2082\u2083",
+              
+             u"MLP\u2081\u2082\u2083",
+              
+             ########################################### 
+
+             u"MLP\u2081\u2082\u2083",
+              
+             u"MLP\u2081\u2082\u2083",
+              
+             u"MLP\u2081\u2082\u2083",
+              
+             u"MLP\u2081\u2082\u2083",
+              
+             ###########################################
+
+             u"MLP\u2081\u2082\u2083",
+              
+             u"MLP\u2081\u2082\u2083",
+              
+             u"MLP\u2081\u2082\u2083",
+              
+             u"MLP\u2081\u2082\u2083",
+              ###########################################
+
+             u"MLP\u2081\u2082\u2083",
+              
+             u"MLP\u2081\u2082\u2083",
+              
+             u"MLP\u2081\u2082\u2083"]
+ 
+
+lstFluxos = ["05 NewReno",
+             "10 NewReno",
+             "20 NewReno",
+             "40 NewReno",
+
+             "05 CUBIC",
+             "10 CUBIC",
+             "20 CUBIC",
+             "40 CUBIC",
+             
+             "05 Bbr",
+             "10 Bbr",
+             "20 Bbr",
+             "40 Bbr",
+             
+             
+             "10 Vegas",
+             "20 Vegas",
+             "40 Vegas"]
+ 
+def ConstructROCGraph(parConfusionMatrizes):    
+
+
+    lstTPRs =  []
+    lstFPRs =  []
+
+    for i in range (len (parConfusionMatrizes)):
+        temp_TPR = parConfusionMatrizes[i][1][1]/(parConfusionMatrizes[i][0][1]+parConfusionMatrizes[i][1][1])
+        
+        temp_FPR = parConfusionMatrizes[i][1][0]/(parConfusionMatrizes[i][0][0]+parConfusionMatrizes[i][1][0])
+
+        #Para evitar sobreposição
+        if(temp_FPR < 0.0093):
+          if(i==9):
+            temp_FPR = temp_FPR+0.007
+          if(i==10):
+            temp_FPR = temp_FPR+0.003
+          if(temp_TPR >=1.0):
+            temp_TPR=1.0        
+          print(parConfusionMatrizes[i],", ",i,", ", temp_FPR,", ",temp_TPR)
+          #if(temp_FPR > 0):
+            #temp_FPR = temp_FPR+0.001*i/5        
+	
+	lstFPRs.append(temp_FPR)
+        lstTPRs.append(temp_TPR)        
+
+    data = {'TPR': lstTPRs,'FPR': lstFPRs,'Modelo' : lstModelos,'Fluxos': lstFluxos}
+
+    df = pd.DataFrame(data)
+    groups = df.sort_values(["Fluxos"]).groupby('Fluxos')
+
+    #plt.scatter(df.FPR, df.TPR, s=200, c=df.z, cmap='gray')
+    i=0;
+    fig, ax = plt.subplots()
+    mycolor=["silver","red","blue", "maroon", "olive", "yellow", "purple", "pink", "cyan","teal","mediumpurple","goldenrod","greenyellow","darkorange","black"]
+    for name, group in groups:
+      print(name)
+      ax.scatter(group.FPR, group.TPR, marker='o',c=mycolor[i], s=20,label=name)#Pontos pretos
+      #ax.scatter(group.FPR, group.TPR, marker='o',s=20,label=name)
+      i=i+1;
+
+    ax.set_xlim(left=-0.01, right=0.2)    
+    plt.legend(loc=2, bbox_to_anchor=(1, 1), title="#Fluxos/Variante TCP",fontsize=7)
+    plt.title("Espaço ROC - "+lstModelos[0])
+    plt.show()
+
+    #PlotROC(data,parPointLabels,parNumCFByModel=6)
+#print(lstCFs)
+#print(len(lstCFs))
+
+if(checked_mlp and checked_lstm and checked_cnn):
+  ConstructROCGraph(lstCFs)
+
+
+
+
+

@@ -76,13 +76,15 @@ def CutBase(parNorBase, parCorte):
   i=0 #Linha a ser cortada
   more1=True
   more2=True
+  print("Tamanho do Corte: ", numCorte)
   while(n < numCorte):
 
     if(i >= cuted_base.shape[0]):
       i=0;
 
     if(fase == 0 and more1):
-      fase = 1
+      if(more2):
+          fase = 1
       while (i < cuted_base.shape[0]):
         if(cuted_base.iloc[i]['Network_Situation_Router_Arrival'] == 1):
           cuted_base.drop(cuted_base.index[i],inplace=True)
@@ -91,11 +93,13 @@ def CutBase(parNorBase, parCorte):
         i=i+1
       if(i == cuted_base.shape[0]):
         more1=False
+        
     if(n == numCorte):
         break;
     i=0
     if (fase == 1 and more2):
-      fase=0
+      if(more1):
+          fase=0
       while (i < cuted_base.shape[0]):
         if(cuted_base.iloc[i]['Network_Situation_Router_Arrival'] == 2):
           cuted_base.drop(cuted_base.index[i],inplace=True)
@@ -103,7 +107,9 @@ def CutBase(parNorBase, parCorte):
           break
         i=i+1
       if(i == cuted_base.shape[0]):
-        more2=False               
+        more2=False
+    #print("Corte Atual :", n)
+            
    
        
   cuted_base.reset_index(drop=True,inplace=True)
@@ -375,6 +381,8 @@ def BalanceBase(parMergedBase):
     balanced_base = parMergedBase #copy.deepcopy(parMergedBase)
     n1 = balanced_base[balanced_base.Network_Situation_Router_Arrival == 1].shape[0]
     n2 = balanced_base[balanced_base.Network_Situation_Router_Arrival == 2].shape[0]
+    if(not n1 or not n2):
+        return balanced_base
 
     i = 0
     

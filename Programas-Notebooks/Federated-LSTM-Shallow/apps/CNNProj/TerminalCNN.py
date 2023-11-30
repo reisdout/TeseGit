@@ -38,5 +38,5 @@ class TerminalCNN(GeneralTerminal):
         #client01 = Client(0,parExpDirPath,parBasePath)
         client01 = ClientBufferArrivalCNN(0,self.experimentPath,self.modelPath,self.lstTermianlsPath, self.lstRouterPath, parClineteCNNLstFeatues=self.lstTrainFeatures, parFeaturesWindow=3)
         matrix =client01.AderenciaOutrosFluxos('CNN_'+self.PrepareHistoryTitle().replace(", ","_"))
-        title = "ROC CNN Generalizaçao - Dados {:.0f} Fluxos\n".format(len(self.lstTermianlsPath)/2)+'({})'.format(self.PrepareHistoryTitle())
+        title = "ROC CNN Generalizaçao - Dados {:.0f} Fluxos\n".format(len(self.lstTermianlsPath))+'({})'.format(self.PrepareHistoryTitle())
         mrs.ConstructROCGraph([matrix], ["CNN"],title)

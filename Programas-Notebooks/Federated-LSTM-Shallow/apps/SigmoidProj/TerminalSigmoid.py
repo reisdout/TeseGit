@@ -53,7 +53,7 @@ class TerminalSigmoid(GeneralTerminal):
         #client01 = Client(0,parExpDirPath,parBasePath)
         client01 = ClientBufferArrivalSigmoid(0,self.experimentPath,self.modelPath,self.lstTermianlsPath, self.lstRouterPath,parClienteMLPLstFeatues=self.lstTrainFeatures)
         matrix=client01.AderenciaOutrosFluxos("MLP_"+self.PrepareHistoryTitle().replace(", ","_"))
-        title = "ROC MLP Generalizaçao - Dados {:.0f} Fluxos\n".format(len(self.lstTermianlsPath)/2)+'({})'.format(self.PrepareHistoryTitle())
+        title = "ROC MLP Generalizaçao - Dados {:.0f} Fluxos\n".format(len(self.lstTermianlsPath))+'({})'.format(self.PrepareHistoryTitle())
         mrs.ConstructROCGraph([matrix], ["MLP"],title)
         
         
