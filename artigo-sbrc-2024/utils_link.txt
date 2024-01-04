@@ -1,0 +1,11 @@
+https://www.nsnam.org/docs/models/html/flow-monitor.html
+https://r02b.github.io/seaborn_palettes/
+https://seaborn.pydata.org/tutorial/color_palettes.html
+https://ns3-code.com/ns3-code-examples/
+https://matplotlib.org/stable/gallery/color/named_colors.html
+https://www.itu.int/itu-d/reports/statistics/2022/05/29/gcr-chapter-1/
+https://www.geeksforgeeks.org/clock-function-in-c-c/
+https://www.nsnam.org/docs/models/html/flow-monitor.html
+https://f0uriest.github.io/keras2c/usage.html
+https://control.princeton.edu/wp-content/uploads/sites/418/2021/04/conlin2021keras2c.pdf
+file:///C:/Users/crere/Downloads/Redes+neurais+recorrentes.pdf

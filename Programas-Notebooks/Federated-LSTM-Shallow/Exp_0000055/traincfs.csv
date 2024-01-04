@@ -1,0 +1,3 @@
+Modelo, Fase, Fluxos, a00, a01, a10, a11
+MLP_Send_ewma_RTT_ratio, Aderencia, 40, 302, 275, 1336, 887
+MLP_Send_ewma_RTT_ratio, Treino, 20, 791, 198, 461, 443
