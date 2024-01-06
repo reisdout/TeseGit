@@ -231,7 +231,7 @@ class MLPModule(Module):
                               loss = tf.keras.losses.BinaryCrossentropy(),
                               metrics = [tf.keras.metrics.BinaryAccuracy()]) 
         
-        myepoch = 3
+        myepoch = 3000
         print("Treinando...com 64 de bach-size e ",myepoch, "epocas, utilizando MLP")
         print("Taxa de Aprendizado 0.0001")
         self.history = classificador.fit(self.previsores_treinamento, 
