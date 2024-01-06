@@ -1,0 +1,26 @@
+code .
+
+    /home/ns/keras2cOO/keras2c/Classes
+
+
+ods(Planilhas)
+    /home/ns/TeseGit/Programas-Notebooks/Federated-LSTM-Shallow/Exp_0000055/Experimentos.ods
+
+    file:///home/ns/TeseGit/Programas-Notebooks/Federated-LSTM-Shallow/Exp_0000055/Consolidacao_Experimentos_todos_fluxos.csv
+
+    file:///home/ns/TeseGit/Programas-Notebooks/Federated-LSTM-Shallow/Exp_0000055/Consolidacao_Experimentos_todos_fluxos_detalhado.csv
+
+
+Termimais(git):
+
+    /home/ns/TeseGit
+    /home/ns/ns3-workspace/source/ns-3.40/scratch/TCP-Evaluation-Suite-Topology-TCP-cwd
+
+
+spyder
+    /home/ns/TeseGit/Programas-Notebooks/Federated-LSTM-Shallow/apps
+
+ns3 xml flow monitor
+
+    /home/ns/ns3-workspace/source/ns-3.40
+
